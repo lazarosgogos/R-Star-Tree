@@ -8,6 +8,7 @@ public class LeafNode extends Node {
 
     public LeafNode(LinkedList<PointEntry> pointEntries) {
         this.pointEntries = pointEntries;
+        leaf = true;
     }
 
     public LinkedList<PointEntry> getPointEntries() {

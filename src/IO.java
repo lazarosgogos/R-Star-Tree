@@ -58,13 +58,13 @@ public class IO {
                     }
 
                     //pairnoyme ta stoixeia toy points
-                    float longitude = Float.parseFloat(eElement.getAttribute("lon"));
-                    float latitude = Float.parseFloat(eElement.getAttribute("lat"));
+                    String longitude = eElement.getAttribute("lon");
+                    String latitude = eElement.getAttribute("lat");
                     long id = Long.parseLong(eElement.getAttribute("id"));
                     String name = prosoxi.getAttribute("v");
 
                     //dimioyrgoume data record me ta stoixeia
-                    Point r = new Point(id, name, longitude, latitude);
+                    Point r = new Point(id, name, latitude, longitude);
 
                     // Stelnoume to DataRecord ston handler
                     new DatafileHandler(r);

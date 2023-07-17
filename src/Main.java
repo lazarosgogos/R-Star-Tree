@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,10 +23,10 @@ public class Main {
         LinkedList<PointEntry> entries = IO.loadInput("assets/mapEast.osm");
 
 //        //203
-        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+//        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
 //
 //        //623
-        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+//        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
 //
 //        //725
 //        entries.addAll(IO.loadInput("assets/mapEast.osm"));
@@ -37,7 +36,7 @@ public class Main {
         List<PointEntry> sortedEntries = ZOrderCurveSort.sortPoints(entries);
 
 
-        int M = 16;
+        int M = 4;
 //        int num_of_nodes = entries.size() / M + 1;
 
 //        LinkedList<LeafNode> leafNodesList = new LinkedList<>(); //list with level 0 nodes
@@ -136,12 +135,31 @@ public class Main {
 
         LinkedList<LinkedList> leaves = bottomUpLevel0(sortedEntries, M);
 
-        LinkedList<LinkedList> root = iterative(leaves.get(0), M, leaves.get(1));
+        LinkedList<LinkedList> rootNodes = iterative(leaves.get(0), M, leaves.get(1));
 
-        for (NoLeafNode noLeafNode : (LinkedList<NoLeafNode>) root.get(0)) {
+        Node root = new Node();
+        for (NoLeafNode noLeafNode : (LinkedList<NoLeafNode>) rootNodes.get(0)) {
+            root = noLeafNode;
             noLeafNode.setRoot(true);
         }
 
+        dfs(root);
+
+    }
+
+    public static void dfs(Node root) {
+        if (!root.leaf) {
+            LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
+            System.out.println("Level");
+            for (RectangleEntry rectangleEntry : rectangles) {
+                System.out.println(rectangleEntry.getRectangle());
+                dfs(rectangleEntry.getChild());
+            }
+        } else {
+            for (PointEntry pointEntry : ((LeafNode) root).getPointEntries()) {
+                System.out.println(pointEntry.getPoint());
+            }
+        }
     }
 
     public static LinkedList<LinkedList> iterative(LinkedList nodeList, int M, LinkedList<RectangleEntry> rectangleEntriesListIn) {

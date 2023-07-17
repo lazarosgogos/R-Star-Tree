@@ -4,6 +4,7 @@
  */
 public class Node {
     RectangleEntry parent;
+    Boolean leaf;
 
     public void setParent(RectangleEntry parent) {
         this.parent = parent;

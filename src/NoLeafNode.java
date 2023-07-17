@@ -15,6 +15,7 @@ public class NoLeafNode extends Node {
 
     public NoLeafNode(LinkedList<RectangleEntry> rectangleEntries) {
         this.rectangleEntries = rectangleEntries;
+        leaf = false;
     }
 
     public void setChildren(LinkedList<Node> children) {

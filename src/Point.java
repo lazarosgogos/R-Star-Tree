@@ -2,41 +2,43 @@
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
 public class Point {
-    double x;
-    double y;
+    float x;
+    float y;
+    String xStr;
+    String yStr;
     int xs;
     int ys;
     String name;
     long id;
 
-    public Point(double x, double y) {
+    public Point(float x, float y) {
         this.x = x;
         this.y = y;
         this.xs = (int) x;
         this.ys = (int) y;
-        //Enable this when using coordinates
-//        this.xs = (int) x*10000000;
-//        this.ys = (int) y*10000000;
     }
 
-    public Point(long id, String name, double x, double y){
-        this.x = x;
-        this.y = y;
-        this.xs = (int) x*10000000;
-        this.ys = (int) y*10000000;
+    public Point(long id, String name, String xStr, String yStr) {
+        this.xStr = xStr;
+        this.yStr = yStr;
+        this.y = Float.parseFloat(yStr);
+        this.x = Float.parseFloat(xStr);
+        this.xs = Integer.parseInt(xStr.replace(".", ""));
+        this.ys = Integer.parseInt(yStr.replace(".", ""));
         this.name = name;
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "(" + xStr + ", " + yStr + ") " + name;
     }
 
-    public double getX(){
+    public float getX() {
         return x;
     }
-    public double getY(){
+
+    public float getY() {
         return y;
     }
 }
