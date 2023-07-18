@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,8 +144,59 @@ public class Main {
             noLeafNode.setRoot(true);
         }
 
-        dfs(root);
+//        dfs(root);
+        System.out.println("Now running range query");
+        Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
+        rangeQuery(root, myQuery);
+    }
 
+
+    /**
+     * A function that performs a query in a given rectangle and retrieves all point entries in it
+     *
+     * @param root  The root node to start from.
+     * @param query The Rectangle in which the elements are needed
+     * @return The point entries inside the query rectangle
+     */
+    public static HashSet<Point> rangeQuery(Node root, final Rectangle query){
+        HashSet<Point> result = new HashSet<>();
+        LinkedList<Node> search = new LinkedList<>();
+        _rangeQuery(root, query, result, search);
+        // print results - TEMP PRINT
+        result.forEach(r -> System.out.println(r.toString()));
+        return result;
+    }
+
+    /** This is a recursive function that retrieves the point entries inside a rectangle*/
+    private static HashSet<Point> _rangeQuery(Node root, final Rectangle query,
+                                                      HashSet<Point> result, LinkedList<Node> search) {
+        // search from root
+        // if it's a no-leaf-node
+        //  search only in the rectangles that overlap the query rectangle
+        // if it's a leaf-node
+        //  search which point entries are inside the query rectangle and add them to the result
+        // search recursively? Yes
+
+        if (root.leaf) {
+            root = (LeafNode) root;
+            ((LeafNode) root).getPointEntries().forEach(p -> {
+                if (query.contains(p) && !result.contains(p.getPoint())) {
+                    result.add(p.getPoint());
+//                    System.out.println("\t\tAdding " + p.getPoint().toString());
+                }
+            });
+        } else { // if root is not a leaf
+            ((NoLeafNode) root).getRectangleEntries().forEach(r -> { // for each rectangle entry
+                if (r.getRectangle().overlaps(query)) // if there is an overlap
+                    search.add(r.getChild()); // populate. add that rectangle for further inspection
+            });
+            for (int i = 0; i < search.size(); i++) {
+                _rangeQuery(search.pop(), query, result, search);
+            }
+        }
+
+
+        return result;
     }
 
     public static void dfs(Node root) {
@@ -164,11 +216,11 @@ public class Main {
 
     public static LinkedList<LinkedList> iterative(LinkedList nodeList, int M, LinkedList<RectangleEntry> rectangleEntriesListIn) {
         LinkedList<LinkedList> result = bottomUp(nodeList, M, rectangleEntriesListIn);
-        System.out.println(result.get(0).size());
+//        System.out.println(result.get(0).size());
         while (result.get(0).size() != 1) {
             result = bottomUp(result.get(0), M, result.get(1));
         }
-        System.out.println(result.get(0).size());
+//        System.out.println(result.get(0).size());
 
         return result;
     }

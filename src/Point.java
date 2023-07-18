@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
@@ -40,5 +42,18 @@ public class Point {
 
     public float getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return id == point.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, id);
     }
 }

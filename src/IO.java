@@ -47,7 +47,7 @@ public class IO {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node nNode = nodeList.item(i);
                 Element prosoxi = (Element) nNode;
-                System.out.println("\nCurrent Element :" + prosoxi.getAttribute("v"));
+//                System.out.println("\nCurrent Element :" + prosoxi.getAttribute("v"));
 
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode.getParentNode();
