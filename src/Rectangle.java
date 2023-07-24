@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 /**
  * This class represents the Rectangle that wraps some Points.
  * This is the class of the Minimum Bounding Rectangle (MBR).
@@ -18,7 +20,14 @@ public class Rectangle {
 
     @Override
     public String toString() {
-        return "(" + String.format("%.7f", xStart) + "," + String.format("%.7f", yStart) + "), (" + String.format("%.7f", xEnd) + "," + String.format("%.7f", yEnd) + ")";
+//        int numberOfDecimalPlaces = 7;
+//
+//        DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(numberOfDecimalPlaces));
+//        String formattedxStart = decimalFormat.format(xStart);
+//        String formattedyStart = decimalFormat.format(yStart);
+//        String formattedxEnd = decimalFormat.format(xEnd);
+//        String formattedyEnd = decimalFormat.format(yEnd);
+        return "(" + xStart + ", " + yStart + "), (" + xEnd + ", " + yEnd + ")";
     }
 
 
