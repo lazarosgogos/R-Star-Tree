@@ -141,8 +141,8 @@ public class Main {
             noLeafNode.setRoot(true);
         }
 
-        dfs(root,0);
-        //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
+        //dfs(root,0);
+        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
 
 //
        /* System.out.println("Now running range query");
