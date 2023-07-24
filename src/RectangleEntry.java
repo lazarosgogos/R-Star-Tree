@@ -14,11 +14,11 @@ public class RectangleEntry extends Entry {
      * @param list of elements
      * @return min
      */
-    public static float min(ArrayList<Float> list) {
-        float min = list.get(0);
+    public static double min(ArrayList<Double> list) {
+        double min = list.get(0);
         // Iterate over the list starting from the second element
         for (int i = 1; i < list.size(); i++) {
-            float current = list.get(i);
+            double current = list.get(i);
             if (current < min) {
                 min = current; // Update the minimum value
             }
@@ -31,11 +31,11 @@ public class RectangleEntry extends Entry {
      * @param list of elements
      * @return max
      */
-    public static float max(ArrayList<Float> list) {
-        float max = list.get(0);
+    public static double max(ArrayList<Double> list) {
+        double max = list.get(0);
         // Iterate over the list starting from the second element
         for (int i = 1; i < list.size(); i++) {
-            float current = list.get(i);
+            double current = list.get(i);
             if (current > max) {
                 max = current; // Update the maximum value
             }
@@ -47,8 +47,8 @@ public class RectangleEntry extends Entry {
         this.child = child;
         this.leaf = true;
 
-        ArrayList<Float> xes = new ArrayList<>();
-        ArrayList<Float> yes = new ArrayList<>();
+        ArrayList<Double> xes = new ArrayList<>();
+        ArrayList<Double> yes = new ArrayList<>();
 
         for (PointEntry pointEntry : child.getPointEntries()) {
             Point temp = pointEntry.getPoint();
@@ -56,11 +56,11 @@ public class RectangleEntry extends Entry {
             yes.add(temp.getY());
         }
 
-        float minX = RectangleEntry.min(xes);
-        float maxX = RectangleEntry.max(xes);
+        double minX = RectangleEntry.min(xes);
+        double maxX = RectangleEntry.max(xes);
 
-        float minY = RectangleEntry.min(yes);
-        float maxY = RectangleEntry.max(yes);
+        double minY = RectangleEntry.min(yes);
+        double maxY = RectangleEntry.max(yes);
 
         rectangle = new Rectangle(minX, minY, maxX, maxY);
     }
@@ -69,10 +69,10 @@ public class RectangleEntry extends Entry {
         this.child = child;
         this.leaf = false;
 
-        ArrayList<Float> xStarts = new ArrayList<>();
-        ArrayList<Float> yStarts = new ArrayList<>();
-        ArrayList<Float> xEnds = new ArrayList<>();
-        ArrayList<Float> yEnds = new ArrayList<>();
+        ArrayList<Double> xStarts = new ArrayList<>();
+        ArrayList<Double> yStarts = new ArrayList<>();
+        ArrayList<Double> xEnds = new ArrayList<>();
+        ArrayList<Double> yEnds = new ArrayList<>();
 
         for (RectangleEntry rectangleEntry : child.getRectangleEntries()) {
             Rectangle temp = rectangleEntry.getRectangle();
@@ -82,10 +82,10 @@ public class RectangleEntry extends Entry {
             yEnds.add(temp.yEnd);
         }
 
-        float minX = RectangleEntry.min(xStarts);
-        float minY = RectangleEntry.min(yStarts);
-        float maxX = RectangleEntry.max(xEnds);
-        float maxY = RectangleEntry.max(yEnds);
+        double minX = RectangleEntry.min(xStarts);
+        double minY = RectangleEntry.min(yStarts);
+        double maxX = RectangleEntry.max(xEnds);
+        double maxY = RectangleEntry.max(yEnds);
 
         rectangle = new Rectangle(minX, minY, maxX, maxY);
     }

@@ -4,8 +4,8 @@ import java.util.Objects;
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
 public class Point {
-    float x;
-    float y;
+    double x;
+    double y;
     String xStr;
     String yStr;
     int xs;
@@ -13,7 +13,7 @@ public class Point {
     String name;
     long id;
 
-    public Point(float x, float y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
         this.xs = (int) x;
@@ -23,8 +23,8 @@ public class Point {
     public Point(long id, String name, String xStr, String yStr) {
         this.xStr = xStr;
         this.yStr = yStr;
-        this.y = Float.parseFloat(yStr);
-        this.x = Float.parseFloat(xStr);
+        this.y = Double.parseDouble(yStr);
+        this.x = Double.parseDouble(xStr);
         this.xs = Integer.parseInt(xStr.replace(".", ""));
         this.ys = Integer.parseInt(yStr.replace(".", ""));
         this.name = name;
@@ -36,11 +36,11 @@ public class Point {
         return "(" + xStr + ", " + yStr + ") " + name;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 

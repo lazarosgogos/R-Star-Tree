@@ -4,12 +4,12 @@
  * The only info we need about its spacing are the left-down and the top-right corners.
  */
 public class Rectangle {
-    float xStart; //down left corner
-    float yStart; //down left corner
-    float xEnd; //up right corner
-    float yEnd; //up right corner
+    double xStart; //down left corner
+    double yStart; //down left corner
+    double xEnd; //up right corner
+    double yEnd; //up right corner
 
-    public Rectangle(float xStart, float yStart, float xEnd, float yEnd) {
+    public Rectangle(double xStart, double yStart, double xEnd, double yEnd) {
         this.xStart = xStart;
         this.yStart = yStart;
         this.xEnd = xEnd;
