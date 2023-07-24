@@ -141,13 +141,13 @@ public class Main {
             noLeafNode.setRoot(true);
         }
 
-        //dfs(root);
+        dfs(root,0);
         //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
 
 //
-        System.out.println("Now running range query");
+       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
-        rangeQuery(root, myQuery);
+        rangeQuery(root, myQuery);*/
     }
 
 
@@ -199,41 +199,21 @@ public class Main {
         return result;
     }
 
-    public static List<Point> skylinePoints(List<Point> points) {
-        List<Point> result = new ArrayList<>();
-        if (points == null || points.isEmpty()) {
-            return result;
-        }
-
-        PriorityQueue<Point> pq = new PriorityQueue<>((a, b) -> b.ys - a.ys);
-        points.sort(Comparator.comparingInt((Point p) -> p.xs).thenComparingInt(p -> p.ys));
-
-        for (Point point : points) {
-            while (!pq.isEmpty() && pq.peek().x <= point.x) {
-                pq.poll();
-            }
-
-            if (pq.isEmpty() || point.y > pq.peek().y) {
-                result.add(point);
-                pq.offer(point);
-            }
-        }
-
-        return result;
-    }
-
-    public static void dfs(Node root) {
+    public static void dfs(Node root, int level) {
         if (!root.leaf) {
             LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
-            System.out.println("Level");
             for (RectangleEntry rectangleEntry : rectangles) {
+                System.out.println("You are in Level: " + level);
                 System.out.println(rectangleEntry.getRectangle());
-                dfs(rectangleEntry.getChild());
+                System.out.println("Going in...");
+                dfs(rectangleEntry.getChild(),level+1);
             }
         } else {
+            System.out.println("Start Leaf Node");
             for (PointEntry pointEntry : ((LeafNode) root).getPointEntries()) {
                 System.out.println(pointEntry.getPoint());
             }
+            System.out.println("End Leaf Node");
         }
     }
 
