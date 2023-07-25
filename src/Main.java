@@ -18,7 +18,7 @@ public class Main {
 //            System.out.println(point);
 
         //725 records
-        LinkedList<PointEntry> entries = IO.loadInput("assets/mapEast.osm");
+        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
 
 //        //203
 //        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
@@ -150,10 +150,37 @@ public class Main {
         rangeQuery(root, myQuery);*/
     }
 
+    /**
+     * Why does this class exist, you say?
+     * This class is used in the recursive part of the knnQuery
+     * In Java a value cannot be passed by reference, only by value
+     * Hence a wrapper as such is needed to ensure that we are able to find the
+     * maximum distance and perform the KNN query.
+     * It's a very simple class with only one variable, a constructor, a getter and a setter.
+     */
+    private static class DoubleWrapper {
+
+        private double dist;
+
+        DoubleWrapper(double d) {
+            dist = d;
+        }
+
+        public double getDist() {
+            return dist;
+        }
+
+        public void setDist(double dist) {
+            this.dist = dist;
+        }
+
+
+    }
+
     public static PriorityQueue<Point> knnQuery(final Node root, final Point center, final int k) {
         PriorityQueue<Point> maxHeap = new PriorityQueue<>(k, Collections.reverseOrder());
-        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
-        _knnQuery(root, center, k, maxHeap, searchFront);
+//        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
+        _knnQuery(root, center, k, maxHeap);
         return maxHeap;
     }
 
@@ -167,8 +194,7 @@ public class Main {
      * @return
      */
     public static HashSet<Point> _knnQuery(final Node root, final Point center,
-                                           final int k, PriorityQueue<Point> maxHeap,
-                                           LinkedList<RectangleEntry> searchFront) {
+                                           final int k, PriorityQueue<Point> maxHeap) {
         // maxHeap.offer(point) to avoid putting > k elements in the max heap
         // maxHeap.add(point) same thing
 
@@ -187,22 +213,58 @@ public class Main {
         // insert the currently explored point to the max heap
         // suddenly, we have a maximum distance!
 
-        // the searching is split into two phases, how should it be approached?
-        // one option would be to first check for the closest rectangle(s), and insert
-        // any rectangle that is in such distance into the search front
+        //
 
-        // another option would be to go full DFS style
-        // go straight down to leaf level, having found a minimum distance
-        // and search for the closest elements
-        // then go back up due to recursion and search for more elements, while
-        // having already found some sort of distance
+        if (!root.leaf) {// if the node is not a leaf
+            // find the closest rectangle
+            NoLeafNode node = (NoLeafNode) root;
+            LinkedList<RectangleEntry> rectangleEntries = node.getRectangleEntries();
+            if (maxHeap.isEmpty()) {
+                // search for the closest rectangle
+                final DoubleWrapper distance = new DoubleWrapper(-1);
 
-        // or are these two the same thing essentially ?
+                RectangleEntry nextRect = rectangleEntries.get(0);
+                for (RectangleEntry r : rectangleEntries) {
+                    if (distance.getDist() == -1 || center.distance(r) < distance.getDist()) {
+                        // update minimum distance
+                        distance.setDist(center.distance(r));
+                        // update the next rectangle that will be checked
+                        nextRect = r;
+                    }
+                }
+                _knnQuery(nextRect.getChild(), center, k, maxHeap);
+            } else { // if the maxHeap already contains an element
+                // that means we already have a search radius
+                // act accordingly
+                // search for the closest rectangle, with a max distance taken from the head of the max heap
+                RectangleEntry nextRect = rectangleEntries.get(0);
+                LinkedList<RectangleEntry> searchFront = new LinkedList<>();
+                for (RectangleEntry r : rectangleEntries) {
+                    // if the distance to this rectangle r is inside our radius
+                    // do search
+                    if (center.distance(r) < maxHeap.peek().distance(center))
+                        searchFront.add(r);
+                }
+                searchFront.forEach(rectangleEntry -> _knnQuery(rectangleEntry.getChild(), center, k, maxHeap));
+            }
+        } else { // if root is leaf node
+            LeafNode node = (LeafNode) root;
+            LinkedList<PointEntry> pointEntries = node.getPointEntries();
+            for (PointEntry pE : pointEntries) {
+                if (maxHeap.size() < k) // populate the max heap
+                    maxHeap.offer(pE.getPoint());
+                else if (center.distance(pE) < maxHeap.peek().distance(center)) {
+                    // if the distance from point pE is LESS
+                    // than what the maximum of the minimum distances
+                    // we've already found
+                    // pop the top element of the heap
+                    // and add the newly found point
+                    maxHeap.poll();
+                    maxHeap.offer(pE.getPoint());
+                }
 
-
-
-
-
+            }
+        }
         return null;
     }
 
@@ -213,7 +275,7 @@ public class Main {
      * @param query The Rectangle in which the elements are needed
      * @return The point entries inside the query rectangle
      */
-    public static HashSet<Point> rangeQuery(Node root, final Rectangle query){
+    public static HashSet<Point> rangeQuery(Node root, final Rectangle query) {
         HashSet<Point> result = new HashSet<>();
         LinkedList<Node> search = new LinkedList<>();
         _rangeQuery(root, query, result, search);
@@ -222,9 +284,11 @@ public class Main {
         return result;
     }
 
-    /** This is a recursive function that retrieves the point entries inside a rectangle*/
+    /**
+     * This is a recursive function that retrieves the point entries inside a rectangle
+     */
     private static HashSet<Point> _rangeQuery(Node root, final Rectangle query,
-                                                      HashSet<Point> result, LinkedList<Node> search) {
+                                              HashSet<Point> result, LinkedList<Node> search) {
         // search from root
         // if it's a no-leaf-node
         //  search only in the rectangles that overlap the query rectangle
@@ -261,7 +325,7 @@ public class Main {
                 System.out.println("You are in Level: " + level);
                 System.out.println(rectangleEntry.getRectangle());
                 System.out.println("Going in...");
-                dfs(rectangleEntry.getChild(),level+1);
+                dfs(rectangleEntry.getChild(), level + 1);
             }
         } else {
             System.out.println("Start Leaf Node");

@@ -62,6 +62,10 @@ public class Point implements Comparator {
         return id == point.id;
     }
 
+    public float distance(PointEntry other) {
+        return (float) Math.sqrt(pseudoDistance(other.getPoint()));
+    }
+
     public float distance(Point other) {
         return (float) Math.sqrt(pseudoDistance(other));
     }
