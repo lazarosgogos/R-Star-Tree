@@ -58,4 +58,11 @@ public class Rectangle {
         return false;
     }
 
+    public boolean contains(Point p){
+        if (p.getX() >= this.xStart && p.getX() <= this.xEnd)
+            if (p.getY() >= this.yStart && p.getY() <= this.yEnd)
+                return true;
+        return false;
+    }
+
 }

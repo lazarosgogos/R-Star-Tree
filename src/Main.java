@@ -150,6 +150,61 @@ public class Main {
         rangeQuery(root, myQuery);*/
     }
 
+    public static PriorityQueue<Point> knnQuery(final Node root, final Point center, final int k) {
+        PriorityQueue<Point> maxHeap = new PriorityQueue<>(k, Collections.reverseOrder());
+        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
+        _knnQuery(root, center, k, maxHeap, searchFront);
+        return maxHeap;
+    }
+
+    /**
+     * This method performs the infamous k-nearest-neighbors algorithm  recursively
+     * and returns a hash set that contains them
+     *
+     * @param root
+     * @param center
+     * @param k      The number of nearest neighbors that should be found
+     * @return
+     */
+    public static HashSet<Point> _knnQuery(final Node root, final Point center,
+                                           final int k, PriorityQueue<Point> maxHeap,
+                                           LinkedList<RectangleEntry> searchFront) {
+        // maxHeap.offer(point) to avoid putting > k elements in the max heap
+        // maxHeap.add(point) same thing
+
+        // if node is noleaf
+        // find the closest rectangle and add it to the search front
+        // the question now is, how many rectangles should we put in the search front ?
+        // perform knn query in search front
+
+        // if node is leaf
+        // find the closest point
+        // add it to results
+        // update max distance (why??? doesn't the maxHeap take care of that?)
+        // if the distance from the point we're checking currently is LESS than the
+        // distance from the top element of the max heap
+        // pop the top element from the max heap
+        // insert the currently explored point to the max heap
+        // suddenly, we have a maximum distance!
+
+        // the searching is split into two phases, how should it be approached?
+        // one option would be to first check for the closest rectangle(s), and insert
+        // any rectangle that is in such distance into the search front
+
+        // another option would be to go full DFS style
+        // go straight down to leaf level, having found a minimum distance
+        // and search for the closest elements
+        // then go back up due to recursion and search for more elements, while
+        // having already found some sort of distance
+
+        // or are these two the same thing essentially ?
+
+
+
+
+
+        return null;
+    }
 
     /**
      * A function that performs a query in a given rectangle and retrieves all point entries in it
