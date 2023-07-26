@@ -142,8 +142,9 @@ public class Main {
         }
 
         //dfs(root,0);
-        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
+//        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
 
+        knnQuery(root, new Point(5, 5), 3);
 //
        /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
@@ -177,10 +178,64 @@ public class Main {
 
     }
 
-    public static PriorityQueue<Point> knnQuery(final Node root, final Point center, final int k) {
-        PriorityQueue<Point> maxHeap = new PriorityQueue<>(k, Collections.reverseOrder());
+    private static class PointComparator implements Comparator<PointPair> {
+
+
+        @Override
+        public int compare(PointPair pair1, PointPair pair2) {
+
+            double d1 = pair1.distance(); // distance of p1 from start of axes
+            double d2 = pair2.distance(); // distance of p2 from start of axes
+            return Double.compare(d1, d2);
+        }
+
+        @Override
+        public Comparator<PointPair> reversed() {
+            return Comparator.super.reversed();
+        }
+    }
+
+    private static class PointPair {
+        private Point point1, point2;
+
+        public PointPair(Point p1, Point p2) {
+            this.point1 = p1;
+            this.point2 = p2;
+        }
+
+        public Point getPoint1() {
+            return point1;
+        }
+
+        public Point getPoint2() {
+            return point2;
+        }
+
+        public double distance() {
+            double d1 = Math.sqrt(Math.pow(point1.getX(), 2) + Math.pow(point1.getY(), 2));
+            double d2 = Math.sqrt(Math.pow(point2.getX(), 2) + Math.pow(point2.getY(), 2));
+            return Math.abs(d2 - d1);
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().
+                    append("PointPair{").
+                    append("point1=").
+                    append(point1).
+                    append(", point2=").
+                    append(point2).
+                    append('}').
+                    toString();
+        }
+    }
+
+    public static PriorityQueue<PointPair> knnQuery(final Node root, final Point center, final int k) {
+        PriorityQueue<PointPair> maxHeap = new PriorityQueue<>(k, new PointComparator());
 //        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
         _knnQuery(root, center, k, maxHeap);
+        System.out.println("Knn query for size: " + k);
+        maxHeap.forEach(p -> System.out.println(p.toString()));
         return maxHeap;
     }
 
@@ -194,10 +249,7 @@ public class Main {
      * @return
      */
     public static HashSet<Point> _knnQuery(final Node root, final Point center,
-                                           final int k, PriorityQueue<Point> maxHeap) {
-        // maxHeap.offer(point) to avoid putting > k elements in the max heap
-        // maxHeap.add(point) same thing
-
+                                           final int k, PriorityQueue<PointPair> maxHeap) {
         // if node is noleaf
         // find the closest rectangle and add it to the search front
         // the question now is, how many rectangles should we put in the search front ?
@@ -213,7 +265,7 @@ public class Main {
         // insert the currently explored point to the max heap
         // suddenly, we have a maximum distance!
 
-        //
+        // TODO this _knnQuery method does NOT work yet !
 
         if (!root.leaf) {// if the node is not a leaf
             // find the closest rectangle
@@ -225,7 +277,7 @@ public class Main {
 
                 RectangleEntry nextRect = rectangleEntries.get(0);
                 for (RectangleEntry r : rectangleEntries) {
-                    if (distance.getDist() == -1 || center.distance(r) < distance.getDist()) {
+                    if (distance.getDist() == -1 || center.distance(r) < center.distance(nextRect)) {
                         // update minimum distance
                         distance.setDist(center.distance(r));
                         // update the next rectangle that will be checked
@@ -239,28 +291,30 @@ public class Main {
                 // search for the closest rectangle, with a max distance taken from the head of the max heap
                 RectangleEntry nextRect = rectangleEntries.get(0);
                 LinkedList<RectangleEntry> searchFront = new LinkedList<>();
-                for (RectangleEntry r : rectangleEntries) {
+                for (RectangleEntry r : rectangleEntries)
                     // if the distance to this rectangle r is inside our radius
                     // do search
-                    if (center.distance(r) < maxHeap.peek().distance(center))
+                    if (center.distance(r) < maxHeap.peek().distance())
                         searchFront.add(r);
-                }
                 searchFront.forEach(rectangleEntry -> _knnQuery(rectangleEntry.getChild(), center, k, maxHeap));
             }
         } else { // if root is leaf node
             LeafNode node = (LeafNode) root;
             LinkedList<PointEntry> pointEntries = node.getPointEntries();
             for (PointEntry pE : pointEntries) {
-                if (maxHeap.size() < k) // populate the max heap
-                    maxHeap.offer(pE.getPoint());
-                else if (center.distance(pE) < maxHeap.peek().distance(center)) {
+                if (maxHeap.size() < k) {// populate the max heap
+                    maxHeap.offer(new PointPair(center, pE.getPoint()));
+                }
+                // else if we are at size == k
+                // and the distance to the currently checked point entry is less than the head of the max heap
+                else if (center.distance(pE) < maxHeap.peek().distance()) {
                     // if the distance from point pE is LESS
                     // than what the maximum of the minimum distances
                     // we've already found
                     // pop the top element of the heap
                     // and add the newly found point
                     maxHeap.poll();
-                    maxHeap.offer(pE.getPoint());
+                    maxHeap.offer(new PointPair(center, pE.getPoint()));
                 }
 
             }
@@ -415,7 +469,7 @@ public class Main {
                 rectangleEntriesListOut.add(tempRect); //add rectangle to list with level 0 rectangles
             }
         }
-        System.out.println(leafNodesList.size());
+//        System.out.println(leafNodesList.size());
 
 
         LinkedList<LinkedList> returnable = new LinkedList<>();

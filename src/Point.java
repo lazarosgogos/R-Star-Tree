@@ -4,7 +4,7 @@ import java.util.Objects;
 /**
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
-public class Point implements Comparator {
+public class Point {
     double x;
     double y;
     String xStr;
@@ -45,14 +45,7 @@ public class Point implements Comparator {
         return y;
     }
 
-    @Override
-    public int compare(Object o, Object t1) {
-        Point p1 = (Point) o;
-        Point p2 = (Point) t1;
-        float d1 = (float) (Math.pow(p1.getX(), 2) + Math.pow(p1.getY(), 2)); // distance of p1 from start of axes
-        float d2 = (float) (Math.pow(p2.getX(), 2) + Math.pow(p2.getY(), 2)); // distance of p2 from start of axes
-        return Float.compare(d1, d2);
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -121,13 +114,10 @@ public class Point implements Comparator {
         return dist;
     }
 
-    @Override
-    public Comparator reversed() {
-        return Comparator.super.reversed();
-    }
 
     @Override
     public int hashCode() {
         return Objects.hash(x, y, id);
     }
+
 }
