@@ -66,34 +66,68 @@ public class BBS {
                     skyline(current, heap, set);
                 }
             } else {
-                set.add(findMin(((LeafNode) current).getPointEntries()));
+                HashSet<PointEntry> temp = findNonDominatedPoints(((LeafNode) current).getPointEntries());
+                for (PointEntry pe : temp) {
+                    set.add(pe);
+                }
             }
 
         }
 
-        return set;
+        return finalize(set);
     }
 
+    // complexity O(n)
     public static boolean check(Node current, HashSet<PointEntry> set) {
+        Point tempPoint1;
+        Point tempPoint2;
         for (PointEntry pe : set) {
-            if (pe.getPoint().getX() < current.parent.getRectangle().xStart
-                    && pe.getPoint().getY() < current.parent.getRectangle().yStart) {
-                return false;
-            }
+            tempPoint1 = pe.getPoint();
+            Rectangle tempRectangle = current.parent.getRectangle();
+            tempPoint2 = new Point(tempRectangle.xStart, tempRectangle.yStart);
+            if (isDominated(tempPoint1, tempPoint2)) return false;
         }
         return true;
     }
 
-    public static PointEntry findMin(LinkedList<PointEntry> list) {
-        double min = mindist(list.get(0));
-        PointEntry minPE = list.get(0);
-        for (PointEntry pe : list) {
-            if (mindist(pe) < min) {
-                min = mindist(pe);
-                minPE = pe;
+    public static boolean isDominated(Point p1, Point p2) {
+        return (p1.x < p2.x && p1.y < p2.y) || (p1.x == p2.x && p1.y < p2.y) || (p1.x < p2.x && p1.y == p2.y);
+    }
+
+    // complexity O(M^2)
+    public static HashSet<PointEntry> findNonDominatedPoints(LinkedList<PointEntry> list) {
+        HashSet<PointEntry> nonDominated = new HashSet<>();
+        for (PointEntry p1 : list) {
+            boolean isNonDominated = true;
+            for (PointEntry p2 : list) {
+                if (p1 != p2 && isDominated(p2.getPoint(), p1.getPoint())) {
+                    isNonDominated = false;
+                    break;
+                }
+            }
+            if (isNonDominated) {
+                nonDominated.add(p1);
             }
         }
-        return minPE;
+        return nonDominated;
+    }
+
+    // complexity O(M^2)
+    public static HashSet<PointEntry> finalize(HashSet<PointEntry> list) {
+        HashSet<PointEntry> nonDominated = new HashSet<>();
+        for (PointEntry p1 : list) {
+            boolean isNonDominated = true;
+            for (PointEntry p2 : list) {
+                if (p1 != p2 && isDominated(p2.getPoint(), p1.getPoint())) {
+                    isNonDominated = false;
+                    break;
+                }
+            }
+            if (isNonDominated) {
+                nonDominated.add(p1);
+            }
+        }
+        return nonDominated;
     }
 
 }

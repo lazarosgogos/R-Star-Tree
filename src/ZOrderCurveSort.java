@@ -16,7 +16,7 @@ public class ZOrderCurveSort {
         private int numBits;
 
         public ZOrderComparator(int numBits) {
-            this.numBits = numBits;
+            this.numBits = 64;
         }
 
         @Override

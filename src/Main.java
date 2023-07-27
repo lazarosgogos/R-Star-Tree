@@ -20,6 +20,10 @@ public class Main {
         //725 records
         LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
 
+//        for (PointEntry pe : entries){
+//            System.out.println(pe.getPoint());
+//        }
+
 //        //203
 //        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
 //
@@ -33,6 +37,10 @@ public class Main {
 
         List<PointEntry> sortedEntries = ZOrderCurveSort.sortPoints(entries);
 
+//        System.out.println("/");
+//        for (PointEntry pe : sortedEntries){
+//            System.out.println(pe.getPoint());
+//        }
 
         int M = 4;
 //        int num_of_nodes = entries.size() / M + 1;
@@ -142,9 +150,9 @@ public class Main {
         }
 
         //dfs(root,0);
-//        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint().toString()));
+      BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
-        knnQuery(root, new Point(5, 5), 3);
+        //knnQuery(root, new Point(5, 5), 3);
 //
        /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
