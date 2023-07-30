@@ -53,8 +53,8 @@ public class Point {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Point point = (Point) o;
-        return id == point.id;
+        Point other = (Point) o;
+        return Double.compare(this.getX(), other.getX()) == 0 && Double.compare(this.getY(), other.getY()) == 0;
     }
 
     public float distance(PointEntry other) {

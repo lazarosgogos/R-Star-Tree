@@ -152,7 +152,7 @@ public class Main {
         //dfs(root,0);
 //        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
         Point p = new Point(5, 5);
-        knnQuery(root, p, 4);
+        knnQuery(root, p, 5);
 
       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
@@ -224,7 +224,7 @@ public class Main {
             double x1 = point1.getX();
             double y2 = point2.getY();
             double y1 = point1.getY();
-            return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         }
 
         @Override
@@ -237,6 +237,19 @@ public class Main {
                     append(point2).
                     append('}').
                     toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PointPointPair that = (PointPointPair) o;
+            return Objects.equals(point1, that.point1) && Objects.equals(point2, that.point2);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(point1, point2);
         }
     }
 
@@ -356,26 +369,31 @@ public class Main {
                         PointPointPair cp = new PointPointPair(center, pointEntry.getPoint());
                         if (/*maxHeap.peek().distance() > cp.distance() &&*/ maxHeap.size() < k && !maxHeap.contains(cp)) {
                             maxHeap.add(cp);
-                            System.out.println("added due to hallf empty heap " + cp);
+//                            System.out.println("added due to hallf empty heap " + cp);
                             addedSomethingNew = true;
                         }
                     }
                 } /*else*/
 
-                    // if the max heap is full, and we have found another point
-                    // of which its distance is LESS THAN the head of the  max heap,
-                    // replace the head with that point
+                // if the max heap is full, and we have found another point
+                // of which its distance is LESS THAN the head of the  max heap,
+                // replace the head with that point
+                boolean changedSomething = true;
+                while (changedSomething) {
+                    changedSomething = false;
                     for (PointEntry pointEntry : leaf.getPointEntries()) {
                         PointPointPair cp = new PointPointPair(center, pointEntry.getPoint());
                         if (maxHeap.peek().distance() > cp.distance() && !maxHeap.contains(cp)) {
                             PointPointPair par = maxHeap.poll();
-                            System.out.println("Polled " + par);
+//                            System.out.println("Polled " + par);
                             maxHeap.add(cp);
-                            System.out.println("added after polling: " + cp);
+//                            System.out.println("added after polling: " + cp);
                             addedSomethingNew = true;
+                            changedSomething = true;
                         }
                     }
-
+//                    System.out.println("Something changed, let's try again");
+                }
                 // now after all these ifs, there is certainly something in the max heap
                 // add nodes in the search front to check next time
 //                System.out.println("Reached in leaf node! line 354");
