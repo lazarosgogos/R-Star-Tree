@@ -19,6 +19,8 @@ public class Point {
         this.y = y;
         this.xs = (int) x;
         this.ys = (int) y;
+        xStr = Double.toString(x);
+        yStr = Double.toString(y);
     }
 
     public Point(long id, String name, String xStr, String yStr) {
