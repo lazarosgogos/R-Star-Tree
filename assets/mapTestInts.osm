@@ -5,7 +5,7 @@
   </node>
 
   <node id="2" lat="2.0" lon="1.0">
-    <tag k="name" v="Point (2,4)"/>
+    <tag k="name" v="Point (2,1)"/>
   </node>
 
   <node id="3" lat="8.0" lon="3.0">
@@ -33,7 +33,7 @@
   </node>
 
   <node id="9" lat="2.0" lon="5.0">
-    <tag k="name" v="Point (7,5)"/>
+    <tag k="name" v="Point (2,5)"/>
   </node>
 
   <node id="10" lat="10.0" lon="1.0">

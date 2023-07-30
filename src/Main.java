@@ -18,7 +18,7 @@ public class Main {
 //            System.out.println(point);
 
         //725 records
-        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
+        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTestInts.osm");
 
 //        for (PointEntry pe : entries){
 //            System.out.println(pe.getPoint());
@@ -152,8 +152,7 @@ public class Main {
         //dfs(root,0);
 //        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
         Point p = new Point(5, 5);
-        PointEntry pe = new PointEntry(p, "id1");
-        knnQuery(root, pe.getPoint(), 3);
+        knnQuery(root, p, 4);
 
       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
@@ -305,7 +304,6 @@ public class Main {
         // suddenly, we have a maximum distance!
 
         // TODO this _knnQuery method does NOT work yet
-        HashSet<RectangleEntry> heapedRectangleEntries = new HashSet<>();
 //        boolean addedSomethingNew = false;
         ArrayList<Node> searchFront = new ArrayList<>();
         searchFront.add(root);
@@ -344,52 +342,54 @@ public class Main {
             } else { // if we're dealing with a leaf node
                 LeafNode leaf = (LeafNode) node;
                 addedSomethingNew = false;
-                if (maxHeap.isEmpty()) { // if we have no point yet
+                /*if (maxHeap.isEmpty()) { // if we have no point yet
                     PointEntry p = leaf.getPointEntries().get(0);
-                    maxHeap.add(new PointPointPair(center, leaf.getPointEntries().get(0).getPoint()));
-                    heapedRectangleEntries.add(p.getContainer().parent);
+                    PointPointPair pair = new PointPointPair(center, leaf.getPointEntries().get(0).getPoint());
+                    maxHeap.add(pair);
+                    System.out.println("adding  due to  EMPTY heap " + pair);
                     addedSomethingNew = true;
-                }
+                }*/
                 if (maxHeap.size() < k) {
                     for (PointEntry pointEntry : leaf.getPointEntries()) {
                         // iterate over all point entries. find the ones that have distance LESS THAN the
                         // head of the max heap
                         PointPointPair cp = new PointPointPair(center, pointEntry.getPoint());
-                        if (maxHeap.peek().distance() < cp.distance() && maxHeap.size() < k) {
+                        if (/*maxHeap.peek().distance() > cp.distance() &&*/ maxHeap.size() < k && !maxHeap.contains(cp)) {
                             maxHeap.add(cp);
+                            System.out.println("added due to hallf empty heap " + cp);
                             addedSomethingNew = true;
                         }
                     }
                 } /*else*/
-                {
+
                     // if the max heap is full, and we have found another point
                     // of which its distance is LESS THAN the head of the  max heap,
                     // replace the head with that point
                     for (PointEntry pointEntry : leaf.getPointEntries()) {
                         PointPointPair cp = new PointPointPair(center, pointEntry.getPoint());
-                        if (maxHeap.peek().distance() < cp.distance()) {
-                            maxHeap.poll();
+                        if (maxHeap.peek().distance() > cp.distance() && !maxHeap.contains(cp)) {
+                            PointPointPair par = maxHeap.poll();
+                            System.out.println("Polled " + par);
                             maxHeap.add(cp);
+                            System.out.println("added after polling: " + cp);
                             addedSomethingNew = true;
                         }
                     }
-                }
+
                 // now after all these ifs, there is certainly something in the max heap
                 // add nodes in the search front to check next time
 //                System.out.println("Reached in leaf node! line 354");
                 if (!root.leaf) {
                     for (RectangleEntry rectangleEntry : ((NoLeafNode) root).getRectangleEntries()) {
-                        if (center.distance(rectangleEntry) < maxHeap.peek().distance()) {
+                        if (center.distance(rectangleEntry) < maxHeap.peek().distance() && !searchFront.contains(rectangleEntry.getChild())) {
                             searchFront.add(rectangleEntry.getChild());
                         }
                     }
                 }
 
             }
-            maxHeap.forEach(p -> System.out.println(p.toString()));
-            System.out.println();
-//            if (!addedSomethingNew)
-//                break;
+            if (!addedSomethingNew)
+                break;
         }
 
 
