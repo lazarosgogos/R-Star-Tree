@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -5,24 +6,54 @@ import java.util.Objects;
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
 public class Point {
-    double x;
-    double y;
-    String xStr;
-    String yStr;
-    int xs;
-    int ys;
-    String name;
-    long id;
+/*    private double x;
+    private double y;
+    private String xStr;
+    private String yStr;
+    private int xs;
+    private int ys; */
+    private String name;
+    private long id;
 
-    public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
-        this.xs = (int) x;
-        this.ys = (int) y;
-        xStr = Double.toString(x);
-        yStr = Double.toString(y);
+    ArrayList<Double> coords;
+
+    public ArrayList<Integer> getCoordsIntegers() {
+        return coordsIntegers;
     }
 
+    public ArrayList<String> getCoordsStrings() {
+        return coordsStrings;
+    }
+
+    private ArrayList<Integer> coordsIntegers;
+    private ArrayList<String> coordsStrings;
+
+    public Point(double... A) {
+        this.coordsStrings = new ArrayList<>();
+        this.coordsIntegers = new ArrayList<>();
+        this.coords = new ArrayList<>();
+
+        this.coords.add(A[0]);
+        this.coords.add(A[1]);
+        this.coordsIntegers.add((int) A[0]);
+        this.coordsIntegers.add((int) A[1]);
+        this.coordsStrings.add(Double.toString(A[0]));
+        this.coordsStrings.add(Double.toString(A[1]));
+    }
+    public Point(long id, String name, ArrayList<String> coords){
+        this.coordsStrings = new ArrayList<>();
+        this.coordsIntegers = new ArrayList<>();
+        this.coords = new ArrayList<>();
+
+        this.coordsStrings.addAll(coords);
+        for (String coord : coordsStrings) {
+            this.coords.add(Double.parseDouble(coord));
+            this.coordsIntegers.add(Integer.parseInt(coord.replace(".", "")));
+        }
+        this.name = name;
+        this.id = id;
+    }
+/*
     public Point(long id, String name, String xStr, String yStr) {
         this.xStr = xStr;
         this.yStr = yStr;
@@ -32,19 +63,19 @@ public class Point {
         this.ys = Integer.parseInt(yStr.replace(".", ""));
         this.name = name;
         this.id = id;
-    }
+    }*/
 
     @Override
     public String toString() {
-        return "(" + xStr + ", " + yStr + ") " + name;
+        return "(" + coordsStrings.get(0) + ", " + coordsStrings.get(1) + ") " + name;
     }
 
     public double getX() {
-        return x;
+        return coords.get(0);
     }
 
     public double getY() {
-        return y;
+        return coords.get(0);
     }
 
 
@@ -81,6 +112,7 @@ public class Point {
     public double distance(RectangleEntry rect) {
         return this.distance(rect.getRectangle());
     }
+
     /**
      * Calculate the distance of a point from a given rectangle
      *
@@ -116,10 +148,13 @@ public class Point {
         return dist;
     }
 
-
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, id);
+        return Objects.hash(this.getX(), this.getY(), id);
     }
 
+
+    public ArrayList<Double> getCoords() {
+        return coords;
+    }
 }

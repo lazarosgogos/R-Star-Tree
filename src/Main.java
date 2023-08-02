@@ -151,7 +151,11 @@ public class Main {
 
         //dfs(root,0);
 //        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
+
+        // KNN Query
         Point p = new Point(5, 5);
+        int k = 5;
+        System.out.println("Knn query for size: " + k);
         KNNQuery.knnQuery(root, p, 5);
 
       /* System.out.println("Now running range query");

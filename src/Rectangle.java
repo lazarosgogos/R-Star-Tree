@@ -11,6 +11,9 @@ public class Rectangle {
     double xEnd; //up right corner
     double yEnd; //up right corner
 
+    private Point start; // down left corner
+    private Point end; // upper right corner
+
     public Rectangle(double xStart, double yStart, double xEnd, double yEnd) {
         this.xStart = xStart;
         this.yStart = yStart;

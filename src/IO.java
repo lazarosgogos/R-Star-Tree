@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /** Class that handles input and output functions. Includes loading data to memory,
@@ -60,11 +61,14 @@ public class IO {
                     //pairnoyme ta stoixeia toy points
                     String longitude = eElement.getAttribute("lon");
                     String latitude = eElement.getAttribute("lat");
+                    ArrayList<String> strings = new ArrayList<>();
+                    strings.add(longitude);
+                    strings.add(latitude);
                     long id = Long.parseLong(eElement.getAttribute("id"));
                     String name = prosoxi.getAttribute("v");
 
                     //dimioyrgoume data record me ta stoixeia
-                    Point r = new Point(id, name, latitude, longitude);
+                    Point r = new Point(id, name, strings);
 
                     // Stelnoume to DataRecord ston handler
                     new DatafileHandler(r);

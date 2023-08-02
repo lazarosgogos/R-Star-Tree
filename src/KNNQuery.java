@@ -85,7 +85,7 @@ public class KNNQuery {
         PriorityQueue<PointPointPair> maxHeap = new PriorityQueue<>(k, new PointComparator());
 //        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
         maxHeap = _knnQuery(root, center, k, maxHeap);
-        System.out.println("Knn query for size: " + k);
+//        System.out.println("Knn query for size: " + k);
         maxHeap.forEach(p -> System.out.println(p.toString()));
         return maxHeap;
     }
