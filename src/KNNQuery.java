@@ -8,8 +8,8 @@ public class KNNQuery {
         @Override
         public int compare(PointPointPair pair1, PointPointPair pair2) {
 
-            double d1 = pair1.distance(); // distance of p1 from start of axes
-            double d2 = pair2.distance(); // distance of p2 from start of axes
+            double d1 = pair1.distance(); // distance of two points in pair 1
+            double d2 = pair2.distance(); // distance of two points in pair 2
             return Double.compare(d2, d1);
         }
 

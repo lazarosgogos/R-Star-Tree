@@ -26,6 +26,8 @@ public class Rectangle {
         this.yStart = yStart;
         this.xEnd = xEnd;
         this.yEnd = yEnd;
+        this.start = new Point(xStart, yStart);
+        this.end = new Point(xEnd, yEnd);
     }
 
 
