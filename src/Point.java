@@ -6,12 +6,12 @@ import java.util.Objects;
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
 public class Point {
-/*    private double x;
-    private double y;
-    private String xStr;
-    private String yStr;
-    private int xs;
-    private int ys; */
+    /*    private double x;
+        private double y;
+        private String xStr;
+        private String yStr;
+        private int xs;
+        private int ys; */
     private String name;
     private long id;
 
@@ -32,15 +32,33 @@ public class Point {
         this.coordsStrings = new ArrayList<>();
         this.coordsIntegers = new ArrayList<>();
         this.coords = new ArrayList<>();
-
-        this.coords.add(A[0]);
-        this.coords.add(A[1]);
-        this.coordsIntegers.add((int) A[0]);
-        this.coordsIntegers.add((int) A[1]);
-        this.coordsStrings.add(Double.toString(A[0]));
-        this.coordsStrings.add(Double.toString(A[1]));
+        for (double v : A) {
+            this.coords.add(v);
+            this.coordsIntegers.add((int) v);
+            this.coordsStrings.add(Double.toString(v));
+        }
+//        this.coordsIntegers.add((int) A[0]);
+//        this.coordsIntegers.add((int) A[1]);
+//        this.coordsStrings.add(Double.toString(A[0]));
+//        this.coordsStrings.add(Double.toString(A[1]));
     }
-    public Point(long id, String name, ArrayList<String> coords){
+
+    public Point(ArrayList<Double> coords) {
+        this.coordsStrings = new ArrayList<>();
+        this.coordsIntegers = new ArrayList<>();
+        this.coords = new ArrayList<>();
+        for (Double v : coords) {
+            this.coords.add(v);
+            this.coordsIntegers.add((int) ((double) v));
+            this.coordsStrings.add(Double.toString(v));
+        }
+//        this.coordsIntegers.add((int) A[0]);
+//        this.coordsIntegers.add((int) A[1]);
+//        this.coordsStrings.add(Double.toString(A[0]));
+//        this.coordsStrings.add(Double.toString(A[1]));
+    }
+
+    public Point(long id, String name, ArrayList<String> coords) {
         this.coordsStrings = new ArrayList<>();
         this.coordsIntegers = new ArrayList<>();
         this.coords = new ArrayList<>();
@@ -67,17 +85,30 @@ public class Point {
 
     @Override
     public String toString() {
-        return "(" + coordsStrings.get(0) + ", " + coordsStrings.get(1) + ") " + name;
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        for (String coordsString : this.coordsStrings) {
+            sb.append(coordsString);
+            sb.append(',');
+        }
+        int pos = sb.lastIndexOf(",");
+        sb.substring(0, pos);
+        sb.append(')');
+        sb.append(' ');
+        sb.append(name);
+        return sb.toString();
+//        return "(" + coordsStrings.get(0) + ", " + coordsStrings.get(1) + ") " + name;
     }
 
+    @Deprecated
     public double getX() {
         return coords.get(0);
     }
 
+    @Deprecated
     public double getY() {
-        return coords.get(0);
+        return coords.get(1);
     }
-
 
 
     @Override
@@ -85,22 +116,40 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point other = (Point) o;
-        return Double.compare(this.getX(), other.getX()) == 0 && Double.compare(this.getY(), other.getY()) == 0;
+        boolean res = true;
+        for (int i = 0; i < this.coords.size(); i++) {
+            // this.coords.size() is EQUAL TO other.getCoords().size()
+            res &= Double.compare(this.coords.get(i), other.getCoords().get(i)) == 0;
+        }
+        return res;
+//        return Double.compare(this.getX(), other.getX()) == 0 && Double.compare(this.getY(), other.getY()) == 0;
     }
 
-    public float distance(PointEntry other) {
-        return (float) Math.sqrt(pseudoDistance(other.getPoint()));
+    public double distance(PointEntry other) {
+        return Math.sqrt(pseudoDistance(other.getPoint()));
     }
 
-    public float distance(Point other) {
-        return (float) Math.sqrt(pseudoDistance(other));
+    public double distance(Point other) {
+        return Math.sqrt(pseudoDistance(other));
     }
 
-    public float pseudoDistance(Point other) {
+    public double pseudoDistance(Point other) {
+        double sum = 0;
+        ArrayList<Double> doubles = this.coords;
+        for (int i = 0; i < doubles.size(); i++) {
+            Double coord1 = doubles.get(i);
+            Double coord2 = other.getCoords().get(i);
+            sum += Math.pow(coord1 - coord2, 2);
+            // to get the actual distance, you must find the sqrt of this number
+        }
+        // But, it's faster not to calculate the sqrt, so if it's not needed, it shall not be calculated
+        return sum;
+        /*
         float d1 = (float) (Math.pow(this.getX() - other.getX(), 2));
         float d2 = (float) (Math.pow(this.getY() - other.getY(), 2));
         return d1 + d2; // to get the actual distance, you must find the sqrt of this number
         // But, it's faster not to calculate the sqrt, so if it's not needed, it shall not be calculated
+        */
     }
 
     /**
@@ -127,26 +176,31 @@ public class Point {
         // one is perpendicular to the closest edge of the rectangle
         // the other is perpendicular to the rectangle's nearest right-angle
         // return the min_dist
-        double dist = -1; // set initial value to something impossible (distance cannot be negative)
+
+        int n = this.getCoords().size(); // n is the number of dimensions we're working with
+//        ArrayList<Double> linesOfBoundingBoxInEachAxis = rect.getLinesOfRectangle();
+
         if (rect.contains(this))
             return 0;
 
-        // find the closest edge - X axis
-        double xDist = Math.min(Math.abs(this.getX() - rect.xStart), Math.abs(this.getX() - rect.xEnd));
-        double yDist = Math.min(Math.abs(this.getY() - rect.yStart), Math.abs(this.getY() - rect.yEnd));
+        ArrayList<Double> closest = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) { // for each side
+            double k = this.getCoords().get(i);
+            double k2 = rect.getStartPoint().getCoords().get(i);
+            double k1 = rect.getEndPoint().getCoords().get(i);
+            // three possibilites
+            if (k < k1)
+                closest.add(k1);
+            else if (k >= k1 && k < k2)
+                closest.add(k);
+            else // if k >= k2
+                closest.add(k2);
+        }
 
-        // if this point is inside the rectangle, x-axis-wise
-        if (this.getX() >= rect.xStart && this.getX() <= rect.xEnd)
-            dist = yDist; // we're interested in the y distance
-        else if (this.getY() > rect.yStart && this.getY() <= rect.yEnd)
-            dist = xDist; // else we're insterested in the x distance
-        else
-            // if however this point is outside both the x and y axes of the rectangle
-            // we should find the distance between this point and the right-angle
-            // which right-angle? the one that was determined when xDist and yDist was calculated
-            dist = (float) Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
-        return dist;
+        Point other = new Point(closest);
+        return this.distance(other);
     }
+
 
     @Override
     public int hashCode() {
