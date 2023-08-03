@@ -38,11 +38,13 @@ public class KNNQuery {
         }
 
         public double distance() {
+            /* Legacy code
             double x2 = point2.getX();
             double x1 = point1.getX();
             double y2 = point2.getY();
             double y1 = point1.getY();
-            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));*/
+            return point1.distance(point2);
         }
 
         @Override
