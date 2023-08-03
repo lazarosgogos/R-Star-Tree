@@ -92,7 +92,9 @@ public class Point {
             sb.append(',');
         }
         int pos = sb.lastIndexOf(",");
-        sb.substring(0, pos);
+        String temp = sb.substring(0, pos);
+        sb = new StringBuilder();
+        sb.append(temp);
         sb.append(')');
         sb.append(' ');
         sb.append(name);

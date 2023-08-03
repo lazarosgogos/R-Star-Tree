@@ -8,10 +8,10 @@ class Pair {
     Entry e;
     double f;
 
-    Pair(PointEntry e, double f) {
-        this.e = e;
-        this.f = f;
-    }
+//    Pair(PointEntry e, double f) {
+//        this.e = e;
+//        this.f = f;
+//    }
 
     Pair(RectangleEntry e, double f) {
         this.e = e;
@@ -40,12 +40,16 @@ public class BBS {
 
     public static double mindist(RectangleEntry re) {
         Rectangle mbr = re.getRectangle();
-        return mbr.xStart + mbr.yStart;
+        double result = 0;
+        for( double coord : mbr.getStartPoint().getCoords()){
+            result += coord;
+        }
+        return result;
     }
-
-    public static double mindist(PointEntry pe) {
-        return pe.getPoint().getX() + pe.getPoint().getY();
-    }
+//
+//    public static double mindist(PointEntry pe) {
+//        return pe.getPoint().getX() + pe.getPoint().getY();
+//    }
 
     public static HashSet<PointEntry> runSkyline(Node root) {
         HashSet<PointEntry> set = new HashSet<>();
@@ -67,9 +71,7 @@ public class BBS {
                 }
             } else {
                 HashSet<PointEntry> temp = findNonDominatedPoints(((LeafNode) current).getPointEntries());
-                for (PointEntry pe : temp) {
-                    set.add(pe);
-                }
+                set.addAll(temp);
             }
 
         }
@@ -84,14 +86,18 @@ public class BBS {
         for (PointEntry pe : set) {
             tempPoint1 = pe.getPoint();
             Rectangle tempRectangle = current.parent.getRectangle();
-            tempPoint2 = new Point(tempRectangle.xStart, tempRectangle.yStart);
+            tempPoint2 = new Point(tempRectangle.getStartPoint().getCoords().get(0), tempRectangle.getStartPoint().getCoords().get(1)); //Todo isos xreiazetai kana flatmap
             if (isDominated(tempPoint1, tempPoint2)) return false;
         }
         return true;
     }
 
     public static boolean isDominated(Point p1, Point p2) {
-        return (p1.getX() < p2.getX() && p1.getY() < p2.getY()) || (p1.getX() == p2.getX() && p1.getY() < p2.getY()) || (p1.getX() < p2.getX() && p1.getY() == p2.getY());
+        double x1 = p1.getCoords().get(0);
+        double y1 = p1.getCoords().get(1);
+        double x2 = p2.getCoords().get(0);
+        double y2 = p2.getCoords().get(1);
+        return (x1 < x2 && y1 < y2 || (x1 == x2 && y1 < y2) || (x1 < x2 && y1 == y2));
     }
 
     // complexity O(M^2)

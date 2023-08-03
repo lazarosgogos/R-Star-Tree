@@ -62,8 +62,8 @@ public class IO {
                     String longitude = eElement.getAttribute("lon");
                     String latitude = eElement.getAttribute("lat");
                     ArrayList<String> strings = new ArrayList<>();
-                    strings.add(longitude);
                     strings.add(latitude);
+                    strings.add(longitude);
                     long id = Long.parseLong(eElement.getAttribute("id"));
                     String name = prosoxi.getAttribute("v");
 

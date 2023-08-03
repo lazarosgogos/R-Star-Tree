@@ -18,7 +18,7 @@ public class Main {
 //            System.out.println(point);
 
         //725 records
-        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTestInts.osm");
+        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
 
 //        for (PointEntry pe : entries){
 //            System.out.println(pe.getPoint());
@@ -150,13 +150,13 @@ public class Main {
         }
 
         //dfs(root,0);
-//        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
+        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query
-        Point p = new Point(5, 5);
-        int k = 5;
-        System.out.println("Knn query for size: " + k);
-        KNNQuery.knnQuery(root, p, 5);
+//        Point p = new Point(5, 5);
+//        int k = 5;
+//        System.out.println("Knn query for size: " + k);
+//        KNNQuery.knnQuery(root, p, 5);
 
       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
