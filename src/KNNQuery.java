@@ -5,8 +5,6 @@ import java.util.PriorityQueue;
 
 public class KNNQuery {
     private static class PointComparator implements Comparator<PointPointPair> {
-
-
         @Override
         public int compare(PointPointPair pair1, PointPointPair pair2) {
 
@@ -101,7 +99,7 @@ public class KNNQuery {
      * @param k      The number of nearest neighbors that should be found
      * @return       A max heap with all the nearest neighbors
      */
-    public static PriorityQueue<PointPointPair> _knnQuery(final Node root, final Point center,
+    private static PriorityQueue<PointPointPair> _knnQuery(final Node root, final Point center,
                                                           final int k, PriorityQueue<PointPointPair> maxHeap) {
         // if node is noleaf
         // find the closest rectangle and add it to the search front
