@@ -7,28 +7,28 @@ import java.util.ArrayList;
  * The only info we need about its spacing are the left-down and the top-right corners.
  */
 public class Rectangle {
-    @Deprecated
-    double xStart; //down left corner
-    @Deprecated
-    double yStart; //down left corner
-    @Deprecated
-    double xEnd; //up right corner
-    @Deprecated
-    double yEnd; //up right corner
-    @Deprecated
+//    @Deprecated
+//    double xStart; //down left corner
+//    @Deprecated
+//    double yStart; //down left corner
+//    @Deprecated
+//    double xEnd; //up right corner
+//    @Deprecated
+//    double yEnd; //up right corner
+//    @Deprecated
 
     private Point start; // down left corner
     private Point end; // upper right corner
 
-    @Deprecated
-    public Rectangle(double xStart, double yStart, double xEnd, double yEnd) {
-        this.xStart = xStart;
-        this.yStart = yStart;
-        this.xEnd = xEnd;
-        this.yEnd = yEnd;
-        this.start = new Point(xStart, yStart);
-        this.end = new Point(xEnd, yEnd);
-    }
+//    @Deprecated
+//    public Rectangle(double xStart, double yStart, double xEnd, double yEnd) {
+//        this.xStart = xStart;
+//        this.yStart = yStart;
+//        this.xEnd = xEnd;
+//        this.yEnd = yEnd;
+//        this.start = new Point(xStart, yStart);
+//        this.end = new Point(xEnd, yEnd);
+//    }
 
 
     /**
@@ -56,14 +56,36 @@ public class Rectangle {
 
     @Override
     public String toString() {
-//        int numberOfDecimalPlaces = 7;
-//
-//        DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(numberOfDecimalPlaces));
-//        String formattedxStart = decimalFormat.format(xStart);
-//        String formattedyStart = decimalFormat.format(yStart);
-//        String formattedxEnd = decimalFormat.format(xEnd);
-//        String formattedyEnd = decimalFormat.format(yEnd);
-        return "(" + xStart + ", " + yStart + "), (" + xEnd + ", " + yEnd + ")";
+
+        StringBuilder start = new StringBuilder();
+        start.append("(");
+        for (double coord : getStartPoint().getCoords()){
+            start.append(coord);
+            start.append(", ");
+        }
+        int pos = start.lastIndexOf(", ");
+        String temp = start.substring(0, pos);
+        start = new StringBuilder();
+        start.append(temp);
+        start.append("), ");
+
+        StringBuilder end = new StringBuilder();
+        end.append("(");
+        for (double coord : getEndPoint().getCoords()){
+            end.append(coord);
+            end.append(", ");
+        }
+        pos = end.lastIndexOf(", ");
+        temp = end.substring(0, pos);
+        end = new StringBuilder();
+        end.append(temp);
+        end.append(")");
+
+        start.append(end);
+
+        return start.toString();
+
+        //return "(" + xStart + ", " + yStart + "), (" + xEnd + ", " + yEnd + ")";
     }
 
 

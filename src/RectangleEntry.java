@@ -11,6 +11,7 @@ public class RectangleEntry extends Entry {
 
     /**
      * Find min element in a list
+     *
      * @param list of elements
      * @return min
      */
@@ -28,6 +29,7 @@ public class RectangleEntry extends Entry {
 
     /**
      * Find max element in a list
+     *
      * @param list of elements
      * @return max
      */
@@ -47,47 +49,109 @@ public class RectangleEntry extends Entry {
         this.child = child;
         this.leaf = true;
 
-        ArrayList<Double> xes = new ArrayList<>();
-        ArrayList<Double> yes = new ArrayList<>();
+        // list of lists with coordinates
+        ArrayList<ArrayList<Double>> es = new ArrayList<>();
+//
+//        ArrayList<Double> xes = new ArrayList<>();
+//        ArrayList<Double> yes = new ArrayList<>();
+
+        int number_of_coords = child.getPointEntries().get(0).getPoint().getCoords().size();
+
+        // initialize the list of lists with empty lists
+        for (int i = 0; i < number_of_coords; i++) {
+            es.add(new ArrayList<>());
+        }
 
         for (PointEntry pointEntry : child.getPointEntries()) {
             Point temp = pointEntry.getPoint();
-            xes.add(temp.getX());
-            yes.add(temp.getY());
+            int counter = 0;
+            for (double coord : temp.getCoords()) {
+                es.get(counter).add(coord);
+                counter++;
+            }
+//            xes.add(temp.getX());
+//            yes.add(temp.getY());
+
         }
 
-        double minX = RectangleEntry.min(xes);
-        double maxX = RectangleEntry.max(xes);
+        ArrayList<Double> min = new ArrayList<>();
+        ArrayList<Double> max = new ArrayList<>();
 
-        double minY = RectangleEntry.min(yes);
-        double maxY = RectangleEntry.max(yes);
+        for (int i = 0; i < number_of_coords; i++) {
+            min.add(RectangleEntry.min(es.get(i)));
+            max.add(RectangleEntry.max(es.get(i)));
+        }
 
-        rectangle = new Rectangle(minX, minY, maxX, maxY);
+//        double minX = RectangleEntry.min(es.get(0));
+//        double maxX = RectangleEntry.max(es.get(0));
+//
+//        double minY = RectangleEntry.min(es.get(1));
+//        double maxY = RectangleEntry.max(es.get(1));
+
+        rectangle = new Rectangle(new Point(min), new Point(max));
+        //rectangle = new Rectangle(minX, minY, maxX, maxY);
     }
 
     public RectangleEntry(NoLeafNode child) {
         this.child = child;
         this.leaf = false;
 
-        ArrayList<Double> xStarts = new ArrayList<>();
-        ArrayList<Double> yStarts = new ArrayList<>();
-        ArrayList<Double> xEnds = new ArrayList<>();
-        ArrayList<Double> yEnds = new ArrayList<>();
+        // list of lists
+        // each list represents a coordinate
+        // and has a list with all values for this coordinate
+        ArrayList<ArrayList<Double>> starts = new ArrayList<>();
+
+        // list of lists
+        ArrayList<ArrayList<Double>> ends = new ArrayList<>();
+
+        int n = child.getRectangleEntries().get(0).getRectangle().getStartPoint().getCoords().size();
+
+        for (int i=0; i<n; i++){
+            starts.add(new ArrayList<>());
+            ends.add(new ArrayList<>());
+        }
+
+//        ArrayList<Double> xStarts = new ArrayList<>();
+//        ArrayList<Double> yStarts = new ArrayList<>();
+//        ArrayList<Double> xEnds = new ArrayList<>();
+//        ArrayList<Double> yEnds = new ArrayList<>();
 
         for (RectangleEntry rectangleEntry : child.getRectangleEntries()) {
             Rectangle temp = rectangleEntry.getRectangle();
-            xStarts.add(temp.xStart);
-            yStarts.add(temp.yStart);
-            xEnds.add(temp.xEnd);
-            yEnds.add(temp.yEnd);
+
+            int counter = 0;
+            for (double coord : temp.getStartPoint().getCoords()) {
+                starts.get(counter).add(coord);
+                counter++;
+            }
+
+            counter = 0;
+            for (double coord : temp.getEndPoint().getCoords()) {
+                ends.get(counter).add(coord);
+                counter++;
+            }
+//            xStarts.add(temp.xStart);
+//            yStarts.add(temp.yStart);
+//            xEnds.add(temp.xEnd);
+//            yEnds.add(temp.yEnd);
         }
 
-        double minX = RectangleEntry.min(xStarts);
-        double minY = RectangleEntry.min(yStarts);
-        double maxX = RectangleEntry.max(xEnds);
-        double maxY = RectangleEntry.max(yEnds);
+        ArrayList<Double> min = new ArrayList<>();
+        ArrayList<Double> max = new ArrayList<>();
 
-        rectangle = new Rectangle(minX, minY, maxX, maxY);
+        for (int i = 0; i < n; i++) {
+            min.add(RectangleEntry.min(starts.get(i)));
+            max.add(RectangleEntry.max(ends.get(i)));
+        }
+
+        rectangle = new Rectangle(new Point(min), new Point(max));
+
+//        double minX = RectangleEntry.min(xStarts);
+//        double minY = RectangleEntry.min(yStarts);
+//        double maxX = RectangleEntry.max(xEnds);
+//        double maxY = RectangleEntry.max(yEnds);
+//
+//        rectangle = new Rectangle(minX, minY, maxX, maxY);
     }
 
     public Rectangle getRectangle() {
