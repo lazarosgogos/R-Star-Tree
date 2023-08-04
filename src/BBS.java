@@ -41,7 +41,7 @@ public class BBS {
     public static double mindist(RectangleEntry re) {
         Rectangle mbr = re.getRectangle();
         double result = 0;
-        for( double coord : mbr.getStartPoint().getCoords()){
+        for (double coord : mbr.getStartPoint().getCoords()) {
             result += coord;
         }
         return result;
@@ -86,18 +86,29 @@ public class BBS {
         for (PointEntry pe : set) {
             tempPoint1 = pe.getPoint();
             Rectangle tempRectangle = current.parent.getRectangle();
-            tempPoint2 = new Point(tempRectangle.getStartPoint().getCoords().get(0), tempRectangle.getStartPoint().getCoords().get(1)); //Todo isos xreiazetai kana flatmap
+            tempPoint2 = new Point(tempRectangle.getStartPoint().getCoords());
             if (isDominated(tempPoint1, tempPoint2)) return false;
         }
         return true;
     }
 
     public static boolean isDominated(Point p1, Point p2) {
-        double x1 = p1.getCoords().get(0);
-        double y1 = p1.getCoords().get(1);
-        double x2 = p2.getCoords().get(0);
-        double y2 = p2.getCoords().get(1);
-        return (x1 < x2 && y1 < y2 || (x1 == x2 && y1 < y2) || (x1 < x2 && y1 == y2));
+        boolean out = true;
+        boolean in = false;
+
+        int n = p1.getCoords().size();
+
+        for (int i = 0; i < n; i++) {
+            out &= p1.getCoords().get(i) <= p2.getCoords().get(i);
+            in |= p1.getCoords().get(i) < p2.getCoords().get(i);
+        }
+        return out && in;
+
+//        double x1 = p1.getCoords().get(0);
+//        double y1 = p1.getCoords().get(1);
+//        double x2 = p2.getCoords().get(0);
+//        double y2 = p2.getCoords().get(1);
+//        return (x1 < x2 && y1 < y2 || (x1 == x2 && y1 < y2) || (x1 < x2 && y1 == y2));
     }
 
     // complexity O(M^2)

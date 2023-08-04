@@ -149,8 +149,8 @@ public class Main {
             noLeafNode.setRoot(true);
         }
 
-        dfs(root,0);
-        //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
+        //dfs(root,0);
+        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query
 //        Point p = new Point(5, 5);
