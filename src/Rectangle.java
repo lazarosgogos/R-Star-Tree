@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This is the class of the Minimum Bounding Rectangle (MBR).
  * The only info we need about its spacing are the left-down and the top-right corners.
  */
-public class Rectangle {
+public class Rectangle implements java.io.Serializable {
 //    @Deprecated
 //    double xStart; //down left corner
 //    @Deprecated
@@ -33,10 +33,11 @@ public class Rectangle {
 
     /**
      * Given two points create a rectangle/bounding box, no matter if the start and end point are in the proper order
+     *
      * @param start first point of the rectangle
-     * @param end second point of the rectangle
+     * @param end   second point of the rectangle
      */
-    public Rectangle(Point start, Point end){
+    public Rectangle(Point start, Point end) {
         // WRONG!
 //        this.start = new Point();
 //        this.end = new Point();
@@ -59,7 +60,7 @@ public class Rectangle {
 
         StringBuilder start = new StringBuilder();
         start.append("(");
-        for (double coord : getStartPoint().getCoords()){
+        for (double coord : getStartPoint().getCoords()) {
             start.append(coord);
             start.append(", ");
         }
@@ -71,7 +72,7 @@ public class Rectangle {
 
         StringBuilder end = new StringBuilder();
         end.append("(");
-        for (double coord : getEndPoint().getCoords()){
+        for (double coord : getEndPoint().getCoords()) {
             end.append(coord);
             end.append(", ");
         }
@@ -149,7 +150,8 @@ public class Rectangle {
 //                return true;
 //        return false;
     }
-    public Point getCenter(){
+
+    public Point getCenter() {
         int n = this.getStartPoint().getCoords().size();
         ArrayList<Double> centerCoords = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {

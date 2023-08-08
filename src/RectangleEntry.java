@@ -51,9 +51,6 @@ public class RectangleEntry extends Entry {
 
         // list of lists with coordinates
         ArrayList<ArrayList<Double>> es = new ArrayList<>();
-//
-//        ArrayList<Double> xes = new ArrayList<>();
-//        ArrayList<Double> yes = new ArrayList<>();
 
         int number_of_coords = child.getPointEntries().get(0).getPoint().getCoords().size();
 
@@ -69,8 +66,6 @@ public class RectangleEntry extends Entry {
                 es.get(counter).add(coord);
                 counter++;
             }
-//            xes.add(temp.getX());
-//            yes.add(temp.getY());
 
         }
 
@@ -82,14 +77,7 @@ public class RectangleEntry extends Entry {
             max.add(RectangleEntry.max(es.get(i)));
         }
 
-//        double minX = RectangleEntry.min(es.get(0));
-//        double maxX = RectangleEntry.max(es.get(0));
-//
-//        double minY = RectangleEntry.min(es.get(1));
-//        double maxY = RectangleEntry.max(es.get(1));
-
         rectangle = new Rectangle(new Point(min), new Point(max));
-        //rectangle = new Rectangle(minX, minY, maxX, maxY);
     }
 
     public RectangleEntry(NoLeafNode child) {
@@ -106,15 +94,10 @@ public class RectangleEntry extends Entry {
 
         int n = child.getRectangleEntries().get(0).getRectangle().getStartPoint().getCoords().size();
 
-        for (int i=0; i<n; i++){
+        for (int i = 0; i < n; i++) {
             starts.add(new ArrayList<>());
             ends.add(new ArrayList<>());
         }
-
-//        ArrayList<Double> xStarts = new ArrayList<>();
-//        ArrayList<Double> yStarts = new ArrayList<>();
-//        ArrayList<Double> xEnds = new ArrayList<>();
-//        ArrayList<Double> yEnds = new ArrayList<>();
 
         for (RectangleEntry rectangleEntry : child.getRectangleEntries()) {
             Rectangle temp = rectangleEntry.getRectangle();
@@ -130,10 +113,6 @@ public class RectangleEntry extends Entry {
                 ends.get(counter).add(coord);
                 counter++;
             }
-//            xStarts.add(temp.xStart);
-//            yStarts.add(temp.yStart);
-//            xEnds.add(temp.xEnd);
-//            yEnds.add(temp.yEnd);
         }
 
         ArrayList<Double> min = new ArrayList<>();
@@ -145,13 +124,6 @@ public class RectangleEntry extends Entry {
         }
 
         rectangle = new Rectangle(new Point(min), new Point(max));
-
-//        double minX = RectangleEntry.min(xStarts);
-//        double minY = RectangleEntry.min(yStarts);
-//        double maxX = RectangleEntry.max(xEnds);
-//        double maxY = RectangleEntry.max(yEnds);
-//
-//        rectangle = new Rectangle(minX, minY, maxX, maxY);
     }
 
     public Rectangle getRectangle() {

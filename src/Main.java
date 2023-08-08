@@ -51,4 +51,27 @@ public class Main {
             System.out.println("End Leaf Node");
         }
     }
+
+    public static ArrayList<Node> inorder(Node root){
+        ArrayList<Node> result = new ArrayList<>();
+
+        if (!root.leaf) {
+            LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
+            for (RectangleEntry rectangleEntry : rectangles) {
+                inorder(rectangleEntry.getChild());
+            }
+        } else {
+            for (PointEntry pointEntry : ((LeafNode) root).getPointEntries()) {
+                System.out.println(pointEntry.getPoint());
+            }
+        }
+
+        return result;
+    }
+
+    public static ArrayList<Node> preorder(Node root){
+        ArrayList<Node> result = new ArrayList<>();
+
+        return result;
+    }
 }

@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
-public class Point {
+public class Point implements java.io.Serializable {
     /*    private double x;
         private double y;
         private String xStr;
