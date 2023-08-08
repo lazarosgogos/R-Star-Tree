@@ -16,6 +16,8 @@ public class Main {
 
 //        //2276 total
 
+        String inputFile = "assets/mapCenter.osm";
+
         Node root = new Node();
 
         while (true) {
@@ -23,22 +25,23 @@ public class Main {
             System.out.println("type 2 if you want to create a new index with bulk loading");
             System.out.println("type 3 if you want to create a new index");
             Scanner input = new Scanner(System.in);
-            if ((input.nextInt() == 1)) {
+            int answer = input.nextInt();
+            if (answer == 1) {
                 root = IndexfileDemo.loadFromFile();
                 if (root == null) {
                     System.out.println("There isn't a saved index!");
                     continue;
                 }
                 break;
-            } else if (input.nextInt() == 2) {
-                LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
+            } else if (answer == 2) {
+                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
                 int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
                 root = BulkLoading.bulkLoading(entries, M);
                 break;
-            } else if (input.nextInt() == 3) {
-                LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
-                int M = 4;
+            } else if (answer == 3) {
+                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+                int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
                 break;
             }
@@ -59,7 +62,7 @@ public class Main {
 
         System.out.println("Do you want to save the index? Y/N");
         Scanner input = new Scanner(System.in);
-        if (input.nextLine().equals("Y")){
+        if (input.nextLine().equalsIgnoreCase("Y")){
             IndexfileDemo.saveToFile(root);
         }
     }

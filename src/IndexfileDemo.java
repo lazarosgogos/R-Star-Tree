@@ -12,7 +12,6 @@ public class IndexfileDemo {
             in.close();
             fileIn.close();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return root;
