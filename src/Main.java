@@ -32,7 +32,7 @@ public class Main {
                 break;
             } else if (input.nextInt() == 2) {
                 LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
-                int M = 4;
+                int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
                 root = BulkLoading.bulkLoading(entries, M);
                 break;
