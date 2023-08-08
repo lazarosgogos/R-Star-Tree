@@ -3,26 +3,42 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class IndexfileDemo {
-
-    public static Node indexfile(){
-
-        Node savedroot = new Node();
+    public static Node loadFromFile() {
+        Node root = null;
         try {
             FileInputStream fileIn = new FileInputStream("indexfile.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            savedroot = (Node) in.readObject();
+            root = (Node) in.readObject();
             in.close();
             fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Array class not found");
-            c.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        /*
+        return root;
+    }
+
+    public static void saveToFile(Node root) {
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("indexfile.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(root);
+            out.close();
+            fileOut.close();
+            System.out.println();
+            System.out.println("Index has been saved!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    public static void printPostOrderAndInOrder(Node root) {
+        System.out.println();
+
         ArrayList<Node> postOrder = new ArrayList<>();
-        postOrder = initPostOrder(savedroot);
+        postOrder = initPostOrder(root);
         for (Node n : postOrder){
             if (n instanceof NoLeafNode){
                 System.out.println(((NoLeafNode) n).getRectangleEntries().get(0).getRectangle());
@@ -34,30 +50,15 @@ public class IndexfileDemo {
 
         System.out.println();
 
-        ArrayList<Node> inOrder = initInOrder(savedroot);
-        for (Node n : inOrder){
-            if (n instanceof NoLeafNode){
+        ArrayList<Node> inOrder = initInOrder(root);
+        for (Node n : inOrder) {
+            if (n instanceof NoLeafNode) {
                 System.out.println(((NoLeafNode) n).getRectangleEntries().get(0).getRectangle());
-            }
-            else if (n instanceof LeafNode){
+            } else if (n instanceof LeafNode) {
                 System.out.println(((LeafNode) n).getPointEntries().get(0).getPoint());
             }
-        }*/
-
-        return savedroot;
-//        try {
-//            FileOutputStream fileOut =
-//                    new FileOutputStream("indexfile.ser");
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(root);
-//            out.close();
-//            fileOut.close();
-//            System.out.println("Serialized data is saved");
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
+        }
     }
-
 
     public static ArrayList<Node> initPostOrder(Node root){
         ArrayList<Node> result = new ArrayList<>();
@@ -100,4 +101,5 @@ public class IndexfileDemo {
             result.add(root);
         }
     }
+    */
 }

@@ -4,7 +4,6 @@ public class Main {
 
     public static void main(String[] args) {
         //725 records
-        LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
 
 //        //203
 //        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
@@ -17,11 +16,33 @@ public class Main {
 
 //        //2276 total
 
-        int M = 4;
-
         Node root = new Node();
-        //Node root = BulkLoading.bulkLoading(entries, M);
-        root = IndexfileDemo.indexfile();
+
+        while (true) {
+            System.out.println("type 1 if you want to load from file the last index");
+            System.out.println("type 2 if you want to create a new index with bulk loading");
+            System.out.println("type 3 if you want to create a new index");
+            Scanner input = new Scanner(System.in);
+            if ((input.nextInt() == 1)) {
+                root = IndexfileDemo.loadFromFile();
+                if (root == null) {
+                    System.out.println("There isn't a saved index!");
+                    continue;
+                }
+                break;
+            } else if (input.nextInt() == 2) {
+                LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
+                int M = 4;
+
+                root = BulkLoading.bulkLoading(entries, M);
+                break;
+            } else if (input.nextInt() == 3) {
+                LinkedList<PointEntry> entries = IO.loadInput("assets/mapTest.osm");
+                int M = 4;
+
+                break;
+            }
+        }
 
         //deapthFirstPrint(root,0);
         BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
@@ -35,6 +56,12 @@ public class Main {
       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
         RangeQuery.rangeQuery(root, myQuery);*/
+
+        System.out.println("Do you want to save the index? Y/N");
+        Scanner input = new Scanner(System.in);
+        if (input.nextLine().equals("Y")){
+            IndexfileDemo.saveToFile(root);
+        }
     }
 
     public static void deapthFirstPrint(Node root, int level) {
