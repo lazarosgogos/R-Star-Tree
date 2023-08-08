@@ -29,6 +29,13 @@ public class Main {
             System.out.println(n);
         }
 
+        System.out.println();
+
+        ArrayList<Node> inOrder = initInOrder(root);
+        for (Node n : inOrder){
+            System.out.println(n);
+        }
+
         // KNN Query
 //        Point p = new Point(5, 5);
 //        int k = 5;
@@ -60,10 +67,12 @@ public class Main {
     public static ArrayList<Node> initPostOrder(Node root){
         ArrayList<Node> result = new ArrayList<>();
 
-        return postOrder(root, result);
+        postOrder(root, result);
+
+        return result;
     }
 
-    public static ArrayList<Node> postOrder(Node root, ArrayList<Node> result){
+    public static void postOrder(Node root, ArrayList<Node> result){
 
         if (!root.leaf) {
             LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
@@ -72,8 +81,6 @@ public class Main {
             }
         }
         result.add(root);
-
-        return result;
     }
 
     public static ArrayList<Node> initInOrder(Node root){
@@ -84,16 +91,18 @@ public class Main {
         return result;
     }
 
-    public static ArrayList<Node> inOrder(Node root, ArrayList<Node> result){
+    public static void inOrder(Node root, ArrayList<Node> result){
 
         if (!root.leaf) {
             LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
-            for (RectangleEntry rectangleEntry : rectangles) {
-                inOrder(rectangleEntry.getChild(), result);
+            int numOfChildren = rectangles.size();
+            for (int i=0; i<numOfChildren-1; i++){
+                inOrder(rectangles.get(i).getChild(), result);
             }
+            result.add(root);
+            inOrder(rectangles.get(numOfChildren-1).getChild(), result);
+        } else {
+            result.add(root);
         }
-        result.add(root);
-
-        return result;
     }
 }
