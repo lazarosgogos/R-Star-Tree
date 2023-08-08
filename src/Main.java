@@ -19,12 +19,12 @@ public class Main {
 
         int M = 4;
 
-        Node root = BulkLoading.bulkLoading(entries, M);
+        Node root = new Node();
+        //Node root = BulkLoading.bulkLoading(entries, M);
+        root = IndexfileDemo.indexfile();
 
         //deapthFirstPrint(root,0);
-        //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
-
-        IndexfileDemo.indexfile(root);
+        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query
 //        Point p = new Point(5, 5);
