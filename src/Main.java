@@ -17,11 +17,9 @@ public class Main {
 
 //        //2276 total
 
-        List<PointEntry> sortedEntries = ZOrderCurveSort.sortPoints(entries);
-
         int M = 4;
 
-        Node root = BulkLoading.bulkLoading(sortedEntries, M);
+        Node root = BulkLoading.bulkLoading(entries, M);
 
         //dfs(root,0);
         BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));

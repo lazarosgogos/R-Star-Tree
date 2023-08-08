@@ -4,7 +4,9 @@ import java.util.List;
 
 public class BulkLoading {
 
-    public static Node bulkLoading(List<PointEntry> sortedEntries, int M){
+    public static Node bulkLoading(List<PointEntry> entries, int M){
+
+        List<PointEntry> sortedEntries = ZOrderCurveSort.sortPoints(entries);
 
         LinkedList<LinkedList> leaves = bottomUpLevel0(sortedEntries, M);
 
