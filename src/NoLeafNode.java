@@ -29,4 +29,8 @@ public class NoLeafNode extends Node {
     public void setRoot(Boolean root) {
         this.root = root;
     }
+
+    public LinkedList<Node> getChildren() {
+        return children;
+    }
 }

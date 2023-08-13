@@ -1,7 +1,5 @@
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * This class represents the Rectangle that wraps some Points.
@@ -190,11 +188,140 @@ public class Rectangle implements java.io.Serializable {
         return product;
     }
 
-    public static double totalOverlap(Rectangle r1, LinkedList<Rectangle> rectangles) {
+    public static double totalOverlap(Rectangle r1, HashSet<RectangleEntry> rectangles) {
         double sum = 0;
-        for (Rectangle rectangle : rectangles) {
-            sum += overlapCalculation(r1, rectangle);
+        for (RectangleEntry rectangle : rectangles) {
+            sum += overlapCalculation(r1, rectangle.getRectangle());
         }
         return sum;
+    }
+
+    public static boolean contains(RectangleEntry r, PointEntry p) {
+        return r.getRectangle().contains(p);
+    }
+
+    public static Rectangle expand(RectangleEntry r, PointEntry p) {
+        // list of lists with coordinates
+        ArrayList<ArrayList<Double>> elements = new ArrayList<>();
+
+        int dimensions = p.getPoint().getCoords().size();
+        ArrayList<Double> min = new ArrayList<>();
+        ArrayList<Double> max = new ArrayList<>();
+
+        // initialize the list of lists with empty lists
+        for (int i = 0; i < dimensions; i++) {
+            elements.add(new ArrayList<>());
+            elements.get(i).add(r.getRectangle().getStartPoint().getCoords().get(i));
+            elements.get(i).add(r.getRectangle().getEndPoint().getCoords().get(i));
+            elements.get(i).add(p.getPoint().getCoords().get(i));
+            min.add(RectangleEntry.min(elements.get(i)));
+            max.add(RectangleEntry.max(elements.get(i)));
+        }
+
+        return new Rectangle(new Point(min), new Point(max));
+    }
+
+    public static double getArea(Rectangle r) {
+        double product = 1;
+        int destinations = r.getStartPoint().getCoords().size();
+        for (int i = 0; i < destinations; i++) {
+            product *= r.getEndPoint().getCoords().get(i) - r.getStartPoint().getCoords().get(i);
+        }
+        return product;
+
+    }
+
+    public static double areaEnlargement(RectangleEntry r, PointEntry p) {
+        Rectangle re = expand(r, p);
+        return getArea(re) - getArea(r.getRectangle());
+    }
+
+    public static Node chooseSubtree(Node root, PointEntry entry) {
+        Node tempN = root;
+
+        if (tempN instanceof LeafNode) {
+            return tempN;
+        } else {
+            NoLeafNode N = (NoLeafNode) tempN;
+            if (N.getChildren().get(0) instanceof LeafNode) {
+                HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
+                HashMap<RectangleEntry, Double> overlapEnlargementScores = new HashMap<>();
+                for (RectangleEntry rectangeEntry : rectangleEntries) {
+                    // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
+                    if (contains(rectangeEntry, entry)) {
+                        return rectangeEntry.getChild();
+                    } else { //calculate overlap enlargement for all possible enlargments
+                        HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
+                        temp.remove(rectangeEntry);
+                        overlapEnlargementScores.put(rectangeEntry, totalOverlap(expand(rectangeEntry, entry), temp));
+                    }
+                }
+                double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
+                ArrayList<RectangleEntry> minOverlapRectangles = new ArrayList<>();
+                for (RectangleEntry key : overlapEnlargementScores.keySet()) { //find rectangle entries that are min
+                    if (overlapEnlargementScores.get(key) == minOverlap) {
+                        minOverlapRectangles.add(key);
+                    }
+                }
+                if (minOverlapRectangles.size() > 1) { //if there are ties
+                    HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
+                    for (RectangleEntry rectangleEntry : minOverlapRectangles) { // calculate all possible area enlargements
+                        areaEnlargementScores.put(rectangleEntry, areaEnlargement(rectangleEntry, entry));
+                    }
+                    double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
+                    ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
+                    for (RectangleEntry key : areaEnlargementScores.keySet()) {
+                        if (areaEnlargementScores.get(key) == minAreaEnlargement) { // find rectangle entries that are min
+                            minAreaEnlargementRectangles.add(key);
+                        }
+                    }
+                    if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
+                        HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
+                        for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
+                            areaScores.put(rectangleEntry, getArea(rectangleEntry.getRectangle()));
+                        }
+                        double minArea = Collections.min(areaScores.values());
+                        for (RectangleEntry key : areaScores.keySet()) {
+                            if (areaScores.get(key) == minArea) {
+                                return key.getChild(); // choose rectangle with smallest area
+                            }
+                        }
+                    } else { // if there is only one min area enlargement
+                        return minAreaEnlargementRectangles.get(0).getChild();
+                    }
+                } else { //if there is only one min overlap enlargement
+                    return minOverlapRectangles.get(0).getChild();
+                }
+            } else {
+                HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
+                HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
+                for (RectangleEntry rectangleEntry : rectangleEntries) { // calculate all possible area enlargements
+                    areaEnlargementScores.put(rectangleEntry, areaEnlargement(rectangleEntry, entry));
+                }
+                double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
+                ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
+                for (RectangleEntry key : areaEnlargementScores.keySet()) {
+                    if (areaEnlargementScores.get(key) == minAreaEnlargement) { // find rectangle entries that are min
+                        minAreaEnlargementRectangles.add(key);
+                    }
+                }
+                if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
+                    HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
+                    for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
+                        areaScores.put(rectangleEntry, getArea(rectangleEntry.getRectangle()));
+                    }
+                    double minArea = Collections.min(areaScores.values());
+                    for (RectangleEntry key : areaScores.keySet()) {
+                        if (areaScores.get(key) == minArea) {
+                            return key.getChild(); // choose rectangle with smallest area
+                        }
+                    }
+                }
+                else { // if there is only one min area enlargement
+                    return minAreaEnlargementRectangles.get(0).getChild();
+                }
+            }
+        }
+        return null;
     }
 }
