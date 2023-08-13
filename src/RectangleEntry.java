@@ -50,20 +50,20 @@ public class RectangleEntry extends Entry {
         this.leaf = true;
 
         // list of lists with coordinates
-        ArrayList<ArrayList<Double>> es = new ArrayList<>();
+        ArrayList<ArrayList<Double>> elements = new ArrayList<>();
 
-        int number_of_coords = child.getPointEntries().get(0).getPoint().getCoords().size();
+        int dimensions = child.getPointEntries().get(0).getPoint().getCoords().size();
 
         // initialize the list of lists with empty lists
-        for (int i = 0; i < number_of_coords; i++) {
-            es.add(new ArrayList<>());
+        for (int i = 0; i < dimensions; i++) {
+            elements.add(new ArrayList<>());
         }
 
         for (PointEntry pointEntry : child.getPointEntries()) {
             Point temp = pointEntry.getPoint();
             int counter = 0;
             for (double coord : temp.getCoords()) {
-                es.get(counter).add(coord);
+                elements.get(counter).add(coord);
                 counter++;
             }
 
@@ -72,9 +72,9 @@ public class RectangleEntry extends Entry {
         ArrayList<Double> min = new ArrayList<>();
         ArrayList<Double> max = new ArrayList<>();
 
-        for (int i = 0; i < number_of_coords; i++) {
-            min.add(RectangleEntry.min(es.get(i)));
-            max.add(RectangleEntry.max(es.get(i)));
+        for (int i = 0; i < dimensions; i++) {
+            min.add(RectangleEntry.min(elements.get(i)));
+            max.add(RectangleEntry.max(elements.get(i)));
         }
 
         rectangle = new Rectangle(new Point(min), new Point(max));
@@ -92,9 +92,9 @@ public class RectangleEntry extends Entry {
         // list of lists
         ArrayList<ArrayList<Double>> ends = new ArrayList<>();
 
-        int n = child.getRectangleEntries().get(0).getRectangle().getStartPoint().getCoords().size();
+        int dimensions = child.getRectangleEntries().get(0).getRectangle().getStartPoint().getCoords().size();
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < dimensions; i++) {
             starts.add(new ArrayList<>());
             ends.add(new ArrayList<>());
         }
@@ -118,7 +118,7 @@ public class RectangleEntry extends Entry {
         ArrayList<Double> min = new ArrayList<>();
         ArrayList<Double> max = new ArrayList<>();
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < dimensions; i++) {
             min.add(RectangleEntry.min(starts.get(i)));
             max.add(RectangleEntry.max(ends.get(i)));
         }
