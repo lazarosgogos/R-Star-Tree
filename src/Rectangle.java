@@ -1,5 +1,7 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * This class represents the Rectangle that wraps some Points.
@@ -169,5 +171,30 @@ public class Rectangle implements java.io.Serializable {
 
     public Point getEndPoint() {
         return end;
+    }
+
+    public static double overlapCalculation(Rectangle r1, Rectangle r2) {
+        int dimensions = r1.getStartPoint().getCoords().size();
+
+        double product = 1;
+        for (int i = 0; i < dimensions; i++) {
+            double[] array = {r2.getStartPoint().getCoords().get(i),
+                    r2.getEndPoint().getCoords().get(i),
+                    r1.getStartPoint().getCoords().get(i),
+                    r1.getEndPoint().getCoords().get(i)
+            };
+            Arrays.sort(array);
+            product *= array[2] - array[1];
+        }
+
+        return product;
+    }
+
+    public static double totalOverlap(Rectangle r1, LinkedList<Rectangle> rectangles) {
+        double sum = 0;
+        for (Rectangle rectangle : rectangles) {
+            sum += overlapCalculation(r1, rectangle);
+        }
+        return sum;
     }
 }

@@ -43,12 +43,16 @@ public class Main {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
                 int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
+
+
+                System.out.println(Rectangle.overlapCalculation(new Rectangle(new Point(2.4, 2.4), new Point(3,3)),
+                        new Rectangle(new Point(2.6,2.6), new Point(4,2.8))));
                 break;
             }
         }
 
         //deapthFirstPrint(root,0);
-        BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
+        //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query
 //        Point p = new Point(5, 5);
