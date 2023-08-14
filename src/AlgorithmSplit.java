@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * What we want to do is split a Rectangle into two rectangles
@@ -17,47 +18,98 @@ public class AlgorithmSplit {
     /**
      * Determine which axis/dimension should be selected by calculating goodness values
      */
-    public static int chooseSplitAxis(RectangleEntry rect, int M, int m) {
+    public static int chooseSplitAxis(RectangleEntry parentRect, int M, int m) {
         // for each axis/dimension! --> we need an arraylist (A) of arraylists (B)
         // size of A -> # of dimensions
         // A holds D arraylists
         // each array list has the starting points' values of the axis at index i
         // and for each such array we need to sort it
-        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
+        int dimensions = parentRect.getRectangle().getStartPoint().getCoords().size();
         // let's make this as clear as day
 
-        if (rect.getChild().leaf) return 0; // TODO  we'll see!
+        if (parentRect.getChild().leaf) return 0; // TODO  we'll see!
         // else:
         NoLeafNode node;
-        node = (NoLeafNode) rect.getChild();
+        node = (NoLeafNode) parentRect.getChild();
 
-        ArrayList<Point> startingPoints = new ArrayList<>(dimensions);
-        ArrayList<Point> endingPoints = new ArrayList<>(dimensions);
+        ArrayList<RectanglePointPair> startingPoints = new ArrayList<>(dimensions);
+        ArrayList<RectanglePointPair> endingPoints = new ArrayList<>(dimensions);
         // first get all start and end points
         for (RectangleEntry rectangleEntry : node.getRectangleEntries()) {
-            startingPoints.add(rectangleEntry.getRectangle().getStartPoint());
-            endingPoints.add(rectangleEntry.getRectangle().getEndPoint());
+            Point startPoint = rectangleEntry.getRectangle().getStartPoint();
+            Point endPoint = rectangleEntry.getRectangle().getEndPoint();
+
+            startingPoints.add(new RectanglePointPair(rectangleEntry, startPoint));
+            endingPoints.add(new RectanglePointPair(rectangleEntry, endPoint));
         }
 
         // int M = startingPoints.size(); // M is the number of POINTS we have, or the number of axes
         for (int i = 0; i < dimensions; i++) {
-            ArrayList<Double> startCoordsOfAxisI = new ArrayList<>(M);
-            ArrayList<Double> endCoordsOfAxisI = new ArrayList<>(M);
+            ArrayList<RectangleEntryDoublePair> startCoordsOfAxisI = new ArrayList<>(M);
+            ArrayList<RectangleEntryDoublePair> endCoordsOfAxisI = new ArrayList<>(M);
             // now for each axis
             for (int j = 0; j < M; j++) {
-                startCoordsOfAxisI.add(startingPoints.get(j).getCoords().get(i));
-                endCoordsOfAxisI.add(endingPoints.get(j).getCoords().get(i));
+                RectangleEntryDoublePair startPair = new RectangleEntryDoublePair(startingPoints.get(j).getRectangleEntry(), startingPoints.get(j).getPoint().getCoords().get(i));
+                RectangleEntryDoublePair endPair = new RectangleEntryDoublePair(endingPoints.get(j).getRectangleEntry(), endingPoints.get(j).getPoint().getCoords().get(i));
+                startCoordsOfAxisI.add(startPair);
+                endCoordsOfAxisI.add(endPair);
             }
-            Collections.sort(startCoordsOfAxisI);
-            Collections.sort(endCoordsOfAxisI);
+            Collections.sort(startCoordsOfAxisI, new RectangleEntryDoublePairComparator());
+            Collections.sort(endCoordsOfAxisI, new RectangleEntryDoublePairComparator());
             // now determine all distributions. how?
             // for each sort, M - 2m + 2 distributions of the M+1 entries into two groups are determined
             // for the k-th distribution, where k is in [1, M-2m+2], the first group contains
             // the first m-1+k entries, the second group the remaining ones
             // for these two groups, goodness values are determined
+            // now, in the current axis
+            for (int j = 0; j < M - 2 * m + 2; j++) {
 
+            }
         }
         return 0;
+    }
+
+    private static class RectanglePointPair {
+        private RectangleEntry rectangleEntry;
+        private Point point;
+
+        public RectanglePointPair(RectangleEntry rectangleEntry, Point point) {
+            this.rectangleEntry = rectangleEntry;
+            this.point = point;
+        }
+
+        public RectangleEntry getRectangleEntry() {
+            return rectangleEntry;
+        }
+
+        public Point getPoint() {
+            return point;
+        }
+    }
+
+    private static class RectangleEntryDoublePair {
+        private RectangleEntry rectangleEntry;
+        private Double value; // the value of some point
+
+        public RectangleEntryDoublePair(RectangleEntry rectangleEntry, Double value) {
+            this.rectangleEntry = rectangleEntry;
+            this.value = value;
+        }
+
+        public RectangleEntry getRectangleEntry() {
+            return rectangleEntry;
+        }
+
+        public Double getValue() {
+            return value;
+        }
+    }
+
+    private static class RectangleEntryDoublePairComparator implements Comparator<RectangleEntryDoublePair>{
+        @Override
+        public int compare(RectangleEntryDoublePair o, RectangleEntryDoublePair t1) {
+            return Double.compare(o.getValue(), t1.getValue());
+        }
     }
 
     /**
