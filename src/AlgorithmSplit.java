@@ -10,7 +10,7 @@ public class AlgorithmSplit {
 
 
     public static Node split(RectangleEntry rect) {
-        int splitAxis = chooseSplitAxis();
+//        int splitAxis = chooseSplitAxis();
         return null;
     }
 
