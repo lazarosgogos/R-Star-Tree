@@ -243,17 +243,24 @@ public class Rectangle implements java.io.Serializable {
         //CS2
         while (tempN instanceof NoLeafNode) {
             NoLeafNode N = (NoLeafNode) tempN;
-            if (N.getChildren().get(0) instanceof LeafNode) {
+             /* First, sort the rectangles in N in increasing order
+             of their area enlargement needed to include the new data rectangle
+             Let A be the group of the first P entries
+             From the entries in A, considering all entries in N, choose the entry
+             whose rectangle needs the least overlap enlargement.
+             Resolve ties as described above
+             */
+            if (N.getChildren().get(0) instanceof LeafNode) { // if the children of node N point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
                 HashMap<RectangleEntry, Double> overlapEnlargementScores = new HashMap<>();
-                for (RectangleEntry rectangeEntry : rectangleEntries) {
+                for (RectangleEntry rectangleEntry : rectangleEntries) {
                     // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
-                    if (contains(rectangeEntry, entry)) {
-                       choosenEntry = rectangeEntry.getChild();
-                    } else { //calculate overlap enlargement for all possible enlargments
+                    if (contains(rectangleEntry, entry)) {
+                       choosenEntry = rectangleEntry.getChild();
+                    } else { //calculate overlap enlargement for all possible enlargements
                         HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
-                        temp.remove(rectangeEntry);
-                        overlapEnlargementScores.put(rectangeEntry, totalOverlap(enlargeRectangle(rectangeEntry, entry), temp));
+                        temp.remove(rectangleEntry);
+                        overlapEnlargementScores.put(rectangleEntry, totalOverlap(enlargeRectangle(rectangleEntry, entry), temp));
                     }
                 }
                 double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
@@ -263,6 +270,8 @@ public class Rectangle implements java.io.Serializable {
                         minOverlapRectangles.add(key);
                     }
                 }
+                // TODO will this ever happen? Due to floating point number comparisons
+                // https://stackoverflow.com/questions/8081827/how-to-compare-two-double-values-in-java
                 if (minOverlapRectangles.size() > 1) { //if there are ties
                     HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
                     for (RectangleEntry rectangleEntry : minOverlapRectangles) { // calculate all possible area enlargements
@@ -292,7 +301,7 @@ public class Rectangle implements java.io.Serializable {
                 } else { //if there is only one min overlap enlargement
                     choosenEntry = minOverlapRectangles.get(0).getChild();
                 }
-            } else {
+            } else { // if the children of node N do NOT point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
                 HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
                 for (RectangleEntry rectangleEntry : rectangleEntries) { // calculate all possible area enlargements
