@@ -1,4 +1,3 @@
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -38,21 +37,21 @@ public class Rectangle implements java.io.Serializable {
      * @param end   second point of the rectangle
      */
     public Rectangle(Point start, Point end) {
-        // WRONG!
-//        this.start = new Point();
-//        this.end = new Point();
-        int n = start.getCoords().size(); // number of dimensions
-        ArrayList<Double> mins = new ArrayList<>(n);
-        ArrayList<Double> maxs = new ArrayList<>(n);
+//        int n = start.getCoords().size(); // number of dimensions
+//        ArrayList<Double> mins = new ArrayList<>(n);
+//        ArrayList<Double> maxs = new ArrayList<>(n);
+//
+//        for (int i = 0; i < n; i++) {
+//            double min = Math.min(start.getCoords().get(i), end.getCoords().get(i));
+//            double max = Math.max(start.getCoords().get(i), end.getCoords().get(i));
+//            mins.add(min);
+//            maxs.add(max);
+//        }
+//        this.start = new Point(mins);
+//        this.end = new Point(maxs);
 
-        for (int i = 0; i < n; i++) {
-            double min = Math.min(start.getCoords().get(i), end.getCoords().get(i));
-            double max = Math.max(start.getCoords().get(i), end.getCoords().get(i));
-            mins.add(min);
-            maxs.add(max);
-        }
-        this.start = new Point(mins);
-        this.end = new Point(maxs);
+        this.start = start;
+        this.end = end;
     }
 
     @Override
@@ -200,7 +199,7 @@ public class Rectangle implements java.io.Serializable {
         return r.getRectangle().contains(p);
     }
 
-    public static Rectangle expand(RectangleEntry r, PointEntry p) {
+    public static Rectangle enlargeRectangle(RectangleEntry r, PointEntry p) {
         // list of lists with coordinates
         ArrayList<ArrayList<Double>> elements = new ArrayList<>();
 
@@ -231,17 +230,18 @@ public class Rectangle implements java.io.Serializable {
 
     }
 
-    public static double areaEnlargement(RectangleEntry r, PointEntry p) {
-        Rectangle re = expand(r, p);
+    public static double areaEnlargementCost(RectangleEntry r, PointEntry p) {
+        Rectangle re = enlargeRectangle(r, p);
         return getArea(re) - getArea(r.getRectangle());
     }
 
     public static Node chooseSubtree(Node root, PointEntry entry) {
+        //CS1
         Node tempN = root;
+        Node choosenEntry = new Node();
 
-        if (tempN instanceof LeafNode) {
-            return tempN;
-        } else {
+        //CS2
+        while (tempN instanceof NoLeafNode) {
             NoLeafNode N = (NoLeafNode) tempN;
             if (N.getChildren().get(0) instanceof LeafNode) {
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
@@ -249,11 +249,11 @@ public class Rectangle implements java.io.Serializable {
                 for (RectangleEntry rectangeEntry : rectangleEntries) {
                     // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
                     if (contains(rectangeEntry, entry)) {
-                        return rectangeEntry.getChild();
+                       choosenEntry = rectangeEntry.getChild();
                     } else { //calculate overlap enlargement for all possible enlargments
                         HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
                         temp.remove(rectangeEntry);
-                        overlapEnlargementScores.put(rectangeEntry, totalOverlap(expand(rectangeEntry, entry), temp));
+                        overlapEnlargementScores.put(rectangeEntry, totalOverlap(enlargeRectangle(rectangeEntry, entry), temp));
                     }
                 }
                 double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
@@ -266,7 +266,7 @@ public class Rectangle implements java.io.Serializable {
                 if (minOverlapRectangles.size() > 1) { //if there are ties
                     HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
                     for (RectangleEntry rectangleEntry : minOverlapRectangles) { // calculate all possible area enlargements
-                        areaEnlargementScores.put(rectangleEntry, areaEnlargement(rectangleEntry, entry));
+                        areaEnlargementScores.put(rectangleEntry, areaEnlargementCost(rectangleEntry, entry));
                     }
                     double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
                     ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
@@ -283,20 +283,20 @@ public class Rectangle implements java.io.Serializable {
                         double minArea = Collections.min(areaScores.values());
                         for (RectangleEntry key : areaScores.keySet()) {
                             if (areaScores.get(key) == minArea) {
-                                return key.getChild(); // choose rectangle with smallest area
+                                choosenEntry = key.getChild(); // choose rectangle with smallest area
                             }
                         }
                     } else { // if there is only one min area enlargement
-                        return minAreaEnlargementRectangles.get(0).getChild();
+                        choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
                     }
                 } else { //if there is only one min overlap enlargement
-                    return minOverlapRectangles.get(0).getChild();
+                    choosenEntry = minOverlapRectangles.get(0).getChild();
                 }
             } else {
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
                 HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
                 for (RectangleEntry rectangleEntry : rectangleEntries) { // calculate all possible area enlargements
-                    areaEnlargementScores.put(rectangleEntry, areaEnlargement(rectangleEntry, entry));
+                    areaEnlargementScores.put(rectangleEntry, areaEnlargementCost(rectangleEntry, entry));
                 }
                 double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
                 ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
@@ -313,15 +313,16 @@ public class Rectangle implements java.io.Serializable {
                     double minArea = Collections.min(areaScores.values());
                     for (RectangleEntry key : areaScores.keySet()) {
                         if (areaScores.get(key) == minArea) {
-                            return key.getChild(); // choose rectangle with smallest area
+                            choosenEntry = key.getChild(); // choose rectangle with smallest area
                         }
                     }
-                }
-                else { // if there is only one min area enlargement
-                    return minAreaEnlargementRectangles.get(0).getChild();
+                } else { // if there is only one min area enlargement
+                    choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
                 }
             }
+            //CS3
+            tempN = choosenEntry;
         }
-        return null;
+            return tempN;
     }
 }
