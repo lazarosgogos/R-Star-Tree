@@ -192,6 +192,9 @@ public class Rectangle implements java.io.Serializable {
         for (RectangleEntry rectangle : rectangles) {
             sum += overlapCalculation(r1, rectangle.getRectangle());
         }
+        if (sum <= 0) {
+            return 50000000;
+        }
         return sum;
     }
 
@@ -256,7 +259,7 @@ public class Rectangle implements java.io.Serializable {
                 for (RectangleEntry rectangleEntry : rectangleEntries) {
                     // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
                     if (contains(rectangleEntry, entry)) {
-                       choosenEntry = rectangleEntry.getChild();
+                        choosenEntry = rectangleEntry.getChild();
                     } else { //calculate overlap enlargement for all possible enlargements
                         HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
                         temp.remove(rectangleEntry);
@@ -266,7 +269,7 @@ public class Rectangle implements java.io.Serializable {
                 double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
                 ArrayList<RectangleEntry> minOverlapRectangles = new ArrayList<>();
                 for (RectangleEntry key : overlapEnlargementScores.keySet()) { //find rectangle entries that are min
-                    if (overlapEnlargementScores.get(key) == minOverlap) {
+                    if (Double.compare(overlapEnlargementScores.get(key), minOverlap) == 0) {
                         minOverlapRectangles.add(key);
                     }
                 }
@@ -280,7 +283,7 @@ public class Rectangle implements java.io.Serializable {
                     double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
                     ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
                     for (RectangleEntry key : areaEnlargementScores.keySet()) {
-                        if (areaEnlargementScores.get(key) == minAreaEnlargement) { // find rectangle entries that are min
+                        if (Double.compare(areaEnlargementScores.get(key), minAreaEnlargement) == 0) { // find rectangle entries that are min
                             minAreaEnlargementRectangles.add(key);
                         }
                     }
@@ -291,7 +294,7 @@ public class Rectangle implements java.io.Serializable {
                         }
                         double minArea = Collections.min(areaScores.values());
                         for (RectangleEntry key : areaScores.keySet()) {
-                            if (areaScores.get(key) == minArea) {
+                            if (Double.compare(areaScores.get(key), minArea) == 0) {
                                 choosenEntry = key.getChild(); // choose rectangle with smallest area
                             }
                         }
@@ -310,7 +313,7 @@ public class Rectangle implements java.io.Serializable {
                 double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
                 ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
                 for (RectangleEntry key : areaEnlargementScores.keySet()) {
-                    if (areaEnlargementScores.get(key) == minAreaEnlargement) { // find rectangle entries that are min
+                    if (Double.compare(areaEnlargementScores.get(key), minAreaEnlargement) == 0) { // find rectangle entries that are min
                         minAreaEnlargementRectangles.add(key);
                     }
                 }
@@ -321,7 +324,7 @@ public class Rectangle implements java.io.Serializable {
                     }
                     double minArea = Collections.min(areaScores.values());
                     for (RectangleEntry key : areaScores.keySet()) {
-                        if (areaScores.get(key) == minArea) {
+                        if (Double.compare(areaScores.get(key), minArea) == 0) {
                             choosenEntry = key.getChild(); // choose rectangle with smallest area
                         }
                     }
@@ -332,6 +335,6 @@ public class Rectangle implements java.io.Serializable {
             //CS3
             tempN = choosenEntry;
         }
-            return tempN;
+        return tempN;
     }
 }
