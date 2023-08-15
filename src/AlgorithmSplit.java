@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * What we want to do is split a Rectangle into two rectangles
@@ -63,6 +60,13 @@ public class AlgorithmSplit {
             // for these two groups, goodness values are determined
             // now, in the current axis
             for (int j = 0; j < M - 2 * m + 2; j++) {
+                int k = m-1 + j; // taken straight from the R*-tree paper
+                List<RectangleEntryDoublePair> groupOneStartPairs = startCoordsOfAxisI.subList(0, k);
+                List<RectangleEntryDoublePair> groupTwoStartPairs = startCoordsOfAxisI.subList(k, startCoordsOfAxisI.size());
+
+                List<RectangleEntryDoublePair> groupOneEndPairs = endCoordsOfAxisI.subList(0, k);
+                List<RectangleEntryDoublePair> groupTwoEndPairs = endCoordsOfAxisI.subList(k, endCoordsOfAxisI.size());
+
 
             }
         }
@@ -120,7 +124,11 @@ public class AlgorithmSplit {
     }
 
     // we will go with the minimum area value
-    private static double determineGoodnessValue(ArrayList<RectangleEntry> entries){
+    private static double determineGoodnessValue(List<RectangleEntryDoublePair> entries){
+        for (RectangleEntryDoublePair entry : entries) {
+            Rectangle r = entry.getRectangleEntry().getRectangle();
+//            r.getMargin();
+        }
         return 0;
     }
 
