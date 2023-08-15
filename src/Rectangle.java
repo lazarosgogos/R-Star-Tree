@@ -6,29 +6,8 @@ import java.util.*;
  * The only info we need about its spacing are the left-down and the top-right corners.
  */
 public class Rectangle implements java.io.Serializable {
-//    @Deprecated
-//    double xStart; //down left corner
-//    @Deprecated
-//    double yStart; //down left corner
-//    @Deprecated
-//    double xEnd; //up right corner
-//    @Deprecated
-//    double yEnd; //up right corner
-//    @Deprecated
-
     private Point start; // down left corner
     private Point end; // upper right corner
-
-//    @Deprecated
-//    public Rectangle(double xStart, double yStart, double xEnd, double yEnd) {
-//        this.xStart = xStart;
-//        this.yStart = yStart;
-//        this.xEnd = xEnd;
-//        this.yEnd = yEnd;
-//        this.start = new Point(xStart, yStart);
-//        this.end = new Point(xEnd, yEnd);
-//    }
-
 
     /**
      * Given two points create a rectangle/bounding box, no matter if the start and end point are in the proper order
@@ -84,8 +63,6 @@ public class Rectangle implements java.io.Serializable {
         start.append(end);
 
         return start.toString();
-
-        //return "(" + xStart + ", " + yStart + "), (" + xEnd + ", " + yEnd + ")";
     }
 
 

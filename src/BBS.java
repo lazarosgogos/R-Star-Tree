@@ -8,11 +8,6 @@ class Pair {
     Entry e;
     double f;
 
-//    Pair(PointEntry e, double f) {
-//        this.e = e;
-//        this.f = f;
-//    }
-
     Pair(RectangleEntry e, double f) {
         this.e = e;
         this.f = f;
@@ -46,10 +41,6 @@ public class BBS {
         }
         return result;
     }
-//
-//    public static double mindist(PointEntry pe) {
-//        return pe.getPoint().getX() + pe.getPoint().getY();
-//    }
 
     public static HashSet<PointEntry> runSkyline(Node root) {
         HashSet<PointEntry> set = new HashSet<>();
@@ -103,12 +94,6 @@ public class BBS {
             in |= p1.getCoords().get(i) < p2.getCoords().get(i);
         }
         return out && in;
-
-//        double x1 = p1.getCoords().get(0);
-//        double y1 = p1.getCoords().get(1);
-//        double x2 = p2.getCoords().get(0);
-//        double y2 = p2.getCoords().get(1);
-//        return (x1 < x2 && y1 < y2 || (x1 == x2 && y1 < y2) || (x1 < x2 && y1 == y2));
     }
 
     // complexity O(M^2)

@@ -6,12 +6,6 @@ import java.util.Objects;
  * This class represents the Point, not necessarily a Point that has been in the tree.
  */
 public class Point implements java.io.Serializable {
-    /*    private double x;
-        private double y;
-        private String xStr;
-        private String yStr;
-        private int xs;
-        private int ys; */
     private String name;
     private long id;
 
@@ -37,10 +31,6 @@ public class Point implements java.io.Serializable {
             this.coordsIntegers.add((int) v);
             this.coordsStrings.add(Double.toString(v));
         }
-//        this.coordsIntegers.add((int) A[0]);
-//        this.coordsIntegers.add((int) A[1]);
-//        this.coordsStrings.add(Double.toString(A[0]));
-//        this.coordsStrings.add(Double.toString(A[1]));
     }
 
     public Point(ArrayList<Double> coords) {
@@ -52,10 +42,6 @@ public class Point implements java.io.Serializable {
             this.coordsIntegers.add((int) ((double) v));
             this.coordsStrings.add(Double.toString(v));
         }
-//        this.coordsIntegers.add((int) A[0]);
-//        this.coordsIntegers.add((int) A[1]);
-//        this.coordsStrings.add(Double.toString(A[0]));
-//        this.coordsStrings.add(Double.toString(A[1]));
     }
 
     public Point(long id, String name, ArrayList<String> coords) {
@@ -71,17 +57,6 @@ public class Point implements java.io.Serializable {
         this.name = name;
         this.id = id;
     }
-/*
-    public Point(long id, String name, String xStr, String yStr) {
-        this.xStr = xStr;
-        this.yStr = yStr;
-        this.y = Double.parseDouble(yStr);
-        this.x = Double.parseDouble(xStr);
-        this.xs = Integer.parseInt(xStr.replace(".", ""));
-        this.ys = Integer.parseInt(yStr.replace(".", ""));
-        this.name = name;
-        this.id = id;
-    }*/
 
     @Override
     public String toString() {
@@ -99,7 +74,6 @@ public class Point implements java.io.Serializable {
         sb.append(' ');
         sb.append(name);
         return sb.toString();
-//        return "(" + coordsStrings.get(0) + ", " + coordsStrings.get(1) + ") " + name;
     }
 
     @Deprecated
