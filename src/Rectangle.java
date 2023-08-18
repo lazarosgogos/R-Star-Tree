@@ -139,6 +139,41 @@ public class Rectangle implements java.io.Serializable {
         return new Point(centerCoords);
     }
 
+    public double getArea() {
+        double product = 1;
+        int destinations = this.getStartPoint().getCoords().size();
+        for (int i = 0; i < destinations; i++) {
+            product *= this.getEndPoint().getCoords().get(i) - this.getStartPoint().getCoords().get(i);
+        }
+        return product;
+    }
+
+    public double getMargin() {
+        double sum = 0;
+        int dimensions = this.getStartPoint().getCoords().size();
+        for (int i = 0; i < dimensions; i++)
+            sum += this.getEndPoint().getCoords().get(i) - this.getStartPoint().getCoords().get(i);
+        return sum;
+    }
+
+    public double getOverlap(Rectangle other) {
+        int dimensions = this.getStartPoint().getCoords().size();
+
+        double product = 1;
+        for (int i = 0; i < dimensions; i++) {
+            double[] array = {other.getStartPoint().getCoords().get(i),
+                    other.getEndPoint().getCoords().get(i),
+                    this.getStartPoint().getCoords().get(i),
+                    this.getEndPoint().getCoords().get(i)
+            };
+            Arrays.sort(array);
+            product *= array[2] - array[1];
+            // we ignore array[3] and array[0] and only deal with the 2 in-between points
+        }
+
+        return product;
+    }
+
     public Point getStartPoint() {
         return start;
     }

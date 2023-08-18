@@ -2,6 +2,13 @@ import java.util.*;
 
 public class ChooseSubtree {
 
+    /**
+     * @deprecated This method is inside the {@link Rectangle} class.
+     * @param r1 The first rectangle
+     * @param r2 The second rectangle
+     * @return The overlap between the two
+     */
+    @Deprecated
     public static double overlapCalculation(Rectangle r1, Rectangle r2) {
         int dimensions = r1.getStartPoint().getCoords().size();
 
@@ -55,6 +62,13 @@ public class ChooseSubtree {
         return new Rectangle(new Point(min), new Point(max));
     }
 
+    /**
+     * @deprecated
+     * This method is inside the {@link Rectangle} class
+     * @param r The rectangle whose area needs to be calculated
+     * @return The area of the given rectangle
+     */
+    @Deprecated
     public static double getArea(Rectangle r) {
         double product = 1;
         int destinations = r.getStartPoint().getCoords().size();
@@ -62,7 +76,6 @@ public class ChooseSubtree {
             product *= r.getEndPoint().getCoords().get(i) - r.getStartPoint().getCoords().get(i);
         }
         return product;
-
     }
 
     public static double areaEnlargementCost(RectangleEntry r, PointEntry p) {
