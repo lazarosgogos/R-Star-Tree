@@ -6,10 +6,44 @@ import java.util.*;
  */
 public class AlgorithmSplit {
 
+    public static class RectangleEntryGroups{
+        ArrayList<RectangleEntry> groupOne = new ArrayList<>();
+        ArrayList<RectangleEntry> groupTwo = new ArrayList<>();
 
-    public static Node split(RectangleEntry rect) {
-//        int splitAxis = chooseSplitAxis();
-        return null;
+        public RectangleEntryGroups(ArrayList<RectangleEntry> groupOne, ArrayList<RectangleEntry> groupTwo) {
+            this.groupOne = groupOne;
+            this.groupTwo = groupTwo;
+        }
+
+        public ArrayList<RectangleEntry> getGroupOne() {
+            return groupOne;
+        }
+
+        public ArrayList<RectangleEntry> getGroupTwo() {
+            return groupTwo;
+        }
+    }
+
+    public static RectangleEntryGroups split(RectangleEntry rect, int M, int m) {
+        int splitAxis = chooseSplitAxis(rect, M, m);
+        int splitIndex = chooseSplitIndex(rect, M, m, splitAxis);
+        ArrayList<RectangleEntry> groupOne = new ArrayList<>(M);
+        ArrayList<RectangleEntry> groupTwo = new ArrayList<>(M);
+        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
+        if (rect.getChild().leaf) return null;
+        // else:
+        NoLeafNode node;
+        node = (NoLeafNode) rect.getChild();
+        LinkedList<RectangleEntry> rectangleEntries = node.getRectangleEntries();
+        for (int i = 0; i < rectangleEntries.size(); i++) {
+            RectangleEntry rectangleEntry = rectangleEntries.get(i);
+            if (i <= splitIndex)
+                groupOne.add(rectangleEntry);
+            else
+                groupTwo.add(rectangleEntry);
+        }
+        RectangleEntryGroups groups = new RectangleEntryGroups(groupOne, groupTwo);
+        return groups;
     }
 
     /**
@@ -29,8 +63,8 @@ public class AlgorithmSplit {
         NoLeafNode node;
         node = (NoLeafNode) parentRect.getChild();
 
-        ArrayList<RectanglePointPair> startingPoints = new ArrayList<>(dimensions);
-        ArrayList<RectanglePointPair> endingPoints = new ArrayList<>(dimensions);
+        ArrayList<RectanglePointPair> startingPoints = new ArrayList<>(M);
+        ArrayList<RectanglePointPair> endingPoints = new ArrayList<>(M);
         // first get all start and end points
         for (RectangleEntry rectangleEntry : node.getRectangleEntries()) {
             Point startPoint = rectangleEntry.getRectangle().getStartPoint();
