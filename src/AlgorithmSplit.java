@@ -183,20 +183,26 @@ public class AlgorithmSplit {
             List<RectangleEntryDoublePair> groupOneEndPairs = endCoordsOfGivenAxis.subList(0, k);
             List<RectangleEntryDoublePair> groupTwoEndPairs = endCoordsOfGivenAxis.subList(k, endCoordsOfGivenAxis.size());
 
-            double goodnessGroupOneStartPairs = determineGoodnessValueMarginWise(groupOneStartPairs);
-            double goodnessGroupTwoStartPairs = determineGoodnessValueMarginWise(groupTwoStartPairs);
-            double goodnessGroupOneEndPairs = determineGoodnessValueMarginWise(groupOneEndPairs);
-            double goodnessGroupTwoEndPairs = determineGoodnessValueMarginWise(groupTwoEndPairs);
+            double goodnessGroupOneStartPairs = determineGoodnessValueOverlapWise(groupOneStartPairs);
+            double goodnessGroupTwoStartPairs = determineGoodnessValueOverlapWise(groupTwoStartPairs);
+            double goodnessGroupOneEndPairs = determineGoodnessValueOverlapWise(groupOneEndPairs);
+            double goodnessGroupTwoEndPairs = determineGoodnessValueOverlapWise(groupTwoEndPairs);
             double sum = goodnessGroupOneStartPairs + goodnessGroupTwoStartPairs +
                     goodnessGroupOneEndPairs + goodnessGroupTwoEndPairs;
             if (min == -1d || min > sum) {
                 min = sum;
                 selectedIndex = j;
+            } else if (min == sum) { // would this be a tie? How are ties defined?
+                goodnessGroupOneStartPairs = determineGoodnessValueAreaWise(groupOneStartPairs);
+                goodnessGroupTwoStartPairs = determineGoodnessValueAreaWise(groupTwoStartPairs);
+                goodnessGroupOneEndPairs = determineGoodnessValueAreaWise(groupOneEndPairs);
+                goodnessGroupTwoEndPairs = determineGoodnessValueAreaWise(groupTwoEndPairs);
+                sum = goodnessGroupOneStartPairs + goodnessGroupTwoStartPairs +
+                        goodnessGroupOneEndPairs + goodnessGroupTwoEndPairs;
+                min = sum;
+                selectedIndex = j;
             }
-
-            // RESOLVE TIES HOW???
         }
-
         return selectedIndex;
     }
 
@@ -212,18 +218,7 @@ public class AlgorithmSplit {
         return sum;
     }
 
-    private static double determineGoodnessValueAreaWise(List<RectangleEntryDoublePair> entries) {
-        double sum = 0;
-        for (RectangleEntryDoublePair entry : entries) {
-            Rectangle r = entry.getRectangleEntry().getRectangle();
-//            double margin = r.getMargin();
-            double area = r.getArea();
-            sum += area;
-        }
-        return sum;
-    }
-
-    private static double determineGoodnessOverlapAreaWise(List<RectangleEntryDoublePair> entries) {
+    private static double determineGoodnessValueOverlapWise(List<RectangleEntryDoublePair> entries) {
         double sum = 0;
         for (int i = 0; i < entries.size(); i++) {
             RectangleEntryDoublePair entry = entries.get(i);
@@ -239,6 +234,17 @@ public class AlgorithmSplit {
 //                double area = r.getArea();
                 sum += overlap;
             }
+        }
+        return sum;
+    }
+
+    private static double determineGoodnessValueAreaWise(List<RectangleEntryDoublePair> entries) {
+        double sum = 0;
+        for (RectangleEntryDoublePair entry : entries) {
+            Rectangle r = entry.getRectangleEntry().getRectangle();
+//            double margin = r.getMargin();
+            double area = r.getArea();
+            sum += area;
         }
         return sum;
     }
