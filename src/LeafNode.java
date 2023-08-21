@@ -22,4 +22,8 @@ public class LeafNode extends Node {
     public LinkedList<PointEntry> getPointEntries() {
         return pointEntries;
     }
+
+    public void addEntry(PointEntry entry){
+        pointEntries.add(entry);
+    }
 }
