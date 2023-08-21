@@ -2,34 +2,34 @@ import java.util.*;
 
 public class ChooseSubtree {
 
-    /**
-     * @deprecated This method is inside the {@link Rectangle} class.
-     * @param r1 The first rectangle
-     * @param r2 The second rectangle
-     * @return The overlap between the two
-     */
-    @Deprecated
-    public static double overlapCalculation(Rectangle r1, Rectangle r2) {
-        int dimensions = r1.getStartPoint().getCoords().size();
-
-        double product = 1;
-        for (int i = 0; i < dimensions; i++) {
-            double[] array = {r2.getStartPoint().getCoords().get(i),
-                    r2.getEndPoint().getCoords().get(i),
-                    r1.getStartPoint().getCoords().get(i),
-                    r1.getEndPoint().getCoords().get(i)
-            };
-            Arrays.sort(array);
-            product *= array[2] - array[1];
-        }
-
-        return product;
-    }
+//    /**
+//     * @deprecated This method is inside the {@link Rectangle} class.
+//     * @param r1 The first rectangle
+//     * @param r2 The second rectangle
+//     * @return The overlap between the two
+//     */
+//    @Deprecated
+//    public static double overlapCalculation(Rectangle r1, Rectangle r2) {
+//        int dimensions = r1.getStartPoint().getCoords().size();
+//
+//        double product = 1;
+//        for (int i = 0; i < dimensions; i++) {
+//            double[] array = {r2.getStartPoint().getCoords().get(i),
+//                    r2.getEndPoint().getCoords().get(i),
+//                    r1.getStartPoint().getCoords().get(i),
+//                    r1.getEndPoint().getCoords().get(i)
+//            };
+//            Arrays.sort(array);
+//            product *= array[2] - array[1];
+//        }
+//
+//        return product;
+//    }
 
     public static double totalOverlap(Rectangle r1, HashSet<RectangleEntry> rectangles) {
         double sum = 0;
         for (RectangleEntry rectangle : rectangles) {
-            sum += overlapCalculation(r1, rectangle.getRectangle());
+            sum += r1.getOverlap(rectangle.getRectangle());
         }
         if (sum <= 0) {
             return 50000000;
@@ -62,25 +62,25 @@ public class ChooseSubtree {
         return new Rectangle(new Point(min), new Point(max));
     }
 
-    /**
-     * @deprecated
-     * This method is inside the {@link Rectangle} class
-     * @param r The rectangle whose area needs to be calculated
-     * @return The area of the given rectangle
-     */
-    @Deprecated
-    public static double getArea(Rectangle r) {
-        double product = 1;
-        int destinations = r.getStartPoint().getCoords().size();
-        for (int i = 0; i < destinations; i++) {
-            product *= r.getEndPoint().getCoords().get(i) - r.getStartPoint().getCoords().get(i);
-        }
-        return product;
-    }
+//    /**
+//     * @deprecated
+//     * This method is inside the {@link Rectangle} class
+//     * @param r The rectangle whose area needs to be calculated
+//     * @return The area of the given rectangle
+//     */
+//    @Deprecated
+//    public static double getArea(Rectangle r) {
+//        double product = 1;
+//        int destinations = r.getStartPoint().getCoords().size();
+//        for (int i = 0; i < destinations; i++) {
+//            product *= r.getEndPoint().getCoords().get(i) - r.getStartPoint().getCoords().get(i);
+//        }
+//        return product;
+//    }
 
     public static double areaEnlargementCost(RectangleEntry r, PointEntry p) {
         Rectangle re = enlargeRectangle(r, p);
-        return getArea(re) - getArea(r.getRectangle());
+        return re.getArea() - r.getRectangle().getArea();
     }
 
     public static Node chooseSubtree(Node root, PointEntry entry) {
@@ -135,7 +135,7 @@ public class ChooseSubtree {
                     if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
                         HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
                         for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
-                            areaScores.put(rectangleEntry, getArea(rectangleEntry.getRectangle()));
+                            areaScores.put(rectangleEntry, rectangleEntry.getRectangle().getArea());
                         }
                         double minArea = Collections.min(areaScores.values());
                         for (RectangleEntry key : areaScores.keySet()) {
@@ -165,7 +165,7 @@ public class ChooseSubtree {
                 if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
                     HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
                     for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
-                        areaScores.put(rectangleEntry, getArea(rectangleEntry.getRectangle()));
+                        areaScores.put(rectangleEntry, rectangleEntry.getRectangle().getArea());
                     }
                     double minArea = Collections.min(areaScores.values());
                     for (RectangleEntry key : areaScores.keySet()) {

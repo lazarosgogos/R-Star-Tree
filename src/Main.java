@@ -45,8 +45,8 @@ public class Main {
 
 
 
-                System.out.println(ChooseSubtree.overlapCalculation(new Rectangle(new Point(2.4, 2.4), new Point(3,3)),
-                        new Rectangle(new Point(2.6,2.6), new Point(4,2.8))));
+                System.out.println(new Rectangle(new Point(2.4, 2.4), new Point(3,3))
+                                .getOverlap(new Rectangle(new Point(2.6,2.6), new Point(4,2.8))));
                 break;
             }
         }
