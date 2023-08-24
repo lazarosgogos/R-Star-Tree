@@ -6,42 +6,89 @@ import java.util.*;
  */
 public class AlgorithmSplit {
 
-    public static class RectangleEntryGroups{
-        ArrayList<RectangleEntry> groupOne = new ArrayList<>();
-        ArrayList<RectangleEntry> groupTwo = new ArrayList<>();
+    public static class RectangleEntryGroups {
+        List<RectangleEntry> groupOne;
+        List<RectangleEntry> groupTwo;
 
-        public RectangleEntryGroups(ArrayList<RectangleEntry> groupOne, ArrayList<RectangleEntry> groupTwo) {
+        public RectangleEntryGroups(List<RectangleEntry> groupOne, List<RectangleEntry> groupTwo) {
             this.groupOne = groupOne;
             this.groupTwo = groupTwo;
         }
 
-        public ArrayList<RectangleEntry> getGroupOne() {
+        public List<RectangleEntry> getGroupOne() {
             return groupOne;
         }
 
-        public ArrayList<RectangleEntry> getGroupTwo() {
+        public List<RectangleEntry> getGroupTwo() {
             return groupTwo;
         }
     }
 
-    public static RectangleEntryGroups split(RectangleEntry rect, int M, int m) {
-        int splitAxis = chooseSplitAxis(rect, M, m);
-        int splitIndex = chooseSplitIndex(rect, M, m, splitAxis);
-        ArrayList<RectangleEntry> groupOne = new ArrayList<>(M);
-        ArrayList<RectangleEntry> groupTwo = new ArrayList<>(M);
-        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
+    public static class PointEntryGroups {
+        List<PointEntry> groupOne;
+        List<PointEntry> groupTwo;
+
+        public PointEntryGroups(List<PointEntry> groupOne, List<PointEntry> groupTwo) {
+            this.groupOne = groupOne;
+            this.groupTwo = groupTwo;
+        }
+
+        public List<PointEntry> getGroupOne() {
+            return groupOne;
+        }
+
+        public List<PointEntry> getGroupTwo() {
+            return groupTwo;
+        }
+    }
+
+    public static PointEntryGroups splitLeafNode(RectangleEntry rect, int M, int m) {
+        if (!rect.getChild().leaf) return null;
+        // if we're dealing with a leaf
+        LeafNode leaf = (LeafNode) rect.getChild();
+        // not sure if a new variable is needed. but it's all references, so it doesn't really matter
+        List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
+        List<PointEntry> groupOne = new ArrayList<>(M);
+        List<PointEntry> groupTwo = new ArrayList<>(M);
+        int mid = points.size() / 2; // get median
+        // but why was this sort needed?
+
+        /*for (int i = 0; i < points.size(); i++) {
+            PointEntry pointEntry = points.get(i);
+            if (i <= mid)
+                groupOne.add(pointEntry);
+            else
+                groupTwo.add(pointEntry);
+
+        }*/
+        groupOne = points.subList(0, mid);
+        groupTwo = points.subList(mid, points.size());
+        PointEntryGroups groups = new PointEntryGroups(groupOne, groupTwo);
+        return groups;
+
+    }
+
+    public static RectangleEntryGroups splitNonLeafNode(RectangleEntry rect, int M, int m) {
         if (rect.getChild().leaf) return null;
         // else:
+        int splitAxis = chooseSplitAxis(rect, M, m);
+        int splitIndex = chooseSplitIndex(rect, M, m, splitAxis);
+        List<RectangleEntry> groupOne;
+        List<RectangleEntry> groupTwo;
+//        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
         NoLeafNode node;
         node = (NoLeafNode) rect.getChild();
         LinkedList<RectangleEntry> rectangleEntries = node.getRectangleEntries();
-        for (int i = 0; i < rectangleEntries.size(); i++) {
+        /*for (int i = 0; i < rectangleEntries.size(); i++) {
             RectangleEntry rectangleEntry = rectangleEntries.get(i);
             if (i <= splitIndex)
                 groupOne.add(rectangleEntry);
             else
                 groupTwo.add(rectangleEntry);
         }
+        */
+        groupOne = rectangleEntries.subList(0, splitIndex);
+        groupTwo = rectangleEntries.subList(splitIndex, rectangleEntries.size());
         RectangleEntryGroups groups = new RectangleEntryGroups(groupOne, groupTwo);
         return groups;
     }
@@ -58,7 +105,24 @@ public class AlgorithmSplit {
         int dimensions = parentRect.getRectangle().getStartPoint().getCoords().size();
         // let's make this as clear as day
 
-        if (parentRect.getChild().leaf) return 0; // TODO  we'll see!
+        if (parentRect.getChild().leaf) {
+/*
+            LeafNode leaf = (LeafNode) parentRect.getChild();
+            // not sure if a new variable is needed. but it's all references so it doesn't really matter
+            List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
+            int mid = points.size()/2; // get median WRONG!
+            // we're looking for an axis! not an index
+            // this was all needless
+*/
+            // HENCE:
+            //  here we just return 0
+            //  because no matter what we do it's a leaf
+            //  and leaves cannot produce goodness values axis-wise
+            //  we just return the first dimension
+            //  and deal with the index later on
+            //  with a z order curve sort
+            return 0; // return the first dimension
+        }
         // else:
         NoLeafNode node;
         node = (NoLeafNode) parentRect.getChild();
@@ -172,7 +236,15 @@ public class AlgorithmSplit {
         int dimensions = parentRect.getRectangle().getStartPoint().getCoords().size();
         // let's make this as clear as day
 
-        if (parentRect.getChild().leaf) return 0; // TODO  we'll see!
+        if (parentRect.getChild().leaf) return 0;
+        /*{
+            // if we're dealing with a leaf
+            LeafNode leaf = (LeafNode) parentRect.getChild();
+            // not sure if a new variable is needed. but it's all references, so it doesn't really matter
+//            List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
+            int mid = leaf.getPointEntries().size() / 2; // get median
+            // this code block will never be reached though
+        }*/
         // else:
         NoLeafNode node;
         node = (NoLeafNode) parentRect.getChild();
