@@ -2,6 +2,8 @@ import java.util.*;
 
 public class Main {
 
+    static int M;
+
     public static void main(String[] args) {
         //725 records
 
@@ -35,13 +37,13 @@ public class Main {
                 break;
             } else if (answer == 2) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-                int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
+                M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
                 root = BulkLoading.bulkLoading(entries, M);
                 break;
             } else if (answer == 3) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-                int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
+                M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
                 System.out.println((IO.loadRecordFromFile("1_2")));
 
@@ -100,7 +102,7 @@ public class Main {
 
     public static void insert(int leafLevel, PointEntry entry) {
         Node root = null;
-        int M = 4;
+        M = 4;
         boolean split = false;
         LeafNode N = (LeafNode) ChooseSubtree.chooseSubtree(root, entry);
         if (N.getPointEntries().size() < M) {
@@ -119,14 +121,14 @@ public class Main {
 //            reInsert();
 //        } else {
 //            AlgorithmSplit.split();
-            return true;
+        return true;
 //        }
         //return false;
     }
 
     public static void reInsert(RectangleEntry e) {
         Node N = null;
-        int M = 4;
+        M = 4;
         if (N instanceof NoLeafNode) {
             HashMap<RectangleEntry, Double> distances = new HashMap<RectangleEntry, Double>();
             for (RectangleEntry entry : ((NoLeafNode) N).getRectangleEntries()) { //RI1
@@ -149,5 +151,25 @@ public class Main {
         } else {
             //((LeafNode) N).getPointEntries()
         }
+    }
+
+    public static void remove(String record_ID) {
+        (IO.loadRecordFromFile(record_ID)).getCoords(); // gia na broume se poio LeafNode einai
+        // me kapoio find paromoio me to pos briskei i insert na to balei isos
+        LeafNode foundNode = null;
+        PointEntry foundPE = null;
+
+        if (foundNode.getPointEntries().size() - 1 >= Math.round(0.4 * M)) {
+            foundNode.getPointEntries().remove(foundPE);
+        } else {
+            foundNode.getPointEntries().remove(foundPE); // remove the record
+            HashSet<PointEntry> temp = new HashSet<>(foundNode.getPointEntries()); // get the rest for reInsert
+            ((NoLeafNode) foundNode.getParent().getContainer()).getRectangleEntries().remove(foundNode.getParent()); // diagrafoume to Rectangle poy pleon den einai arketa megalo
+            if (((NoLeafNode) foundNode.getParent().getContainer()).getRectangleEntries().size() < Math.round(0.4 * M)) {
+                // an kai o gonios gamietai, krima
+            }
+
+        }
+
     }
 }
