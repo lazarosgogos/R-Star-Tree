@@ -43,9 +43,13 @@ public class Main {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
                 int M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
+                System.out.println((IO.loadRecordFromFile("1_2")));
 
+                /*
                 System.out.println(new Rectangle(new Point(2.4, 2.4), new Point(3, 3))
                         .getOverlap(new Rectangle(new Point(2.6, 2.6), new Point(4, 2.8))));
+
+                 */
                 break;
             }
         }
@@ -128,8 +132,7 @@ public class Main {
             for (RectangleEntry entry : ((NoLeafNode) N).getRectangleEntries()) { //RI1
                 distances.put(entry, entry.getRectangle().getCenter().distance(N.parent.getRectangle().getCenter()));
             }
-            LinkedList<Double> list = new LinkedList<>();
-            list.addAll(distances.values());
+            LinkedList<Double> list = new LinkedList<>(distances.values());
             Collections.sort(list); //RI2
             long p = Math.round(0.3 * M);
             LinkedList<Double> trash = new LinkedList<>();

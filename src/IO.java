@@ -16,17 +16,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
-/** Class that handles input and output functions. Includes loading data to memory,
- *  saving the R* tree to the disk, etc. */
+/**
+ * Class that handles input and output functions. Includes loading data to memory,
+ * saving the R* tree to the disk, etc.
+ */
 public class IO {
-    /** Element structure: id, lat, long */
+    /**
+     * Element structure: id, lat, long
+     */
     private static final boolean debug = false;
 
     private static String[] block0;
 
-    public static LinkedList<PointEntry> loadInput (String filePath) {
+    public static LinkedList<PointEntry> loadInput(String filePath) {
         //i lista poy epistrefo me ta entries
         LinkedList<PointEntry> ret = new LinkedList<>();
         try {
@@ -95,40 +100,44 @@ public class IO {
         return ret;
     }
 
-//    public static DataRecord loadRecordFromFile(String recordId) {
-//        String[] recordIdArr = recordId.split("_");
-//        String searchTerm = "block" + recordIdArr[0];
-//        int index = Integer.parseInt(recordIdArr[1]);
-//
-//        String blockStr = "";
-//        try {
-//            File file = new File("datafile.txt");
-//            BufferedReader reader = new BufferedReader(new FileReader(file));
-//
-//            String line;
-//            int lineNumber = 0;
-//            while ((line = reader.readLine()) != null) {
-//                lineNumber++;
-//                if (line.contains(searchTerm)) {
-//                    blockStr = reader.readLine();
-//                    break;
-//                }
-//            }
-//
-//            reader.close();
-//        } catch (Exception e) {
-//            throw new RuntimeException();
-//        }
-//
-//        String[] block = blockStr.split("\\|");
-//
-//        String[] record = block[index].split(":");
-//
-//        float[] coor = new float[2];
-//        coor[0]= Float.parseFloat(record[1]);
-//        coor[1]= Float.parseFloat(record[2]);
-//        return new DataRecord(record[3], record[0], coor);
-//    }
+    public static Point loadRecordFromFile(String recordId) {
+        String[] recordIdArr = recordId.split("_"); // xorizoyme to string se block kai offset
+        String searchTerm = "block" + recordIdArr[0]; // block
+        int index = Integer.parseInt(recordIdArr[1]); // offset
+
+        String blockStr = "";
+        try {
+            File file = new File("datafile.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if (line.contains(searchTerm)) { //psanoume tin grammi pou grafei to block_number
+                    blockStr = reader.readLine(); //kai diabazoume tin epomeni, diladi olo to block
+                    break;
+                }
+            }
+
+            reader.close();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        String blocks_splitter = "\\|";
+        String records_splitter = ":";
+
+        String[] block = blockStr.split(blocks_splitter);
+
+        String[] record = block[index].split(records_splitter);
+
+        int dimensions = record.length - 2; // oi syntetagmens meion id meion onoma
+
+        ArrayList<String> coordinates = new ArrayList<>(Arrays.asList(record).subList(0, dimensions));
+
+        return new Point(Long.parseLong(record[dimensions]), record[dimensions+1], coordinates);
+    }
 //
 //    public static int loadCoordsFromBlock0() {
 //        String searchTerm = "block0";
