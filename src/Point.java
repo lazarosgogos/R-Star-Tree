@@ -9,7 +9,7 @@ public class Point implements java.io.Serializable {
     private String name;
     private long id;
 
-    ArrayList<Double> coords;
+    private ArrayList<Double> coords;
 
     public ArrayList<Integer> getCoordsIntegers() {
         return coordsIntegers;
@@ -73,19 +73,28 @@ public class Point implements java.io.Serializable {
         sb.append(')');
         sb.append(' ');
         sb.append(name);
+        sb.append(' ');
+        sb.append(id);
         return sb.toString();
     }
 
-    @Deprecated
-    public double getX() {
-        return coords.get(0);
+    public String toFile() {
+        String splitter = ":";
+        StringBuilder sb = new StringBuilder();
+        for (String coordsString : this.coordsStrings) {
+            sb.append(coordsString);
+            sb.append(splitter);
+        }
+        int pos = sb.lastIndexOf(splitter);
+        String temp = sb.substring(0, pos);
+        sb = new StringBuilder();
+        sb.append(temp);
+        sb.append(splitter);
+        sb.append(id);
+        sb.append(splitter);
+        sb.append(name);
+        return sb.toString();
     }
-
-    @Deprecated
-    public double getY() {
-        return coords.get(1);
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -176,13 +185,6 @@ public class Point implements java.io.Serializable {
         Point other = new Point(closest);
         return this.distance(other);
     }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getX(), this.getY(), id);
-    }
-
 
     public ArrayList<Double> getCoords() {
         return coords;

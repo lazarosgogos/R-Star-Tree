@@ -20,8 +20,8 @@ public class DatafileHandler {
     private static int recordsCounter = 0;
 
     public DatafileHandler(Point record) {
-        numberOfCoords = 2;
-        saveToFile(record.toString());
+        numberOfCoords =record.getCoords().size();
+        saveToFile(record.toFile());
     }
 
     /**

@@ -9,4 +9,8 @@ public class Node implements java.io.Serializable {
     public void setParent(RectangleEntry parent) {
         this.parent = parent;
     }
+
+    public RectangleEntry getParent() {
+        return parent;
+    }
 }
