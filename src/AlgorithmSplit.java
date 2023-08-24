@@ -47,9 +47,10 @@ public class AlgorithmSplit {
         // if we're dealing with a leaf
         LeafNode leaf = (LeafNode) rect.getChild();
         // not sure if a new variable is needed. but it's all references, so it doesn't really matter
-        List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
-        List<PointEntry> groupOne = new ArrayList<>(M);
-        List<PointEntry> groupTwo = new ArrayList<>(M);
+//        List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
+        List<PointEntry> points = leaf.getPointEntries();
+        List<PointEntry> groupOne;
+        List<PointEntry> groupTwo;
         int mid = points.size() / 2; // get median
         // but why was this sort needed?
 
