@@ -33,7 +33,6 @@ public class AlgorithmInsert {
     }
 
 
-
     public static void reInsert(Node N, RectangleEntry e, final int M) {
 //        Node N = null;
 //        M = 4; // ??
@@ -61,7 +60,10 @@ public class AlgorithmInsert {
             for (RectangleEntryDoublePair pair : trash) {
 //                for (RectangleEntry key : distances.keySet()) {
 //                    if (distances.get(key) == value) {
-                        reInsert(N, pair.getRectangleEntry(), M);
+
+                // this is a recursive call but I am not sure it will work out that well!
+                // maybe the reinsertion should not be recursive but iterative
+                reInsert(N, pair.getRectangleEntry(), M);
 //                    }
 //                }
             }
@@ -69,12 +71,14 @@ public class AlgorithmInsert {
             //((LeafNode) N).getPointEntries()
         }
     }
+
     private static class RectangleEntryDoublePairComparator implements Comparator<RectangleEntryDoublePair> {
         @Override
         public int compare(RectangleEntryDoublePair o, RectangleEntryDoublePair t1) {
             return Double.compare(o.getValue(), t1.getValue());
         }
     }
+
     private static class RectangleEntryDoublePair {
         private RectangleEntry rectangleEntry;
         private Double value; // the value of some point
