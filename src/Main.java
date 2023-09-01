@@ -3,6 +3,7 @@ import java.util.*;
 public class Main {
 
     static int M;
+    static Node root;
 
     public static void main(String[] args) {
         //725 records
@@ -20,7 +21,7 @@ public class Main {
 
         String inputFile = "assets/mapCenter.osm";
 
-        Node root = new Node();
+        root = new Node();
 
         while (true) {
             System.out.println("type 1 if you want to load from file the last index");
@@ -45,7 +46,12 @@ public class Main {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
 
-                System.out.println((IO.loadRecordFromFile("1_2")));
+                for (PointEntry entry : entries) {
+                    AlgorithmInsert.insert(entry);
+                }
+
+
+                //System.out.println((IO.loadRecordFromFile("1_2")));
 
                 /*
                 System.out.println(new Rectangle(new Point(2.4, 2.4), new Point(3, 3))
@@ -93,8 +99,6 @@ public class Main {
             System.out.println("End Leaf Node");
         }
     }
-
-
 
 
     public static void remove(String record_ID) {

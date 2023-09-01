@@ -1,5 +1,3 @@
-import org.w3c.dom.css.Rect;
-
 import java.util.*;
 
 /**
@@ -71,8 +69,11 @@ public class AlgorithmSplit {
         return groups;
     }
 
-    public static void split(LeafNode N, PointEntry pe){
+    public static NoLeafNode split(LeafNode N, PointEntry pe) {
+        NoLeafNode returnable = null;
+
         RectangleEntry parent = N.getParent();
+
         PointEntryGroups groups = splitLeafNode(parent, pe);
 
         LeafNode ln1 = new LeafNode((LinkedList<PointEntry>) groups.getGroupOne());
@@ -86,25 +87,56 @@ public class AlgorithmSplit {
             parentContainer.getRectangleEntries().remove(parent);
             parentContainer.getRectangleEntries().add(re1);
             parentContainer.getRectangleEntries().add(re2);
-        }
-        else {
-            LinkedList<RectangleEntry> temp = new LinkedList<>();
-            temp.add(re1);
-            temp.add(re2);
-            splitNonLeafNode(parent, temp);
+        } else {
+            while (true) {
+                LinkedList<RectangleEntry> temp = new LinkedList<>();
+                temp.add(re1);
+                temp.add(re2);
 
+                parent = parentContainer.getParent();
+
+                RectangleEntryGroups rGroups = splitNonLeafNode(parent, temp);
+                NoLeafNode nln1 = new NoLeafNode((LinkedList<RectangleEntry>) rGroups.getGroupOne());
+                NoLeafNode nln2 = new NoLeafNode((LinkedList<RectangleEntry>) rGroups.getGroupTwo());
+
+                RectangleEntry re3 = new RectangleEntry(nln1);
+                RectangleEntry re4 = new RectangleEntry(nln2);
+
+                NoLeafNode parentContainer2 = (NoLeafNode) parent.getContainer();
+                if (parentContainer2.getRectangleEntries().size() + 1 <= Main.M) {
+                    parentContainer.getRectangleEntries().remove(parent);
+                    parentContainer.getRectangleEntries().add(re3);
+                    parentContainer.getRectangleEntries().add(re4);
+                    break;
+                }
+
+                re1 = re3;
+                re2 = re4;
+                if (parentContainer.getParent() == null) { // exoume ftasei riza
+                   // if (parentContainer.isRoot()) {
+                        parentContainer.setRoot(false);
+                        LinkedList<RectangleEntry> temp2 = new LinkedList<>();
+                        temp2.add(re1);
+                        temp2.add(re2);
+                        NoLeafNode newRoot = new NoLeafNode(temp2);
+                        newRoot.setRoot(true);
+                    //}
+                    return newRoot;
+                }
+            }
         }
+        return returnable;
     }
 
     public static RectangleEntryGroups splitNonLeafNode(RectangleEntry rect, LinkedList<RectangleEntry> rects) {
-        int m = (int) (Main.M *0.4);
+        int m = (int) (Main.M * 0.4);
         if (rect.getChild().leaf) return null;
         // else:
         List<RectangleEntry> groupOne;
         List<RectangleEntry> groupTwo;
 //        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
         NoLeafNode node;
-        node = (NoLeafNode) rect.getContainer();
+        node = (NoLeafNode) rect.getChild();
         LinkedList<RectangleEntry> rectangleEntries = node.getRectangleEntries();
         rectangleEntries.addAll(rects);
 
@@ -132,7 +164,7 @@ public class AlgorithmSplit {
      */
     public static int chooseSplitAxis(RectangleEntry parentRect) {
         int M = ((NoLeafNode) parentRect.getChild()).getRectangleEntries().size();
-        int m = (int) (M*0.4);
+        int m = (int) (M * 0.4);
         // for each axis/dimension! --> we need an arraylist (A) of arraylists (B)
         // size of A -> # of dimensions
         // A holds D arraylists
@@ -270,7 +302,7 @@ public class AlgorithmSplit {
      */
     public static int chooseSplitIndex(RectangleEntry parentRect, int axis) {
         int M = ((NoLeafNode) parentRect.getChild()).getRectangleEntries().size();
-        int m = (int) (M*0.4);
+        int m = (int) (M * 0.4);
 
         int dimensions = parentRect.getRectangle().getStartPoint().getCoords().size();
         // let's make this as clear as day

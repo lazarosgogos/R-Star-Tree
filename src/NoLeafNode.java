@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -29,6 +28,8 @@ public class NoLeafNode extends Node {
     public void setRoot(Boolean root) {
         this.root = root;
     }
+
+    public Boolean isRoot(){return root;}
 
     public LinkedList<Node> getChildren() {
         return children;
