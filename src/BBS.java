@@ -76,7 +76,7 @@ public class BBS {
         Point tempPoint2;
         for (PointEntry pe : set) {
             tempPoint1 = pe.getPoint();
-            Rectangle tempRectangle = current.parent.getRectangle();
+            Rectangle tempRectangle = current.getParent().getRectangle();
             tempPoint2 = new Point(tempRectangle.getStartPoint().getCoords());
             if (isDominated(tempPoint1, tempPoint2)) return false;
         }

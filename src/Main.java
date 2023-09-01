@@ -111,7 +111,7 @@ public class Main {
     }
 
 
-    public static void remove(String record_ID) {
+    public static void remove(String record_ID) { //TODO remove record
         (IO.loadRecordFromFile(record_ID)).getCoords(); // gia na broume se poio LeafNode einai
         // me kapoio find paromoio me to pos briskei i insert na to balei isos
         LeafNode foundNode = null;

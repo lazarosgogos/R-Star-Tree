@@ -4,7 +4,6 @@ public class AlgorithmInsert {
 
     private static HashSet<Integer> levelOverflowStatus = new HashSet<>(/* number of levels of tree */);
 
-
     public static void insert(PointEntry entry) {
         /*TODO How do we keep track of each node's level ?
          *  Either we keep that piece of information inside the node in some short integer
@@ -15,6 +14,9 @@ public class AlgorithmInsert {
         LeafNode N = (LeafNode) ChooseSubtree.chooseSubtree(Main.root, entry);
         if (N.getPointEntries().size() < Main.M) {
             N.addEntry(entry);
+            /* TODO den arkei apla na to eisagoume stin lista tou choosenNode
+            *   prepei na allazei to tetragono
+            *   eite tha ftiaxnoume neo, eite tha tropopoioume to yparxon   */
         }
         if (N.getPointEntries().size() == Main.M) {
             action = overflowTreatment(N.getLevel());
@@ -28,11 +30,6 @@ public class AlgorithmInsert {
             }
         }
     }
-
-    public static void insert(LinkedList<RectangleEntry> list) {
-
-    }
-
 
     /**
      * This method decides whether a reinsertion or a split will occur. If true is returned, a reinsertion must happen.
@@ -55,12 +52,14 @@ public class AlgorithmInsert {
         /**/
     }
 
-
     public static void reInsert(Node N) {
         // TODO How are we supposed to reinsert the M+1 nodes
         //  when M is the maximum number of entries that can fit in the Node
         //  and it's possible that a reInsertion won't leave enough room for the final +1 entry
         //  that we want to insert? Or is it granted that it'll fit?
+
+        int p = (int) (0.3 * Main.M); //TODO cut or round?
+
         if (N instanceof NoLeafNode) {
             ArrayList<RectangleEntryDoublePair> pairs = new ArrayList<>();
 
@@ -72,7 +71,6 @@ public class AlgorithmInsert {
 
             pairs.sort(new RectangleEntryDoublePairComparator()); // RI2
 
-            int p = (int) (0.3 * Main.M); //TODO cut or round?
             List<RectangleEntryDoublePair> trash;
             trash = pairs.subList(p, pairs.size()); //
             for (RectangleEntryDoublePair pair : trash) {
@@ -81,7 +79,7 @@ public class AlgorithmInsert {
                 //TODO RI4
                 //insert(N, pair.getRectangleEntry(), M); // this should invoke Insert and not reInsert!
             }
-        } else {
+        } else { // N instance of LeafNode
             ArrayList<PointEntryDoublePair> pairs = new ArrayList<>();
 
             for (PointEntry entry : ((LeafNode) N).getPointEntries()) { //RI1
@@ -89,15 +87,25 @@ public class AlgorithmInsert {
                 PointEntryDoublePair pair = new PointEntryDoublePair(entry, distance);
                 pairs.add(pair);
             }
-            pairs.sort(new PointEntryDoublePairComparator()); // RI2
+            pairs.sort(new PointEntryDoublePairComparator()); //RI2
 
-            int p = (int) (0.3 * Main.M);
             List<PointEntryDoublePair> trash;
-            trash = pairs.subList(p, pairs.size());
-            for (PointEntryDoublePair pair : trash) {
+            trash = pairs.subList(p, pairs.size()); //RI3
+
+            for (PointEntryDoublePair pair : trash) { //RI4
                 insert(pair.getPointEntry());
             }
         }
+    }
+
+    public static void insert(LinkedList<RectangleEntry> list) { //TODO insert for RectangleEntries
+        // Idea 1: briskoume ola ta point entries kai ta kanoume insert
+        /* Idea 2:
+         * Kratame ton gonea apo ekei poy pirame ta trash entries
+         * ftiaxnoume neo komvo me ta trash entries
+         * ton bazoume ston gonea an xoraei
+         * an den xoraei, kanoume split updwards
+         */
     }
 
     private static class RectangleEntryDoublePairComparator implements Comparator<RectangleEntryDoublePair> {
