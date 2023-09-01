@@ -1,6 +1,9 @@
 import java.util.*;
 
 public class AlgorithmInsert {
+
+    private static HashSet<Integer> levelOverflowStatus = new HashSet<>(/* number of levels of tree */);
+
     public static void insertData(PointEntry entry, final int M) {
         int leafLevel = 0;
         insert(leafLevel, entry, M);
@@ -9,33 +12,55 @@ public class AlgorithmInsert {
     public static void insert(int leafLevel, PointEntry entry, final int M) {
         Node root = null;
 //        M = 4;
-        boolean split = false;
+        /*TODO How do we keep track of each node's level ?
+        *  Either we keep that piece of information inside the node in some short integer
+        *  or we keep a list/hashmap in a local field with each node's ID and its corresponding level.
+        *  I find the first solution to be the optimal one, as it's both easier to implement, and more
+        *  straight-forward */
+        boolean action = false;
         LeafNode N = (LeafNode) ChooseSubtree.chooseSubtree(root, entry);
         if (N.getPointEntries().size() < M) {
             N.addEntry(entry);
         }
         if (N.getPointEntries().size() == M) {
-            split = overflowTreatment(leafLevel);
+            action = overflowTreatment(N.getLevel());
         }
-        if (split) {
-            //overflowTreatment() kai sta NoLeafNodes
+        if (action) { // if boolean var "action" is true, invoke reinsert
+            reInsert(N, M);
+        } else { // else invoke split
+            // do split
         }
     }
 
-    public static boolean overflowTreatment(int leafLevel) {
-//        if () {
+
+    /**
+     * This method decides whether a reinsertion or a split will occur. If true is returned, a reinsertion must happen.
+     * If false is returned, a split must be put into place.
+     * @param level The level of the node that is being inserted
+     * @return True if reinsertion must be done, false if a split must be done.
+     */
+    public static boolean overflowTreatment(int level) {
+        // if this level has not been examined yet
+        // hence a reinsertion must occur
+        if (!levelOverflowStatus.contains(level)) { // OT1
 //            reInsert();
-//        } else {
+            levelOverflowStatus.add(level);
+            return true;
+        } /*else {*/
 //            AlgorithmSplit.split();
-        return true;
-//        }
-        //return false;
+        return false;
+//        return true;
+        /**/
     }
 
 
-    public static void reInsert(Node N, RectangleEntry e, final int M) {
+    public static void reInsert(Node N, final int M) {
 //        Node N = null;
 //        M = 4; // ??
+        // TODO How are we supposed to reinsert the M+1 nodes
+        //  when M is the maximum number of entries that can fit in the Node
+        //  and it's possible that a reInsertion won't leave enough room for the final +1 entry
+        //  that we want to insert? Or is it granted that it'll fit?
         if (N instanceof NoLeafNode) {
             // deprecate this, it's a bad tactic
             HashMap<RectangleEntry, Double> distances = new HashMap<RectangleEntry, Double>();
@@ -61,9 +86,10 @@ public class AlgorithmInsert {
 //                for (RectangleEntry key : distances.keySet()) {
 //                    if (distances.get(key) == value) {
 
-                // this is a recursive call but I am not sure it will work out that well!
+                // this is a recursive call, but I am not sure if it will work out that well!
                 // maybe the reinsertion should not be recursive but iterative
-                reInsert(N, pair.getRectangleEntry(), M);
+                // RI4
+                reInsert(N, pair.getRectangleEntry(), M); // this should invoke Insert and not reInsert!
 //                    }
 //                }
             }
