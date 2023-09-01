@@ -1,3 +1,5 @@
+import org.w3c.dom.css.Rect;
+
 import java.util.*;
 
 /**
@@ -42,13 +44,14 @@ public class AlgorithmSplit {
         }
     }
 
-    public static PointEntryGroups splitLeafNode(RectangleEntry rect, int M, int m) {
+    public static PointEntryGroups splitLeafNode(RectangleEntry rect, PointEntry pe) {
         if (!rect.getChild().leaf) return null;
         // if we're dealing with a leaf
         LeafNode leaf = (LeafNode) rect.getChild();
         // not sure if a new variable is needed. but it's all references, so it doesn't really matter
 //        List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
         List<PointEntry> points = leaf.getPointEntries();
+        points.add(pe);
         List<PointEntry> groupOne;
         List<PointEntry> groupTwo;
         int mid = points.size() / 2; // get median
@@ -66,20 +69,50 @@ public class AlgorithmSplit {
         groupTwo = points.subList(mid, points.size());
         PointEntryGroups groups = new PointEntryGroups(groupOne, groupTwo);
         return groups;
-
     }
 
-    public static RectangleEntryGroups splitNonLeafNode(RectangleEntry rect, int M, int m) {
+    public static void split(LeafNode N, PointEntry pe){
+        RectangleEntry parent = N.getParent();
+        PointEntryGroups groups = splitLeafNode(parent, pe);
+
+        LeafNode ln1 = new LeafNode((LinkedList<PointEntry>) groups.getGroupOne());
+        LeafNode ln2 = new LeafNode((LinkedList<PointEntry>) groups.getGroupTwo());
+
+        RectangleEntry re1 = new RectangleEntry(ln1);
+        RectangleEntry re2 = new RectangleEntry(ln2);
+
+        NoLeafNode parentContainer = (NoLeafNode) parent.getContainer();
+        if (parentContainer.getRectangleEntries().size() + 1 <= Main.M) {
+            parentContainer.getRectangleEntries().remove(parent);
+            parentContainer.getRectangleEntries().add(re1);
+            parentContainer.getRectangleEntries().add(re2);
+        }
+        else {
+            LinkedList<RectangleEntry> temp = new LinkedList<>();
+            temp.add(re1);
+            temp.add(re2);
+            splitNonLeafNode(parent, temp);
+
+        }
+    }
+
+    public static RectangleEntryGroups splitNonLeafNode(RectangleEntry rect, LinkedList<RectangleEntry> rects) {
+        int m = (int) (Main.M *0.4);
         if (rect.getChild().leaf) return null;
         // else:
-        int splitAxis = chooseSplitAxis(rect, M, m);
-        int splitIndex = chooseSplitIndex(rect, M, m, splitAxis);
         List<RectangleEntry> groupOne;
         List<RectangleEntry> groupTwo;
 //        int dimensions = rect.getRectangle().getStartPoint().getCoords().size();
         NoLeafNode node;
-        node = (NoLeafNode) rect.getChild();
+        node = (NoLeafNode) rect.getContainer();
         LinkedList<RectangleEntry> rectangleEntries = node.getRectangleEntries();
+        rectangleEntries.addAll(rects);
+
+        NoLeafNode temp2 = new NoLeafNode(rectangleEntries);
+        RectangleEntry temp = new RectangleEntry(temp2);
+        int splitAxis = chooseSplitAxis(temp);
+        int splitIndex = chooseSplitIndex(temp, splitAxis);
+
         /*for (int i = 0; i < rectangleEntries.size(); i++) {
             RectangleEntry rectangleEntry = rectangleEntries.get(i);
             if (i <= splitIndex)
@@ -97,7 +130,9 @@ public class AlgorithmSplit {
     /**
      * Determine which axis/dimension should be selected by calculating goodness values
      */
-    public static int chooseSplitAxis(RectangleEntry parentRect, int M, int m) {
+    public static int chooseSplitAxis(RectangleEntry parentRect) {
+        int M = ((NoLeafNode) parentRect.getChild()).getRectangleEntries().size();
+        int m = (int) (M*0.4);
         // for each axis/dimension! --> we need an arraylist (A) of arraylists (B)
         // size of A -> # of dimensions
         // A holds D arraylists
@@ -233,7 +268,10 @@ public class AlgorithmSplit {
     /**
      * Determine the entry/index at which the split will happen
      */
-    public static int chooseSplitIndex(RectangleEntry parentRect, int M, int m, int axis) {
+    public static int chooseSplitIndex(RectangleEntry parentRect, int axis) {
+        int M = ((NoLeafNode) parentRect.getChild()).getRectangleEntries().size();
+        int m = (int) (M*0.4);
+
         int dimensions = parentRect.getRectangle().getStartPoint().getCoords().size();
         // let's make this as clear as day
 

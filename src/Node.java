@@ -3,7 +3,7 @@
  * All Nodes except root have a parent Node.
  */
 public class Node implements java.io.Serializable {
-    RectangleEntry parent;
+    private RectangleEntry parent;
     Boolean leaf;
 
     private short level;

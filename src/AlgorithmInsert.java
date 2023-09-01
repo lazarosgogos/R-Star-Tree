@@ -68,7 +68,7 @@ public class AlgorithmInsert {
             ArrayList<RectangleEntryDoublePair> pairs = new ArrayList<>();
 
             for (RectangleEntry entry : ((NoLeafNode) N).getRectangleEntries()) { //RI1
-                double distance = entry.getRectangle().getCenter().distance(N.parent.getRectangle().getCenter());
+                double distance = entry.getRectangle().getCenter().distance(N.getParent().getRectangle().getCenter());
                 RectangleEntryDoublePair pair = new RectangleEntryDoublePair(entry, distance);
 //                distances.put(entry, entry.getRectangle().getCenter().distance(N.parent.getRectangle().getCenter()));
                 pairs.add(pair);
