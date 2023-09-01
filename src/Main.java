@@ -3,6 +3,7 @@ import java.util.*;
 public class Main {
 
     static int M;
+    static int m;
     static Node root;
 
     public static void main(String[] args) {
@@ -45,11 +46,20 @@ public class Main {
             } else if (answer == 3) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
+                m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
+                if (m < 2) m = 2; // defensive programming
 
-                for (PointEntry entry : entries) {
-                    AlgorithmInsert.insert(entry);
+                //minimum number of entries in a node = m
+                Iterator<PointEntry> it = entries.iterator();
+                LinkedList<PointEntry> init = new LinkedList<>();
+                for (int i = 0; i < m; i++) {
+                    init.add(it.next());
                 }
+                root = new LeafNode(init);
 
+                while (it.hasNext()) {
+                    AlgorithmInsert.insert(it.next());
+                }
 
                 //System.out.println((IO.loadRecordFromFile("1_2")));
 
