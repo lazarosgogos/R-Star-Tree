@@ -72,7 +72,7 @@ public class AlgorithmInsert {
 
             pairs.sort(new RectangleEntryDoublePairComparator()); // RI2
 
-            int p = (int) (0.3 * Main.M);
+            int p = (int) (0.3 * Main.M); //TODO cut or round?
             List<RectangleEntryDoublePair> trash;
             trash = pairs.subList(p, pairs.size()); //
             for (RectangleEntryDoublePair pair : trash) {
