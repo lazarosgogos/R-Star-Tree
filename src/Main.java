@@ -24,7 +24,7 @@ public class Main {
 
 //        //2276 total
 
-        String inputFile = "assets/mapCenter.osm";
+        String inputFile = "assets/mapTest.osm";
 
         root = new Node();
 
@@ -76,6 +76,7 @@ public class Main {
                 while (it.hasNext()) {
                     AlgorithmInsert.insert(it.next());
                     System.out.println(++counter);
+                    deapthFirstPrint(root,0);
                 }
 
                 //System.out.println((IO.loadRecordFromFile("1_2")));

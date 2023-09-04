@@ -20,12 +20,13 @@ public class AlgorithmInsert {
             action = overflowTreatment(N.getLevel());
         }
         if (action) { // if boolean var "action" is true, invoke reinsert
-            reInsert(N);
+            reInsert(N, entry);
         } else { // else invoke split
+            System.out.println("Going to split...");
             NoLeafNode returnable = AlgorithmSplit.split(N, entry);
             if (returnable != null) {
                 Main.root = returnable;
-                Main.root.setLevel(((NoLeafNode) Main.root).getRectangleEntries().get(0).getChild().getLevel()+1);
+                Main.root.setLevel(((NoLeafNode) Main.root).getRectangleEntries().get(0).getChild().getLevel() + 1);
                 System.out.println("Split Done!");
             }
         }
@@ -52,16 +53,16 @@ public class AlgorithmInsert {
         /**/
     }
 
-    public static void reInsert(Node N) {
+    public static void reInsert(Node N, PointEntry pointEntry) {
         // TODO How are we supposed to reinsert the M+1 nodes
         //  when M is the maximum number of entries that can fit in the Node
         //  and it's possible that a reInsertion won't leave enough room for the final +1 entry
         //  that we want to insert? Or is it granted that it'll fit?
 
-        int p = (int) (0.3 * Main.M); //TODO cut or round?
+        int p = Math.round(0.3f * Main.M);
 
         if (N instanceof NoLeafNode) {
-            ArrayList<RectangleEntryDoublePair> pairs = new ArrayList<>();
+            LinkedList<RectangleEntryDoublePair> pairs = new LinkedList<>();
 
             for (RectangleEntry entry : ((NoLeafNode) N).getRectangleEntries()) { //RI1
                 double distance = entry.getRectangle().getCenter().distance(N.getParent().getRectangle().getCenter());
@@ -82,17 +83,23 @@ public class AlgorithmInsert {
             }
 
         } else { // N instance of LeafNode
-            ArrayList<PointEntryDoublePair> pairs = new ArrayList<>();
+            LinkedList<PointEntryDoublePair> pairs = new LinkedList<>();
 
             for (PointEntry entry : ((LeafNode) N).getPointEntries()) { //RI1
                 double distance = entry.getPoint().distance(N.getParent().getRectangle().getCenter());
-                PointEntryDoublePair pair = new PointEntryDoublePair(entry, distance);
-                pairs.add(pair);
+                pairs.add(new PointEntryDoublePair(entry, distance));
             }
+            pairs.add(new PointEntryDoublePair(pointEntry, pointEntry.getPoint().distance(N.getParent().getRectangle().getCenter())));
+
             pairs.sort(new PointEntryDoublePairComparator()); //RI2
 
-            List<PointEntryDoublePair> trash;
-            trash = pairs.subList(p, pairs.size()); //RI3
+            LinkedList<PointEntryDoublePair> trash = new LinkedList<>();
+            for (int i = 0; i < p; i++) {
+                trash.add(pairs.pop());
+            }
+
+            //TODO ANANEOSE TO KOMVO ME TA STOIXEIA POY DEN PANE TRASH
+            // Ton pairs, ton kanoume lista, ftiaxnoume neo komvo, neo rectangle kai antikathistoume isos kai upwards
 
             for (PointEntryDoublePair pair : trash) { //RI4
                 insert(pair.getPointEntry());
