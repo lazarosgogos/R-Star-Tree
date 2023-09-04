@@ -14,9 +14,7 @@ public class AlgorithmInsert {
         LeafNode N = (LeafNode) ChooseSubtree.chooseSubtree(Main.root, entry);
         if (N.getPointEntries().size() < Main.M) {
             N.addEntry(entry);
-            /* TODO den arkei apla na to eisagoume stin lista tou choosenNode
-            *   prepei na allazei to tetragono
-            *   eite tha ftiaxnoume neo, eite tha tropopoioume to yparxon   */
+            return;
         }
         if (N.getPointEntries().size() == Main.M) {
             action = overflowTreatment(N.getLevel());
@@ -27,6 +25,8 @@ public class AlgorithmInsert {
             NoLeafNode returnable = AlgorithmSplit.split(N, entry);
             if (returnable != null) {
                 Main.root = returnable;
+                Main.root.setLevel(((NoLeafNode) Main.root).getRectangleEntries().get(0).getChild().getLevel()+1);
+                System.out.println("Split Done!");
             }
         }
     }
@@ -72,13 +72,15 @@ public class AlgorithmInsert {
             pairs.sort(new RectangleEntryDoublePairComparator()); // RI2
 
             List<RectangleEntryDoublePair> trash;
-            trash = pairs.subList(p, pairs.size()); //
-            for (RectangleEntryDoublePair pair : trash) {
-                // this is a recursive call, but I am not sure if it will work out that well!
-                // maybe the reinsertion should not be recursive but iterative
-                //TODO RI4
-                //insert(N, pair.getRectangleEntry(), M); // this should invoke Insert and not reInsert!
+            trash = pairs.subList(p, pairs.size());
+            HashSet<PointEntry> temp = new HashSet<>();
+            for (RectangleEntryDoublePair pair : trash) {// RI4
+                dfs(pair.getRectangleEntry().getChild(), temp);
             }
+            for (PointEntry pe : temp) {
+                insert(pe);
+            }
+
         } else { // N instance of LeafNode
             ArrayList<PointEntryDoublePair> pairs = new ArrayList<>();
 
@@ -98,15 +100,17 @@ public class AlgorithmInsert {
         }
     }
 
-    public static void insert(LinkedList<RectangleEntry> list) { //TODO insert for RectangleEntries
-        // Idea 1: briskoume ola ta point entries kai ta kanoume insert
-        /* Idea 2:
-         * Kratame ton gonea apo ekei poy pirame ta trash entries
-         * ftiaxnoume neo komvo me ta trash entries
-         * ton bazoume ston gonea an xoraei
-         * an den xoraei, kanoume split updwards
-         */
+    public static void dfs(Node root, HashSet<PointEntry> list) {
+        if (!root.leaf) {
+            LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
+            for (RectangleEntry rectangleEntry : rectangles) {
+                dfs(rectangleEntry.getChild(), list);
+            }
+        } else {
+            list.addAll(((LeafNode) root).getPointEntries());
+        }
     }
+
 
     private static class RectangleEntryDoublePairComparator implements Comparator<RectangleEntryDoublePair> {
         @Override

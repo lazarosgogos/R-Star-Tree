@@ -25,19 +25,19 @@ public class AlgorithmSplit {
     }
 
     public static class PointEntryGroups {
-        List<PointEntry> groupOne;
-        List<PointEntry> groupTwo;
+        LinkedList<PointEntry> groupOne;
+        LinkedList<PointEntry> groupTwo;
 
-        public PointEntryGroups(List<PointEntry> groupOne, List<PointEntry> groupTwo) {
+        public PointEntryGroups(LinkedList<PointEntry> groupOne, LinkedList<PointEntry> groupTwo) {
             this.groupOne = groupOne;
             this.groupTwo = groupTwo;
         }
 
-        public List<PointEntry> getGroupOne() {
+        public LinkedList<PointEntry> getGroupOne() {
             return groupOne;
         }
 
-        public List<PointEntry> getGroupTwo() {
+        public LinkedList<PointEntry> getGroupTwo() {
             return groupTwo;
         }
     }
@@ -48,45 +48,61 @@ public class AlgorithmSplit {
         LeafNode leaf = (LeafNode) rect.getChild();
         // not sure if a new variable is needed. but it's all references, so it doesn't really matter
 //        List<PointEntry> points = ZOrderCurveSort.sortPoints(leaf.getPointEntries());
-        List<PointEntry> points = leaf.getPointEntries();
+        LinkedList<PointEntry> points = leaf.getPointEntries();
         points.add(pe);
-        List<PointEntry> groupOne;
-        List<PointEntry> groupTwo;
+        LinkedList<PointEntry> groupOne = new LinkedList<>();
+        LinkedList<PointEntry> groupTwo = new LinkedList<>();
         int mid = points.size() / 2; // get median
         // but why was this sort needed?
 
-        /*for (int i = 0; i < points.size(); i++) {
+        for (int i = 0; i < points.size(); i++) {
             PointEntry pointEntry = points.get(i);
             if (i <= mid)
                 groupOne.add(pointEntry);
             else
                 groupTwo.add(pointEntry);
 
-        }*/
-        groupOne = points.subList(0, mid);
-        groupTwo = points.subList(mid, points.size());
-        PointEntryGroups groups = new PointEntryGroups(groupOne, groupTwo);
-        return groups;
+        }
+//        groupOne = (LinkedList<PointEntry>) points.subList(0, mid);
+//        groupTwo = (LinkedList<PointEntry>) points.subList(mid, points.size());
+        return new PointEntryGroups(groupOne, groupTwo);
     }
 
     public static NoLeafNode split(LeafNode N, PointEntry pe) {
         NoLeafNode returnable = null;
 
-        RectangleEntry parent = N.getParent();
+        RectangleEntry parent = N.getParent(); //rootEntry
 
         PointEntryGroups groups = splitLeafNode(parent, pe);
 
-        LeafNode ln1 = new LeafNode((LinkedList<PointEntry>) groups.getGroupOne());
-        LeafNode ln2 = new LeafNode((LinkedList<PointEntry>) groups.getGroupTwo());
+        LeafNode ln1 = new LeafNode(groups.getGroupOne());
+        LeafNode ln2 = new LeafNode(groups.getGroupTwo());
 
         RectangleEntry re1 = new RectangleEntry(ln1);
+        ln1.setParent(re1);
         RectangleEntry re2 = new RectangleEntry(ln2);
+        ln2.setParent(re2);
 
-        NoLeafNode parentContainer = (NoLeafNode) parent.getContainer();
+        NoLeafNode parentContainer = (NoLeafNode) parent.getContainer(); // imaginary root
+        if (N.isRoot()){
+            LinkedList<RectangleEntry> temp = new LinkedList<>();
+            temp.add(re1);
+            temp.add(re2);
+
+            NoLeafNode newRoot = new NoLeafNode(temp);
+            N.setRoot(false);
+            newRoot.setRoot(true);
+            re1.setContainer(newRoot);
+            re2.setContainer(newRoot);
+            return newRoot;
+        }
+
         if (parentContainer.getRectangleEntries().size() + 1 <= Main.M) {
             parentContainer.getRectangleEntries().remove(parent);
             parentContainer.getRectangleEntries().add(re1);
             parentContainer.getRectangleEntries().add(re2);
+            re1.setContainer(parentContainer);
+            re2.setContainer(parentContainer);
         } else {
             while (true) {
                 LinkedList<RectangleEntry> temp = new LinkedList<>();
@@ -100,26 +116,32 @@ public class AlgorithmSplit {
                 NoLeafNode nln2 = new NoLeafNode((LinkedList<RectangleEntry>) rGroups.getGroupTwo());
 
                 RectangleEntry re3 = new RectangleEntry(nln1);
+                nln1.setParent(re3);
                 RectangleEntry re4 = new RectangleEntry(nln2);
+                nln2.setParent(re4);
 
                 NoLeafNode parentContainer2 = (NoLeafNode) parent.getContainer();
                 if (parentContainer2.getRectangleEntries().size() + 1 <= Main.M) {
                     parentContainer.getRectangleEntries().remove(parent);
                     parentContainer.getRectangleEntries().add(re3);
                     parentContainer.getRectangleEntries().add(re4);
+                    re3.setContainer(parentContainer);
+                    re4.setContainer(parentContainer);
                     break;
                 }
 
                 re1 = re3;
                 re2 = re4;
                 if (parentContainer.getParent() == null) { // exoume ftasei riza
-                   // if (parentContainer.isRoot()) {
-                        parentContainer.setRoot(false);
-                        LinkedList<RectangleEntry> temp2 = new LinkedList<>();
-                        temp2.add(re1);
-                        temp2.add(re2);
-                        NoLeafNode newRoot = new NoLeafNode(temp2);
-                        newRoot.setRoot(true);
+                    // if (parentContainer.isRoot()) {
+                    parentContainer.setRoot(false);
+                    LinkedList<RectangleEntry> temp2 = new LinkedList<>();
+                    temp2.add(re1);
+                    temp2.add(re2);
+                    NoLeafNode newRoot = new NoLeafNode(temp2);
+                    re1.setContainer(newRoot);
+                    re2.setContainer(newRoot);
+                    newRoot.setRoot(true);
                     //}
                     return newRoot;
                 }
@@ -129,7 +151,6 @@ public class AlgorithmSplit {
     }
 
     public static RectangleEntryGroups splitNonLeafNode(RectangleEntry rect, LinkedList<RectangleEntry> rects) {
-        int m = (int) (Main.M * 0.4);
         if (rect.getChild().leaf) return null;
         // else:
         List<RectangleEntry> groupOne;

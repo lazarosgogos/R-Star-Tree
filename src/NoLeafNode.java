@@ -8,7 +8,6 @@ import java.util.LinkedList;
  * Root Node doesn't have a parent Node.
  */
 public class NoLeafNode extends Node {
-    private Boolean root;
     private LinkedList<RectangleEntry> rectangleEntries;
     private LinkedList<Node> children;
 
@@ -24,12 +23,6 @@ public class NoLeafNode extends Node {
     public LinkedList<RectangleEntry> getRectangleEntries() {
         return rectangleEntries;
     }
-
-    public void setRoot(Boolean root) {
-        this.root = root;
-    }
-
-    public Boolean isRoot(){return root;}
 
     public LinkedList<Node> getChildren() {
         return children;

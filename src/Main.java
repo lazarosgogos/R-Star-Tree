@@ -6,6 +6,10 @@ public class Main {
     static int m;
     static Node root;
 
+    static RectangleEntry rootEntry;
+
+    static NoLeafNode imaginaryRoot;
+
     public static void main(String[] args) {
         //725 records
 
@@ -29,7 +33,8 @@ public class Main {
             System.out.println("type 2 if you want to create a new index with bulk loading");
             System.out.println("type 3 if you want to create a new index");
             Scanner input = new Scanner(System.in);
-            int answer = input.nextInt();
+            //int answer = input.nextInt();
+            int answer = 3;
             if (answer == 1) {
                 root = IndexfileDemo.loadFromFile();
                 if (root == null) {
@@ -56,9 +61,21 @@ public class Main {
                     init.add(it.next());
                 }
                 root = new LeafNode(init);
+                root.setRoot(true);
+
+                rootEntry = new RectangleEntry((LeafNode) root);
+                root.setParent(rootEntry);
+
+                LinkedList<RectangleEntry> temp = new LinkedList<>();
+                temp.add(rootEntry);
+                imaginaryRoot = new NoLeafNode(temp);
+                rootEntry.setContainer(imaginaryRoot);
+
+                int counter = m;
 
                 while (it.hasNext()) {
                     AlgorithmInsert.insert(it.next());
+                    System.out.println(++counter);
                 }
 
                 //System.out.println((IO.loadRecordFromFile("1_2")));
@@ -84,6 +101,8 @@ public class Main {
       /* System.out.println("Now running range query");
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
         RangeQuery.rangeQuery(root, myQuery);*/
+
+        deapthFirstPrint(root, 0);
 
         System.out.println("Do you want to save the index? Y/N");
         Scanner input = new Scanner(System.in);

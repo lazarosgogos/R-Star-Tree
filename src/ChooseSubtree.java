@@ -98,13 +98,14 @@ public class ChooseSubtree {
              whose rectangle needs the least overlap enlargement.
              Resolve ties as described above
              */
-            if (N.getChildren().get(0) instanceof LeafNode) { // if the children of node N point to leaves
+            if (N.getRectangleEntries().get(0).getChild() instanceof LeafNode) { // if the children of node N point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
                 HashMap<RectangleEntry, Double> overlapEnlargementScores = new HashMap<>();
                 for (RectangleEntry rectangleEntry : rectangleEntries) {
                     // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
                     if (contains(rectangleEntry, entry)) {
                         choosenEntry = rectangleEntry.getChild();
+                        return choosenEntry;
                     } else { //calculate overlap enlargement for all possible enlargements
                         HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
                         temp.remove(rectangleEntry);
@@ -141,13 +142,16 @@ public class ChooseSubtree {
                         for (RectangleEntry key : areaScores.keySet()) {
                             if (Double.compare(areaScores.get(key), minArea) == 0) {
                                 choosenEntry = key.getChild(); // choose rectangle with smallest area
+                                return choosenEntry;
                             }
                         }
                     } else { // if there is only one min area enlargement
                         choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
+                        return choosenEntry;
                     }
                 } else { //if there is only one min overlap enlargement
                     choosenEntry = minOverlapRectangles.get(0).getChild();
+                    return choosenEntry;
                 }
             } else { // if the children of node N do NOT point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
@@ -171,10 +175,12 @@ public class ChooseSubtree {
                     for (RectangleEntry key : areaScores.keySet()) {
                         if (Double.compare(areaScores.get(key), minArea) == 0) {
                             choosenEntry = key.getChild(); // choose rectangle with smallest area
+                            return choosenEntry;
                         }
                     }
                 } else { // if there is only one min area enlargement
                     choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
+                    return choosenEntry;
                 }
             }
             //CS3

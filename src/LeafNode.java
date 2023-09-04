@@ -23,7 +23,32 @@ public class LeafNode extends Node {
         return pointEntries;
     }
 
+
+
     public void addEntry(PointEntry entry){
-        pointEntries.add(entry);
+        LinkedList<PointEntry> temp = new LinkedList<>(getPointEntries());
+        temp.add(entry);
+
+        RectangleEntry oldParent = this.getParent();
+        if (this.isRoot()){
+            Main.root = new LeafNode(temp);
+            Main.root.setRoot(true);
+            Main.rootEntry = new RectangleEntry((LeafNode) Main.root);
+            Main.rootEntry.setContainer(Main.imaginaryRoot);
+            Main.root.setParent(Main.rootEntry);
+            return;
+        }
+        RectangleEntry newParent = new RectangleEntry(new LeafNode(temp));
+        do {
+            this.setParent(newParent);
+
+            NoLeafNode oldParentContainer = (NoLeafNode) oldParent.getContainer();
+            oldParentContainer.getRectangleEntries().remove(oldParent);
+            oldParentContainer.getRectangleEntries().add(newParent);
+
+            newParent = new RectangleEntry(new NoLeafNode(oldParentContainer.getRectangleEntries()));
+            oldParent = oldParentContainer.getParent();
+        } while (oldParent != null);
+        //TODO ERRORS prepei na broume tropo na stamatame sto upwards stin riza xoris na akoumpane se nulls
     }
 }
