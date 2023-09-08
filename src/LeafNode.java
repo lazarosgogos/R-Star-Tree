@@ -37,6 +37,9 @@ public class LeafNode extends Node {
         cNode.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
         cNode.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
         cNode.setPointEntries(pointEntriesTemp);
+        for (PointEntry entry : cNode.getPointEntries()){
+            entry.setContainer(cNode);
+        }
     }
 
     public void addEntry(PointEntry entry) {

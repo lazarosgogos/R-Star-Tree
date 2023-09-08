@@ -105,53 +105,52 @@ public class ChooseSubtree {
                     // An apla anikei se yparxon tetragono kai den xreiazetai megethinsi
                     if (contains(rectangleEntry, entry)) {
                         choosenEntry = rectangleEntry.getChild();
-                        return choosenEntry;
                     } else { //calculate overlap enlargement for all possible enlargements
                         HashSet<RectangleEntry> temp = new HashSet<>(N.getRectangleEntries());
                         temp.remove(rectangleEntry);
                         overlapEnlargementScores.put(rectangleEntry, totalOverlap(enlargeRectangle(rectangleEntry, entry), temp));
                     }
                 }
-                double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
-                ArrayList<RectangleEntry> minOverlapRectangles = new ArrayList<>();
-                for (RectangleEntry key : overlapEnlargementScores.keySet()) { //find rectangle entries that are min
-                    if (Double.compare(overlapEnlargementScores.get(key), minOverlap) == 0) {
-                        minOverlapRectangles.add(key);
-                    }
-                }
-                // TODO will this ever happen? Due to floating point number comparisons
-                // https://stackoverflow.com/questions/8081827/how-to-compare-two-double-values-in-java
-                if (minOverlapRectangles.size() > 1) { //if there are ties
-                    HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
-                    for (RectangleEntry rectangleEntry : minOverlapRectangles) { // calculate all possible area enlargements
-                        areaEnlargementScores.put(rectangleEntry, areaEnlargementCost(rectangleEntry, entry));
-                    }
-                    double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
-                    ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
-                    for (RectangleEntry key : areaEnlargementScores.keySet()) {
-                        if (Double.compare(areaEnlargementScores.get(key), minAreaEnlargement) == 0) { // find rectangle entries that are min
-                            minAreaEnlargementRectangles.add(key);
+                if (overlapEnlargementScores.size() != 0) {
+                    double minOverlap = Collections.min(overlapEnlargementScores.values()); //find min
+                    ArrayList<RectangleEntry> minOverlapRectangles = new ArrayList<>();
+                    for (RectangleEntry key : overlapEnlargementScores.keySet()) { //find rectangle entries that are min
+                        if (Double.compare(overlapEnlargementScores.get(key), minOverlap) == 0) {
+                            minOverlapRectangles.add(key);
                         }
                     }
-                    if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
-                        HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
-                        for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
-                            areaScores.put(rectangleEntry, rectangleEntry.getRectangle().getArea());
+                    if (minOverlapRectangles.size() > 1) { //if there are ties
+                        HashMap<RectangleEntry, Double> areaEnlargementScores = new HashMap<>();
+                        for (RectangleEntry rectangleEntry : minOverlapRectangles) { // calculate all possible area enlargements
+                            areaEnlargementScores.put(rectangleEntry, areaEnlargementCost(rectangleEntry, entry));
                         }
-                        double minArea = Collections.min(areaScores.values());
-                        for (RectangleEntry key : areaScores.keySet()) {
-                            if (Double.compare(areaScores.get(key), minArea) == 0) {
-                                choosenEntry = key.getChild(); // choose rectangle with smallest area
-                                return choosenEntry;
+                        {
+                            double minAreaEnlargement = Collections.min(areaEnlargementScores.values()); //find min
+                            ArrayList<RectangleEntry> minAreaEnlargementRectangles = new ArrayList<>();
+                            for (RectangleEntry key : areaEnlargementScores.keySet()) {
+                                if (Double.compare(areaEnlargementScores.get(key), minAreaEnlargement) == 0) { // find rectangle entries that are min
+                                    minAreaEnlargementRectangles.add(key);
+                                }
+                            }
+                            if (minAreaEnlargementRectangles.size() > 1) { //if there are ties in area enlargement
+                                HashMap<RectangleEntry, Double> areaScores = new HashMap<>();
+                                for (RectangleEntry rectangleEntry : minAreaEnlargementRectangles) { // calculate area of all
+                                    areaScores.put(rectangleEntry, rectangleEntry.getRectangle().getArea());
+                                }
+
+                                double minArea = Collections.min(areaScores.values());
+                                for (RectangleEntry key : areaScores.keySet()) {
+                                    if (Double.compare(areaScores.get(key), minArea) == 0) {
+                                        choosenEntry = key.getChild(); // choose rectangle with smallest area
+                                    }
+                                }
+                            } else { // if there is only one min area enlargement
+                                choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
                             }
                         }
-                    } else { // if there is only one min area enlargement
-                        choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
-                        return choosenEntry;
+                    } else { //if there is only one min overlap enlargement
+                        choosenEntry = minOverlapRectangles.get(0).getChild();
                     }
-                } else { //if there is only one min overlap enlargement
-                    choosenEntry = minOverlapRectangles.get(0).getChild();
-                    return choosenEntry;
                 }
             } else { // if the children of node N do NOT point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
@@ -175,12 +174,10 @@ public class ChooseSubtree {
                     for (RectangleEntry key : areaScores.keySet()) {
                         if (Double.compare(areaScores.get(key), minArea) == 0) {
                             choosenEntry = key.getChild(); // choose rectangle with smallest area
-                            return choosenEntry;
                         }
                     }
                 } else { // if there is only one min area enlargement
                     choosenEntry = minAreaEnlargementRectangles.get(0).getChild();
-                    return choosenEntry;
                 }
             }
             //CS3

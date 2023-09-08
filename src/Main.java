@@ -5,10 +5,7 @@ public class Main {
     static int M;
     static int m;
     static Node root;
-
     static RectangleEntry rootEntry;
-
-    static NoLeafNode imaginaryRoot;
 
     public static void main(String[] args) {
         //725 records
@@ -24,7 +21,7 @@ public class Main {
 
 //        //2276 total
 
-        String inputFile = "assets/mapTest.osm";
+        String inputFile = "assets/mapEast.osm";
 
         root = new Node();
 
@@ -33,8 +30,8 @@ public class Main {
             System.out.println("type 2 if you want to create a new index with bulk loading");
             System.out.println("type 3 if you want to create a new index");
             Scanner input = new Scanner(System.in);
-            //int answer = input.nextInt();
-            int answer = 3;
+            int answer = input.nextInt();
+            //int answer = 3;
             if (answer == 1) {
                 root = IndexfileDemo.loadFromFile();
                 if (root == null) {
@@ -50,6 +47,11 @@ public class Main {
                 break;
             } else if (answer == 3) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+                entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+                entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+                entries.addAll(IO.loadInput("assets/mapWest.osm"));
+
+
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
                 m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
                 if (m < 2) m = 2; // defensive programming
@@ -63,7 +65,7 @@ public class Main {
 
                 root = new LeafNode(init);
                 root.setRoot(true);
-                for (PointEntry pe : ((LeafNode) root).getPointEntries()){
+                for (PointEntry pe : ((LeafNode) root).getPointEntries()) {
                     pe.setContainer(root);
                 }
                 rootEntry = new RectangleEntry((LeafNode) root);
@@ -73,8 +75,8 @@ public class Main {
 
                 while (it.hasNext()) {
                     AlgorithmInsert.insert(it.next());
-                    System.out.println(++counter);
-                    deapthFirstPrint(root,0);
+                    /*System.out.println(++counter);
+                    deapthFirstPrint(root, 0);*/
                 }
 
                 //System.out.println((IO.loadRecordFromFile("1_2")));
@@ -88,7 +90,8 @@ public class Main {
             }
         }
 
-        //deapthFirstPrint(root,0);
+        deapthFirstPrint(root,0);
+        System.out.println(Main.M);
         //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query
@@ -101,7 +104,7 @@ public class Main {
         Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
         RangeQuery.rangeQuery(root, myQuery);*/
 
-        deapthFirstPrint(root, 0);
+        //deapthFirstPrint(root, 0);
 
         System.out.println("Do you want to save the index? Y/N");
         Scanner input = new Scanner(System.in);

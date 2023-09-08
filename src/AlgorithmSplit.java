@@ -72,9 +72,16 @@ public class AlgorithmSplit {
         NoLeafNode returnable = null;
 
         PointEntryGroups groups = splitLeafNode(N, pe);
+        RectangleEntry trash = N.getParent();
 
         LeafNode ln1 = new LeafNode(groups.getGroupOne());
+        for (PointEntry entry : ln1.getPointEntries()){
+            entry.setContainer(ln1);
+        }
         LeafNode ln2 = new LeafNode(groups.getGroupTwo());
+        for (PointEntry entry : ln2.getPointEntries()){
+            entry.setContainer(ln2);
+        }
         RectangleEntry re1 = new RectangleEntry(ln1);
         ln1.setParent(re1);
         RectangleEntry re2 = new RectangleEntry(ln2);
@@ -91,6 +98,8 @@ public class AlgorithmSplit {
             newRoot.setRoot(true);
             re1.setContainer(newRoot);
             re2.setContainer(newRoot);
+            Main.rootEntry = new RectangleEntry(newRoot);
+            newRoot.setParent(Main.rootEntry);
             return newRoot;
         }
 
@@ -123,23 +132,15 @@ public class AlgorithmSplit {
                 temp.add(re1);
                 temp.add(re2);
 
-                RectangleEntry trash = null;
-                for (RectangleEntry entry : parentContainer.getRectangleEntries()) {
-                    if (entry.getChild() instanceof LeafNode) {
-                        LeafNode cN = (LeafNode) entry.getChild();
-                        if (cN.getPointEntries().size() >= Main.M) {
-                            trash = cN.getParent();
-                        }
-                    } else {
-                        NoLeafNode cN = (NoLeafNode) entry.getChild();
-                        if (cN.getRectangleEntries().size() >= Main.M) {
-                            trash = cN.getParent();
-                        }
-                    }
-                }
                 RectangleEntryGroups rGroups = splitNonLeafNode(parentContainer, temp, trash);
                 NoLeafNode nln1 = new NoLeafNode((LinkedList<RectangleEntry>) rGroups.getGroupOne());
+                for (RectangleEntry r : nln1.getRectangleEntries()){
+                    r.setContainer(nln1);
+                }
                 NoLeafNode nln2 = new NoLeafNode((LinkedList<RectangleEntry>) rGroups.getGroupTwo());
+                for (RectangleEntry r : nln2.getRectangleEntries()){
+                    r.setContainer(nln2);
+                }
 
                 RectangleEntry re3 = new RectangleEntry(nln1);
                 nln1.setParent(re3);
@@ -181,6 +182,8 @@ public class AlgorithmSplit {
                     re3.setContainer(newRoot);
                     re4.setContainer(newRoot);
                     newRoot.setRoot(true);
+                    Main.rootEntry = new RectangleEntry(newRoot);
+                    newRoot.setParent(Main.rootEntry);
                     return newRoot;
                 }
 
