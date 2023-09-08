@@ -181,4 +181,12 @@ public class Rectangle implements java.io.Serializable {
     public Point getEndPoint() {
         return end;
     }
+
+    public void setStartPoint(Point start) {
+        this.start = start;
+    }
+
+    public void setEndPoint(Point end) {
+        this.end = end;
+    }
 }

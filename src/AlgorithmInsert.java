@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.random.RandomGenerator;
 
 public class AlgorithmInsert {
 
@@ -100,6 +101,35 @@ public class AlgorithmInsert {
 
             //TODO ANANEOSE TO KOMVO ME TA STOIXEIA POY DEN PANE TRASH
             // Ton pairs, ton kanoume lista, ftiaxnoume neo komvo, neo rectangle kai antikathistoume isos kai upwards
+
+            LinkedList<PointEntry> pointEntriesTemp = new LinkedList<>();
+            for (PointEntryDoublePair pair : pairs) {
+                pointEntriesTemp.add(pair.getPointEntry());
+            }
+
+            LeafNode tempLeafNode = new LeafNode(pointEntriesTemp);
+            RectangleEntry tempRE = new RectangleEntry(tempLeafNode);
+
+            LeafNode currentNode = (LeafNode) N;
+            currentNode.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
+            currentNode.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+            currentNode.setPointEntries(pointEntriesTemp);
+
+            if (!currentNode.isRoot()) {
+                NoLeafNode parentContainer = (NoLeafNode) currentNode.getParent().getContainer();
+                while (true) {
+                    NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
+                    tempRE = new RectangleEntry(tempNode);
+
+                    parentContainer.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
+                    parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+
+                    if (parentContainer.isRoot()) {
+                        break;
+                    }
+                    parentContainer = (NoLeafNode) parentContainer.getParent().getContainer();
+                }
+            }
 
             for (PointEntryDoublePair pair : trash) { //RI4
                 insert(pair.getPointEntry());

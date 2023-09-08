@@ -23,6 +23,9 @@ public class LeafNode extends Node {
         return pointEntries;
     }
 
+    public void setPointEntries(LinkedList<PointEntry> pointEntries) {
+        this.pointEntries = pointEntries;
+    }
 
     public void addEntry(PointEntry entry) {
         Node currentNode = this;
@@ -44,11 +47,11 @@ public class LeafNode extends Node {
         RectangleEntry pointerToCurrentNode; // RE OF LEAF NODE
 
         LeafNode adjustedLeaf = new LeafNode(pointEntriesTemp);
+        for (PointEntry pe : adjustedLeaf.getPointEntries()){
+            pe.setContainer(adjustedLeaf);
+        }
         RectangleEntry pointerToAdjustedLeaf = new RectangleEntry(adjustedLeaf); // CREATE RE FOR LEAF NODE WITH NEW POINT
         adjustedLeaf.setParent(pointerToAdjustedLeaf);
-        for (PointEntry re : adjustedLeaf.getPointEntries()){
-            re.setContainer(adjustedLeaf);
-        }
 
         while (true) {
             pointerToCurrentNode = currentNode.getParent();
