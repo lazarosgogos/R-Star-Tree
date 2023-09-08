@@ -7,8 +7,8 @@ import java.util.*;
 public class AlgorithmSplit {
 
     public static class RectangleEntryGroups {
-        List<RectangleEntry> groupOne;
-        List<RectangleEntry> groupTwo;
+        private List<RectangleEntry> groupOne;
+        private List<RectangleEntry> groupTwo;
 
         public RectangleEntryGroups(List<RectangleEntry> groupOne, List<RectangleEntry> groupTwo) {
             this.groupOne = groupOne;
@@ -25,8 +25,8 @@ public class AlgorithmSplit {
     }
 
     public static class PointEntryGroups {
-        LinkedList<PointEntry> groupOne;
-        LinkedList<PointEntry> groupTwo;
+        private LinkedList<PointEntry> groupOne;
+        private LinkedList<PointEntry> groupTwo;
 
         public PointEntryGroups(LinkedList<PointEntry> groupOne, LinkedList<PointEntry> groupTwo) {
             this.groupOne = groupOne;
@@ -99,16 +99,18 @@ public class AlgorithmSplit {
         NoLeafNode parentContainer = (NoLeafNode) parent.getContainer(); // imaginary root
         if (parentContainer.getRectangleEntries().size() + 1 <= Main.M) { // split fyllo kai xoraei ston gonea kanonika
             parentContainer.getRectangleEntries().remove(parent);
-            parentContainer.getRectangleEntries().add(re1);
+            parentContainer.update2(re1, re2);
+            /*parentContainer.getRectangleEntries().add(re1);
             parentContainer.getRectangleEntries().add(re2);
             re1.setContainer(parentContainer);
-            re2.setContainer(parentContainer);
+            re2.setContainer(parentContainer);*/
             while (true) {
-                NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
+                /*NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
                 RectangleEntry tempRE = new RectangleEntry(tempNode);
 
                 parentContainer.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
-                parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+                parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());*/
+                parentContainer.update();
 
                 if (parentContainer.isRoot()) {
                     break;
@@ -149,17 +151,19 @@ public class AlgorithmSplit {
                     parentContainer = (NoLeafNode) parent.getContainer();
                     if (parentContainer.getRectangleEntries().size() + 1 <= Main.M) {
                         parentContainer.getRectangleEntries().remove(parent);
-                        parentContainer.getRectangleEntries().add(re3);
+                        parentContainer.update2(re3, re4);
+                        /*parentContainer.getRectangleEntries().add(re3);
                         parentContainer.getRectangleEntries().add(re4);
                         re3.setContainer(parentContainer);
-                        re4.setContainer(parentContainer);
+                        re4.setContainer(parentContainer);*/
 
                         while (true) {
-                            NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
+                            parentContainer.update();
+                            /*NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
                             RectangleEntry tempRE = new RectangleEntry(tempNode);
 
                             parentContainer.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
-                            parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+                            parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());*/
 
                             if (parentContainer.isRoot()) {
                                 break;

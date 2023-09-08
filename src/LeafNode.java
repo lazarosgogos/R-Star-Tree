@@ -27,6 +27,18 @@ public class LeafNode extends Node {
         this.pointEntries = pointEntries;
     }
 
+    public void update(LinkedList<PointEntry> pointEntriesTemp){
+        // Φτιάχνουμε έναν εικονικό κόμβο για να υπολογίσουμε το νέο τετράγωνο
+        LeafNode tempLeafNode = new LeafNode(pointEntriesTemp);
+        RectangleEntry tempRE = new RectangleEntry(tempLeafNode);
+
+        // Ανανεώνουμε τα στοιχεία του υπάρχοντα κόμβου και προσαρμόζουμε το τετράγωνό του
+        LeafNode cNode = this;
+        cNode.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
+        cNode.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+        cNode.setPointEntries(pointEntriesTemp);
+    }
+
     public void addEntry(PointEntry entry) {
         Node currentNode = this;
 
@@ -35,11 +47,13 @@ public class LeafNode extends Node {
 
         // IF ROOT IS LEAF NODE
         if (currentNode.isRoot()) {
-            Main.root = new LeafNode(pointEntriesTemp);
+            /*Main.root = new LeafNode(pointEntriesTemp);
             Main.root.setRoot(true);
             Main.rootEntry = new RectangleEntry((LeafNode) Main.root);
             Main.rootEntry.setContainer(Main.imaginaryRoot);
-            Main.root.setParent(Main.rootEntry);
+            Main.root.setParent(Main.rootEntry);*/
+
+            update(pointEntriesTemp);
             return;
         }
 
@@ -76,7 +90,5 @@ public class LeafNode extends Node {
                 break;
             }
         }
-        //TODO ERRORS prepei na broume tropo na stamatame sto upwards stin riza xoris na akoumpane se nulls
-        //I THINK I FIXED THAT
     }
 }

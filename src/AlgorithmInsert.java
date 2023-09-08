@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.random.RandomGenerator;
 
 public class AlgorithmInsert {
 
@@ -62,11 +61,11 @@ public class AlgorithmInsert {
 
         int p = Math.round(0.3f * Main.M);
 
-        if (N instanceof NoLeafNode) {
+        if (N instanceof NoLeafNode currentNode) {
             LinkedList<RectangleEntryDoublePair> pairs = new LinkedList<>();
 
-            for (RectangleEntry entry : ((NoLeafNode) N).getRectangleEntries()) { //RI1
-                double distance = entry.getRectangle().getCenter().distance(N.getParent().getRectangle().getCenter());
+            for (RectangleEntry entry : currentNode.getRectangleEntries()) { //RI1
+                double distance = entry.getRectangle().getCenter().distance(currentNode.getParent().getRectangle().getCenter());
                 RectangleEntryDoublePair pair = new RectangleEntryDoublePair(entry, distance);
                 pairs.add(pair);
             }
@@ -84,13 +83,15 @@ public class AlgorithmInsert {
             }
 
         } else { // N instance of LeafNode
+            LeafNode currentNode = (LeafNode) N;
+
             LinkedList<PointEntryDoublePair> pairs = new LinkedList<>();
 
-            for (PointEntry entry : ((LeafNode) N).getPointEntries()) { //RI1
-                double distance = entry.getPoint().distance(N.getParent().getRectangle().getCenter());
+            for (PointEntry entry : currentNode.getPointEntries()) { //RI1
+                double distance = entry.getPoint().distance(currentNode.getParent().getRectangle().getCenter());
                 pairs.add(new PointEntryDoublePair(entry, distance));
             }
-            pairs.add(new PointEntryDoublePair(pointEntry, pointEntry.getPoint().distance(N.getParent().getRectangle().getCenter())));
+            pairs.add(new PointEntryDoublePair(pointEntry, pointEntry.getPoint().distance(currentNode.getParent().getRectangle().getCenter())));
 
             pairs.sort(new PointEntryDoublePairComparator()); //RI2
 
@@ -99,38 +100,45 @@ public class AlgorithmInsert {
                 trash.add(pairs.pop());
             }
 
-            //TODO ANANEOSE TO KOMVO ME TA STOIXEIA POY DEN PANE TRASH
-            // Ton pairs, ton kanoume lista, ftiaxnoume neo komvo, neo rectangle kai antikathistoume isos kai upwards
-
+            // Τα στοιχεία που θα μείνουν μέσα στον υπάρχοντα κόμβο
             LinkedList<PointEntry> pointEntriesTemp = new LinkedList<>();
             for (PointEntryDoublePair pair : pairs) {
                 pointEntriesTemp.add(pair.getPointEntry());
             }
 
+            currentNode.update(pointEntriesTemp);
+
+            /*// Φτιάχνουμε έναν εικονικό κόμβο για να υπολογίσουμε το νέο τετράγωνο
             LeafNode tempLeafNode = new LeafNode(pointEntriesTemp);
             RectangleEntry tempRE = new RectangleEntry(tempLeafNode);
 
-            LeafNode currentNode = (LeafNode) N;
+            // Ανανεώνουμε τα στοιχεία του υπάρχοντα κόμβου και προσαρμόζουμε το τετράγωνό του
             currentNode.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
             currentNode.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
-            currentNode.setPointEntries(pointEntriesTemp);
+            currentNode.setPointEntries(pointEntriesTemp);*/
 
+            RectangleEntry tempRE;
+            // Αν δεν είναι ρίζα, τότε πρέπει να προσαρμόσουμε και τα τετράγωνα των παραπάνων επιπέδων
             if (!currentNode.isRoot()) {
                 NoLeafNode parentContainer = (NoLeafNode) currentNode.getParent().getContainer();
                 while (true) {
+
+                    // Φτιάχνουμε έναν εικονικό κόμβο για να υπολογίσουμε το νέο τετράγωνο
                     NoLeafNode tempNode = new NoLeafNode(parentContainer.getRectangleEntries());
                     tempRE = new RectangleEntry(tempNode);
 
+                    // Προσαρμόζουμε το τετράγωνό του υπάρχοντα κόμβου
                     parentContainer.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
                     parentContainer.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
 
-                    if (parentContainer.isRoot()) {
+                    if (parentContainer.isRoot()) { // Σταματάμε μόλις προσαρμόσουμε και την ρίζα
                         break;
                     }
                     parentContainer = (NoLeafNode) parentContainer.getParent().getContainer();
                 }
             }
 
+            // Call insert() to reinsert the p points into the tree
             for (PointEntryDoublePair pair : trash) { //RI4
                 insert(pair.getPointEntry());
             }

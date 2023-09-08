@@ -60,16 +60,14 @@ public class Main {
                 for (int i = 0; i < m; i++) {
                     init.add(it.next());
                 }
+
                 root = new LeafNode(init);
                 root.setRoot(true);
-
+                for (PointEntry pe : ((LeafNode) root).getPointEntries()){
+                    pe.setContainer(root);
+                }
                 rootEntry = new RectangleEntry((LeafNode) root);
                 root.setParent(rootEntry);
-
-                LinkedList<RectangleEntry> temp = new LinkedList<>();
-                temp.add(rootEntry);
-                imaginaryRoot = new NoLeafNode(temp);
-                rootEntry.setContainer(imaginaryRoot);
 
                 int counter = m;
 

@@ -27,4 +27,19 @@ public class NoLeafNode extends Node {
     public LinkedList<Node> getChildren() {
         return children;
     }
+
+    public void update(){
+        NoLeafNode tempNode = new NoLeafNode(getRectangleEntries());
+        RectangleEntry tempRE = new RectangleEntry(tempNode);
+
+        getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
+        getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
+    }
+
+    public void update2(RectangleEntry re1, RectangleEntry re2){
+        getRectangleEntries().add(re1);
+        getRectangleEntries().add(re2);
+        re1.setContainer(this);
+        re2.setContainer(this);
+    }
 }
