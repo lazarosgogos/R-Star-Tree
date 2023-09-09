@@ -4,7 +4,7 @@ import java.util.List;
 public class PrettyPrinter {
     public static String printRStarTree(Node root) {
         ArrayList<PointEntry> points = new ArrayList<>();
-        ArrayList<RectangleEntry> rectangles = new ArrayList<>();
+        ArrayList<RectangleEntryLevelPair> rectangles = new ArrayList<>();
         traverseRStarTree(root, points, rectangles, 0);
         StringBuilder pointsStringBuilder = new StringBuilder();
         for (PointEntry p : points) {
@@ -14,8 +14,8 @@ public class PrettyPrinter {
         int lastIndexOfComma = pointsStringBuilder.lastIndexOf(",");
         String pointsString = pointsStringBuilder.substring(0, lastIndexOfComma);
         StringBuilder rectanglesStringBuilder = new StringBuilder();
-        for (RectangleEntry r : rectangles){
-            rectanglesStringBuilder.append(r.getRectangle().toPlottable());
+        for (RectangleEntryLevelPair r : rectangles){
+            rectanglesStringBuilder.append(r.toPlottable());
             rectanglesStringBuilder.append(',');
         }
         lastIndexOfComma = rectanglesStringBuilder.lastIndexOf(",");
@@ -24,7 +24,7 @@ public class PrettyPrinter {
         return pointsString + '\n' + rectanglesString;
     }
 
-    private static void traverseRStarTree(Node node, List<PointEntry> points, List<RectangleEntry> rectangles, int depth) {
+    private static void traverseRStarTree(Node node, List<PointEntry> points, List<RectangleEntryLevelPair> rectangles, int depth) {
         if (node == null) return;
 
         /*
@@ -43,11 +43,13 @@ public class PrettyPrinter {
         // Recursively traverse child nodes
         if (node instanceof NoLeafNode) {
             NoLeafNode n = (NoLeafNode) node;
-            /*for (RectangleEntry re : n.getRectangleEntries()) {
-                rectangles.add(re);
-            }*/
             // add rectangles in the list
-            rectangles.addAll(n.getRectangleEntries());
+            for (RectangleEntry re : n.getRectangleEntries()) {
+                RectangleEntryLevelPair p = new RectangleEntryLevelPair(re, depth);
+                rectangles.add(p);
+            }
+
+//            rectangles.addAll(n.getRectangleEntries());
 
             // now go into the sub-rectangles
             for (RectangleEntry re : n.getRectangleEntries()) {
@@ -67,4 +69,36 @@ public class PrettyPrinter {
             points.addAll(n.getPointEntries());
         }
     }
+
+    private static class RectangleEntryLevelPair{
+        private RectangleEntry r;
+        private int level;
+
+        public RectangleEntryLevelPair(RectangleEntry r, int level) {
+            this.r = r;
+            this.level = level;
+        }
+
+        public RectangleEntry getR() {
+            return r;
+        }
+
+        public void setR(RectangleEntry r) {
+            this.r = r;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
+
+        public String toPlottable(){
+            return level + ":" + getR().getRectangle().toPlottable();
+        }
+
+    }
+
 }

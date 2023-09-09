@@ -21,7 +21,7 @@ public class Main {
 
 //        //2276 total
 
-        String inputFile = "assets/mapTest.osm";
+        String inputFile = "assets/mapEast.osm";
 
         root = new Node();
 
