@@ -77,6 +77,20 @@ public class Point implements java.io.Serializable {
         sb.append(id);
         return sb.toString();
     }
+    public String toPlottable(){
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        for (String coordsString : this.coordsStrings) {
+            sb.append(coordsString);
+            sb.append('_');
+        }
+        int pos = sb.lastIndexOf("_");
+        String temp = sb.substring(0, pos);
+        sb = new StringBuilder();
+        sb.append(temp);
+        sb.append(')');
+        return sb.toString();
+    }
 
     public String toFile() {
         String splitter = ":";

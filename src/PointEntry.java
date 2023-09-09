@@ -29,4 +29,8 @@ public class PointEntry extends Entry {
     public int hashCode() {
         return Objects.hash(point);
     }
+    @Override
+    public String toString() {
+        return point.toString();
+    }
 }

@@ -21,7 +21,7 @@ public class Main {
 
 //        //2276 total
 
-        String inputFile = "assets/mapEast.osm";
+        String inputFile = "assets/mapTest.osm";
 
         root = new Node();
 
@@ -47,9 +47,9 @@ public class Main {
                 break;
             } else if (answer == 3) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-                entries.addAll(IO.loadInput("assets/mapCenter.osm"));
-                entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-                entries.addAll(IO.loadInput("assets/mapWest.osm"));
+//                entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+//                entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+//                entries.addAll(IO.loadInput("assets/mapWest.osm"));
 
 
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
@@ -92,6 +92,9 @@ public class Main {
 
         deapthFirstPrint(root,0);
         System.out.println(Main.M);
+
+        System.out.println("\n\npringint pretty\n\n");
+        System.out.println(PrettyPrinter.printRStarTree(root));
         //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
 
         // KNN Query

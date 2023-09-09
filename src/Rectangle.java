@@ -138,7 +138,15 @@ public class Rectangle implements java.io.Serializable {
         }
         return new Point(centerCoords);
     }
-
+    public String toPlottable(){
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        sb.append(getStartPoint().toPlottable());
+        sb.append(',');
+        sb.append(getEndPoint().toPlottable());
+        sb.append(']');
+        return sb.toString();
+    }
     public double getArea() {
         double product = 1;
         int destinations = this.getStartPoint().getCoords().size();
