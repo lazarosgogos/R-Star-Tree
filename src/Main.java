@@ -21,7 +21,7 @@ public class Main {
 
 //        //2276 total
 
-        String inputFile = "assets/mapEast.osm";
+        String inputFile = "assets/mapTestInts.osm";
 
         root = new Node();
 
@@ -54,6 +54,7 @@ public class Main {
 
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
                 m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
+                if (M < 4) M = 4;
                 if (m < 2) m = 2; // defensive programming
 
                 //minimum number of entries in a node = m
