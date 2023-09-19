@@ -139,6 +139,14 @@ public class Main {
                 System.out.println("Time to run Knn in ms:");
                 System.out.println(endTime-startTime);
 
+                startTime = System.currentTimeMillis();
+
+                KNNQuery.knnSerialQuery(new Point(x, y), IO.loadEverything(), k);
+
+                endTime = System.currentTimeMillis();
+                System.out.println("Time to run serial range query in ms:");
+                System.out.println(endTime-startTime);
+
                 break;
             } else if (answer == 3) {
                 BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));

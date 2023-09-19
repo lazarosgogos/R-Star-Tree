@@ -12,7 +12,7 @@ public class RangeQuery {
     public static HashSet<Point> rangeQuery(Node root, final Rectangle query) {
         HashSet<Point> result = new HashSet<>();
         LinkedList<Node> search = new LinkedList<>();
-        _rangeQuery(root, query, result, search);
+        _rangeQuery(root, query, result);
         // print results - TEMP PRINT
         result.forEach(r -> System.out.println(r.toString()));
         return result;
@@ -22,7 +22,7 @@ public class RangeQuery {
      * This is a recursive function that retrieves the point entries inside a rectangle
      */
     private static HashSet<Point> _rangeQuery(Node root, final Rectangle query,
-                                              HashSet<Point> result, LinkedList<Node> search) {
+                                              HashSet<Point> result) {
         // search from root
         // if it's a no-leaf-node
         //  search only in the rectangles that overlap the query rectangle
@@ -39,12 +39,14 @@ public class RangeQuery {
                 }
             });
         } else { // if root is not a leaf
+            LinkedList<Node> copia = new LinkedList<>();
+
             ((NoLeafNode) root).getRectangleEntries().forEach(r -> { // for each rectangle entry
                 if (r.getRectangle().overlaps(query)) // if there is an overlap
-                    search.add(r.getChild()); // populate. add that rectangle for further inspection
+                    copia.add(r.getChild()); // populate. add that rectangle for further inspection
             });
-            for (int i = 0; i < search.size(); i++) {
-                _rangeQuery(search.pop(), query, result, search);
+            for (int i = 0; i < copia.size(); i++) {
+                _rangeQuery(copia.get(i), query, result);
             }
         }
 

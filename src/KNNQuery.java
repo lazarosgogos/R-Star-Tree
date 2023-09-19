@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class KNNQuery {
     private static class PointComparator implements Comparator<PointPointEntriesPair> {
@@ -48,14 +45,18 @@ public class KNNQuery {
         @Override
         public String toString() {
             return new StringBuilder().
-                    append(point2.getRecord_ID()).
-                    /*append("PointPair{").
+//                    append(point2.getRecord_ID()).
+                    append("PointPair{").
                     append("point1=").
                     append(point1).
                     append(", point2=").
                     append(point2).
-                    append('}').*/
+                    append('}').
                     toString();
+        }
+
+        public String getDetails(){
+            return point2.getPoint().toString();
         }
 
         @Override
@@ -112,6 +113,27 @@ public class KNNQuery {
             return Comparator.super.reversed();
         }
     }
+
+    public static ArrayList<Point> knnSerialQuery(final Point center, LinkedList<Point> entries, final int k) {
+        PointEntry dummyCenter = new PointEntry(center, "");
+        ArrayList<PointPointEntriesPair> pairs = new ArrayList<>();
+        for (Point p : entries) {
+            PointEntry dummy = new PointEntry(p, "dummy");
+            PointPointEntriesPair pair = new PointPointEntriesPair(dummyCenter, dummy);
+            pairs.add(pair);
+        }
+        pairs.sort(new PointComparator().reversed());
+//        pairs = (ArrayList<PointPointEntriesPair>) pairs.subList(0, k);
+        ArrayList<Point> results = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            PointPointEntriesPair pair = pairs.get(i);
+            results.add(pair.getPoint2().getPoint());
+        }
+
+        results.forEach(p -> System.out.println(p));
+        return results;
+    }
+
     /**
      * This method performs the infamous k-nearest-neighbors algorithm iteratively
      * and returns a hash set that contains them
@@ -121,10 +143,11 @@ public class KNNQuery {
      * @param k      The number of nearest neighbors that should be found
      * @return       A max heap with all the nearest neighbors
      */
-    public static PriorityQueue<PointPointEntriesPair> knnQuery(final Node root, final PointEntry center, final int k) {
+    public static PriorityQueue<PointPointEntriesPair> knnQuery(final Node root, final Point center, final int k) {
         PriorityQueue<PointPointEntriesPair> maxHeap = new PriorityQueue<>(k, new PointComparator());
 //        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
-        maxHeap = _knnQuery(root, center, k, maxHeap);
+        PointEntry dummyEntry = new PointEntry(center, "dummy entry");
+        _knnQuery(root, dummyEntry, k, maxHeap);
 //        System.out.println("Knn query for size: " + k);
         //maxHeap.forEach(p -> System.out.println(p.getPoint2().getPoint()));
         maxHeap.forEach(p -> System.out.println(IO.loadRecordFromFile(p.getPoint2().getRecord_ID())));
@@ -156,7 +179,7 @@ public class KNNQuery {
         // pop the top element from the max heap
         // insert the currently explored point to the max heap
         // suddenly, we have a maximum distance!
-
+        //System.out.println("KNN QUERY - ITERATIVE\n\n\n");
         ArrayList<Node> searchFront = new ArrayList<>();
         searchFront.add(root);
         /*for (final ListIterator<Node> iterator = searchFront.listIterator(); iterator.hasNext();) */
@@ -166,7 +189,7 @@ public class KNNQuery {
             if (!node.leaf) { // if the root node is not a leaf
                 // find the closest rectangle
                 NoLeafNode noleaf = (NoLeafNode) node;
-                if (maxHeap.isEmpty()) { // if we have no available value of maximum distance
+                if (maxHeap.size() < k) { // if we have no available value of maximum distance
 //                    RectangleEntry chosen = noleaf.getRectangleEntries().get(0); // get a base estimate
                     // essentially, if the maxHeap is not yet full, but nor is it empty
                     // we need to keep adding nodes for search, sorted by their distance from the center point
@@ -180,17 +203,26 @@ public class KNNQuery {
                         }*/
                         PointRectanglePair prpair = new PointRectanglePair(center, rectangleEntry);
                         pointRectanglePairs.add(prpair);
+                        //System.out.println(" noleaf - maxHeap size < k Adding prpair " + prpair.getPointEntry().toString() + ' ' + prpair.getRectangleEntry().toString());
                     }
                     pointRectanglePairs.sort(new PointRectangleComparator());
                     for (PointRectanglePair p: pointRectanglePairs) {
-                        searchFront.add(p.getRectangleEntry().getChild());
+                        if (!searchFront.contains(p.getRectangleEntry().getChild())) {
+                            searchFront.add(p.getRectangleEntry().getChild());
+
+                        }
                     }
 //                    searchFront.add(chosen.getChild());
-                } else if (maxHeap.size() == k){
+                } /*else if (maxHeap.size() < k){ // else if the maxHeap is not yet full, but nor is it empty
+                    // we need to keep adding nodes for search, sorted by their distance from the center point
+
+
+                } */else if (maxHeap.size() == k){
 //                   // if the max heap is full
                      // add rectangles which are IN the radius
                     for (RectangleEntry rectangleEntry : noleaf.getRectangleEntries()) {
-                        if (center.getPoint().distance(rectangleEntry) < maxHeap.peek().distance()) {
+                        if (center.getPoint().distance(rectangleEntry) < maxHeap.peek().distance() &&
+                                !searchFront.contains(rectangleEntry.getChild())) {
                             searchFront.add(rectangleEntry.getChild());
                         }
                     }
@@ -215,7 +247,7 @@ public class KNNQuery {
                         PointPointEntriesPair cp = new PointPointEntriesPair(center, pointEntry);
                         if (/*maxHeap.peek().distance() > cp.distance() &&*/ maxHeap.size() < k && !maxHeap.contains(cp)) {
                             maxHeap.add(cp);
-//                            System.out.println("added due to hallf empty heap " + cp);
+                            //System.out.println("added due to hallf empty heap " + cp);
                         }
                     }
                 } /*else*/
@@ -223,24 +255,27 @@ public class KNNQuery {
                 // if the max heap is full, and we have found another point
                 // of which its distance is LESS THAN the head of the  max heap,
                 // replace the head with that point
-                boolean changedSomething = true;
-                while (changedSomething) {
-                    changedSomething = false;
-                    for (PointEntry pointEntry : leaf.getPointEntries()) {
-                        PointPointEntriesPair cp = new PointPointEntriesPair(center, pointEntry);
-                        if (maxHeap.peek().distance() > cp.distance() && !maxHeap.contains(cp)) {
-                            PointPointEntriesPair par = maxHeap.poll();
-//                            System.out.println("Polled " + par);
-                            maxHeap.add(cp);
-//                            System.out.println("added after polling: " + cp);
-                            changedSomething = true;
+                if (maxHeap.size() == k) {
+                    boolean changedSomething = true;
+                    while (changedSomething) {
+                        changedSomething = false;
+                        for (PointEntry pointEntry : leaf.getPointEntries()) {
+                            PointPointEntriesPair cp = new PointPointEntriesPair(center, pointEntry);
+                            if (maxHeap.peek().distance() > cp.distance() && !maxHeap.contains(cp)) {
+                                PointPointEntriesPair par = maxHeap.poll();
+                           // System.out.println("Polled " + par);
+                                maxHeap.add(cp);
+                            //System.out.println("added after polling: " + cp);
+                                //maxHeap.forEach(p -> System.out.println(p.getPoint2().getPoint().toString()));
+                                changedSomething = true;
+                             //   System.out.println("Something changed, let's try again");
+                            }
                         }
                     }
-//                    System.out.println("Something changed, let's try again");
                 }
                 // now after all these ifs, there is certainly something in the max heap
                 // add nodes in the search front to check next time
-//                System.out.println("Reached in leaf node! line 354");
+               // System.out.println("Reached in leaf node! line 354");
                 if (!root.leaf) {
                     for (RectangleEntry rectangleEntry : ((NoLeafNode) root).getRectangleEntries()) {
                         if (center.getPoint().distance(rectangleEntry) < maxHeap.peek().distance() && !searchFront.contains(rectangleEntry.getChild())) {

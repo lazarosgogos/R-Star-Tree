@@ -130,6 +130,10 @@ public class RectangleEntry extends Entry {
         return rectangle;
     }
 
+    @Override
+    public String toString(){
+        return this.rectangle.toString();
+    }
     public Node getChild() {
         return child;
     }
