@@ -16,19 +16,6 @@ public class Rectangle implements java.io.Serializable {
      * @param end   second point of the rectangle
      */
     public Rectangle(Point start, Point end) {
-//        int n = start.getCoords().size(); // number of dimensions
-//        ArrayList<Double> mins = new ArrayList<>(n);
-//        ArrayList<Double> maxs = new ArrayList<>(n);
-//
-//        for (int i = 0; i < n; i++) {
-//            double min = Math.min(start.getCoords().get(i), end.getCoords().get(i));
-//            double max = Math.max(start.getCoords().get(i), end.getCoords().get(i));
-//            mins.add(min);
-//            maxs.add(max);
-//        }
-//        this.start = new Point(mins);
-//        this.end = new Point(maxs);
-
         this.start = start;
         this.end = end;
     }
@@ -78,11 +65,6 @@ public class Rectangle implements java.io.Serializable {
             }
         }
         return true;
-
-//        if (this.xStart < other.xEnd && this.xEnd > other.xStart)
-//            if (this.yStart < other.yEnd && this.yEnd > other.yStart)
-//                return true;
-//        return false;
     }
 
     public boolean contains(Rectangle other) {
@@ -93,21 +75,11 @@ public class Rectangle implements java.io.Serializable {
             }
         }
         return true;
-
-//        if (other.xStart >= this.xStart && other.xEnd <= this.xEnd) {
-//            if (other.yStart >= this.yStart && other.yEnd <= this.yEnd)
-//                return true;
-//        }
-//        return false;
     }
 
     public boolean contains(PointEntry pe) {
         Point p = pe.getPoint();
         return this.contains(p);
-//        if (p.getX() >= this.xStart && p.getX() <= this.xEnd)
-//            if (p.getY() >= this.yStart && p.getY() <= this.yEnd)
-//                return true;
-//        return false;
     }
 
     public boolean contains(Point p) {
@@ -121,10 +93,6 @@ public class Rectangle implements java.io.Serializable {
                 return false;
         // otherwise return true
         return true;
-//        if (p.getX() >= this.xStart && p.getX() <= this.xEnd)
-//            if (p.getY() >= this.yStart && p.getY() <= this.yEnd)
-//                return true;
-//        return false;
     }
 
     public Point getCenter() {

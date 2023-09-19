@@ -15,10 +15,6 @@ public class Point implements java.io.Serializable {
         return coordsIntegers;
     }
 
-    public ArrayList<String> getCoordsStrings() {
-        return coordsStrings;
-    }
-
     private ArrayList<Integer> coordsIntegers;
     private ArrayList<String> coordsStrings;
 
@@ -117,15 +113,9 @@ public class Point implements java.io.Serializable {
         Point other = (Point) o;
         boolean res = true;
         for (int i = 0; i < this.coords.size(); i++) {
-            // this.coords.size() is EQUAL TO other.getCoords().size()
             res &= Double.compare(this.coords.get(i), other.getCoords().get(i)) == 0;
         }
         return res;
-//        return Double.compare(this.getX(), other.getX()) == 0 && Double.compare(this.getY(), other.getY()) == 0;
-    }
-
-    public double distance(PointEntry other) {
-        return Math.sqrt(pseudoDistance(other.getPoint()));
     }
 
     public double distance(Point other) {
@@ -139,16 +129,8 @@ public class Point implements java.io.Serializable {
             Double coord1 = doubles.get(i);
             Double coord2 = other.getCoords().get(i);
             sum += Math.pow(coord1 - coord2, 2);
-            // to get the actual distance, you must find the sqrt of this number
         }
-        // But, it's faster not to calculate the sqrt, so if it's not needed, it shall not be calculated
         return sum;
-        /*
-        float d1 = (float) (Math.pow(this.getX() - other.getX(), 2));
-        float d2 = (float) (Math.pow(this.getY() - other.getY(), 2));
-        return d1 + d2; // to get the actual distance, you must find the sqrt of this number
-        // But, it's faster not to calculate the sqrt, so if it's not needed, it shall not be calculated
-        */
     }
 
     /**
@@ -177,8 +159,6 @@ public class Point implements java.io.Serializable {
         // return the min_dist
 
         int n = this.getCoords().size(); // n is the number of dimensions we're working with
-//        ArrayList<Double> linesOfBoundingBoxInEachAxis = rect.getLinesOfRectangle();
-
         if (rect.contains(this))
             return 0;
 

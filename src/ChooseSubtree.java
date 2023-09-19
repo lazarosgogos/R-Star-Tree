@@ -1,31 +1,6 @@
 import java.util.*;
 
 public class ChooseSubtree {
-
-//    /**
-//     * @deprecated This method is inside the {@link Rectangle} class.
-//     * @param r1 The first rectangle
-//     * @param r2 The second rectangle
-//     * @return The overlap between the two
-//     */
-//    @Deprecated
-//    public static double overlapCalculation(Rectangle r1, Rectangle r2) {
-//        int dimensions = r1.getStartPoint().getCoords().size();
-//
-//        double product = 1;
-//        for (int i = 0; i < dimensions; i++) {
-//            double[] array = {r2.getStartPoint().getCoords().get(i),
-//                    r2.getEndPoint().getCoords().get(i),
-//                    r1.getStartPoint().getCoords().get(i),
-//                    r1.getEndPoint().getCoords().get(i)
-//            };
-//            Arrays.sort(array);
-//            product *= array[2] - array[1];
-//        }
-//
-//        return product;
-//    }
-
     public static double totalOverlap(Rectangle r1, HashSet<RectangleEntry> rectangles) {
         double sum = 0;
         for (RectangleEntry rectangle : rectangles) {
@@ -62,22 +37,6 @@ public class ChooseSubtree {
         return new Rectangle(new Point(min), new Point(max));
     }
 
-//    /**
-//     * @deprecated
-//     * This method is inside the {@link Rectangle} class
-//     * @param r The rectangle whose area needs to be calculated
-//     * @return The area of the given rectangle
-//     */
-//    @Deprecated
-//    public static double getArea(Rectangle r) {
-//        double product = 1;
-//        int destinations = r.getStartPoint().getCoords().size();
-//        for (int i = 0; i < destinations; i++) {
-//            product *= r.getEndPoint().getCoords().get(i) - r.getStartPoint().getCoords().get(i);
-//        }
-//        return product;
-//    }
-
     public static double areaEnlargementCost(RectangleEntry r, PointEntry p) {
         Rectangle re = enlargeRectangle(r, p);
         return re.getArea() - r.getRectangle().getArea();
@@ -91,13 +50,6 @@ public class ChooseSubtree {
         //CS2
         while (tempN instanceof NoLeafNode) {
             NoLeafNode N = (NoLeafNode) tempN;
-             /* First, sort the rectangles in N in increasing order
-             of their area enlargement needed to include the new data rectangle
-             Let A be the group of the first P entries
-             From the entries in A, considering all entries in N, choose the entry
-             whose rectangle needs the least overlap enlargement.
-             Resolve ties as described above
-             */
             if (N.getRectangleEntries().get(0).getChild() instanceof LeafNode) { // if the children of node N point to leaves
                 HashSet<RectangleEntry> rectangleEntries = new HashSet<>(N.getRectangleEntries());
                 HashMap<RectangleEntry, Double> overlapEnlargementScores = new HashMap<>();

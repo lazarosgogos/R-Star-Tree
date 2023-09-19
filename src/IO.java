@@ -136,30 +136,4 @@ public class IO {
 
         return new Point(Long.parseLong(record[dimensions]), record[dimensions+1], coordinates);
     }
-
-    public static int loadNumberOfDimensionsFromBlock0() {
-        String searchTerm = "block0";
-        if (block0 == null) {
-            String blockStr="";
-            try {
-                File file = new File("datafile.txt");
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains(searchTerm)) {
-                        blockStr = reader.readLine();
-                        break;
-                    }
-                }
-
-                reader.close();
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-
-            block0 = blockStr.split(":");
-        }
-        return Integer.parseInt(block0[3]);
-        }
 }

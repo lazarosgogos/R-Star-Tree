@@ -50,12 +50,6 @@ public class LeafNode extends Node {
 
         // IF ROOT IS LEAF NODE
         if (currentNode.isRoot()) {
-            /*Main.root = new LeafNode(pointEntriesTemp);
-            Main.root.setRoot(true);
-            Main.rootEntry = new RectangleEntry((LeafNode) Main.root);
-            Main.rootEntry.setContainer(Main.imaginaryRoot);
-            Main.root.setParent(Main.rootEntry);*/
-
             update(pointEntriesTemp);
             return;
         }
