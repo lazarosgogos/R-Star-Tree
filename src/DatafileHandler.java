@@ -137,7 +137,6 @@ public class DatafileHandler {
                 writer.close();
 
                 recordsCounterInc();
-                slotsCounterInc();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
