@@ -8,30 +8,25 @@ public class Main {
     static RectangleEntry rootEntry;
 
     public static void main(String[] args) {
-        //725 records
+        /* An theloume polla shmeia
+        String inputFile = "assets/map.osm";
+        LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+        entries.addAll(IO.loadInput("assets/mapWest.osm"));
+        */
 
-//        //203
-//        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
-//
-//        //623
-//        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-//
-//        //725
-//        entries.addAll(IO.loadInput("assets/mapEast.osm"));
-
-//        //2276 total
-
-        String inputFile = "assets/mapTestInts.osm";
+        String inputFile = "assets/map.osm";
 
         root = new Node();
 
         while (true) {
             System.out.println("type 1 if you want to load from file the last index");
             System.out.println("type 2 if you want to create a new index with bulk loading");
-            System.out.println("type 3 if you want to create a new index");
+            System.out.println("type 3 if you want to create a new index node-by-node");
             Scanner input = new Scanner(System.in);
             int answer = input.nextInt();
-            //int answer = 3;
+            //int answer = 3; //debug
             if (answer == 1) {
                 root = IndexfileDemo.loadFromFile();
                 if (root == null) {
@@ -41,22 +36,27 @@ public class Main {
                 break;
             } else if (answer == 2) {
                 LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-                M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
-
-                root = BulkLoading.bulkLoading(entries, M);
-                break;
-            } else if (answer == 3) {
-                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-//                entries.addAll(IO.loadInput("assets/mapCenter.osm"));
-//                entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-//                entries.addAll(IO.loadInput("assets/mapWest.osm"));
-
 
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
                 m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
                 if (M < 4) M = 4;
                 if (m < 2) m = 2; // defensive programming
 
+                long startTime = System.currentTimeMillis();
+                root = BulkLoading.bulkLoading(entries, M);
+                long endTime = System.currentTimeMillis();
+                System.out.println("Time to create with bulk in seconds:");
+                System.out.println(endTime-startTime);
+                break;
+            } else if (answer == 3) {
+                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+
+                M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
+                m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
+                if (M < 4) M = 4;
+                if (m < 2) m = 2; // defensive programming
+
+                long startTime = System.currentTimeMillis();
                 //minimum number of entries in a node = m
                 Iterator<PointEntry> it = entries.iterator();
                 LinkedList<PointEntry> init = new LinkedList<>();
@@ -72,46 +72,65 @@ public class Main {
                 rootEntry = new RectangleEntry((LeafNode) root);
                 root.setParent(rootEntry);
 
-                int counter = m;
+                //int counter = m; //debug
 
                 while (it.hasNext()) {
                     AlgorithmInsert.insert(it.next());
-                    /*System.out.println(++counter);
+                    /*System.out.println(++counter); //debug
                     deapthFirstPrint(root, 0);*/
                 }
 
-                //System.out.println((IO.loadRecordFromFile("1_2")));
-
-                /*
-                System.out.println(new Rectangle(new Point(2.4, 2.4), new Point(3, 3))
-                        .getOverlap(new Rectangle(new Point(2.6, 2.6), new Point(4, 2.8))));
-
-                 */
+                long endTime = System.currentTimeMillis();
+                System.out.println("Time to create with bulk in seconds:");
+                System.out.println(endTime-startTime);
                 break;
             }
         }
 
-        deapthFirstPrint(root,0);
-        System.out.println(Main.M);
+        while (true) {
+            System.out.println("type 1 if you want to run range query");
+            System.out.println("type 2 if you want to run knn");
+            System.out.println("type 3 if you want to run skyline");
+            Scanner input = new Scanner(System.in);
+            int answer = input.nextInt();
+            if (answer == 1) {
+                System.out.println("Give lower left x:");
+                double startX = input.nextDouble();
+                System.out.println("Give lower left y:");
+                double startY = input.nextDouble();
+                System.out.println("Give upper right x:");
+                double endX = input.nextDouble();
+                System.out.println("Give upper right y:");
+                double endY = input.nextDouble();
 
-        System.out.println("\n\npringint pretty\n\n");
-        System.out.println(PrettyPrinter.printRStarTree(root));
-        //BBS.runSkyline(root).forEach(pe -> System.out.println(pe.getPoint()));
+                Rectangle myQuery = new Rectangle(new Point(startX, startY), new Point(endX, endY));
 
-        // KNN Query
-//        Point p = new Point(5, 5);
-//        int k = 5;
-//        System.out.println("Knn query for size: " + k);
-//        KNNQuery.knnQuery(root, p, 5);
+                RangeQuery.rangeQuery(root, myQuery);
+                break;
+            } else if (answer == 2) {
+                System.out.println("X:");
+                double x = input.nextDouble();
+                System.out.println("Y:");
+                double y = input.nextDouble();
 
-      /* System.out.println("Now running range query");
-        Rectangle myQuery = new Rectangle(40.60987f, 22.96f, 40.61f, 22.967f);
-        RangeQuery.rangeQuery(root, myQuery);*/
+                System.out.println("How many neighbors:");
+                int k = input.nextInt();
 
-        //deapthFirstPrint(root, 0);
+                KNNQuery.knnQuery(root, new Point(x, y), k);
+                break;
+            } else if (answer == 3) {
+                BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));
+                break;
+            }
+        }
+
+        System.out.println("Do you want the input for tree visualization? Y/N");
+        Scanner input = new Scanner(System.in);
+        if (input.nextLine().equalsIgnoreCase("Y")) {
+            System.out.println(PrettyPrinter.printRStarTree(root));
+        }
 
         System.out.println("Do you want to save the index? Y/N");
-        Scanner input = new Scanner(System.in);
         if (input.nextLine().equalsIgnoreCase("Y")) {
             IndexfileDemo.saveToFile(root);
         }
