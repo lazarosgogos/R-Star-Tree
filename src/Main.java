@@ -16,7 +16,7 @@ public class Main {
         entries.addAll(IO.loadInput("assets/mapWest.osm"));
         */
 
-        String inputFile = "assets/mapTest.osm";
+        String inputFile = "assets/map.osm";
 
         root = new Node();
 
@@ -116,7 +116,14 @@ public class Main {
                 System.out.println("How many neighbors:");
                 int k = input.nextInt();
 
-                KNNQuery.knnQuery(root, new PointEntry(new Point(x, y), "dummyPoint"), k);
+                long startTime = System.currentTimeMillis();
+
+                KNNQuery.knnQuery(root, new Point(x, y), k);
+
+                long endTime = System.currentTimeMillis();
+                System.out.println("Time to run Knn in ms:");
+                System.out.println(endTime-startTime);
+
                 break;
             } else if (answer == 3) {
                 BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));

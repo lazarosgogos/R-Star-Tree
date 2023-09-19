@@ -159,9 +159,6 @@ public class DatafileHandler {
             // seek to the beginning of the file
             file.seek(0);
 
-            // write new data to the file
-            // isos kai na min einai se UTF, alla den mas peirazei
-            // to writeUTF method den doulevei kala
             file.writeBytes("block0\n");
 
             StringBuilder newData = new StringBuilder();
@@ -180,7 +177,7 @@ public class DatafileHandler {
             file.close();
         } catch (Exception e) {
             throw new RuntimeException();
-        } ;
+        }
     }
 
 }
