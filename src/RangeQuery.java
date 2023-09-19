@@ -52,4 +52,13 @@ public class RangeQuery {
         return result;
     }
 
+    public static void serial(Rectangle myQuery) {
+        LinkedList<Point> list = IO.loadEverything();
+        for (Point p : list){
+            if (myQuery.contains(p)){
+                System.out.println(p);
+            }
+        }
+    }
+
 }

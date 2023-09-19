@@ -14,8 +14,7 @@ public class Main {
         entries.addAll(IO.loadInput("assets/mapCenter.osm"));
         entries.addAll(IO.loadInput("assets/mapUnis.osm"));
         entries.addAll(IO.loadInput("assets/mapEast.osm"));
-        System.out.println(entries.size());
-
+        //System.out.println(entries.size());
         //String inputFile = "assets/map.osm";
 
         root = new Node();
@@ -106,7 +105,22 @@ public class Main {
 
                 Rectangle myQuery = new Rectangle(new Point(startX, startY), new Point(endX, endY));
 
+                long startTime = System.currentTimeMillis();
+
                 RangeQuery.rangeQuery(root, myQuery);
+
+                long endTime = System.currentTimeMillis();
+                System.out.println("Time to run range query in ms:");
+                System.out.println(endTime-startTime);
+
+                startTime = System.currentTimeMillis();
+
+                RangeQuery.serial(myQuery);
+
+                endTime = System.currentTimeMillis();
+                System.out.println("Time to run serial range query in ms:");
+                System.out.println(endTime-startTime);
+
                 break;
             } else if (answer == 2) {
                 System.out.println("X:");
@@ -119,7 +133,7 @@ public class Main {
 
                 long startTime = System.currentTimeMillis();
 
-                KNNQuery.knnQuery(root, new PointEntry(new Point(x, y), "dummy point entry"), k);
+                KNNQuery.knnQuery(root, new Point(x, y), k);
 
                 long endTime = System.currentTimeMillis();
                 System.out.println("Time to run Knn in ms:");

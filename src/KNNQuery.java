@@ -126,7 +126,8 @@ public class KNNQuery {
 //        LinkedList<RectangleEntry> searchFront = new LinkedList<>();
         maxHeap = _knnQuery(root, center, k, maxHeap);
 //        System.out.println("Knn query for size: " + k);
-        maxHeap.forEach(p -> System.out.println(p.toString()));
+        //maxHeap.forEach(p -> System.out.println(p.getPoint2().getPoint()));
+        maxHeap.forEach(p -> System.out.println(IO.loadRecordFromFile(p.getPoint2().getRecord_ID())));
         return maxHeap;
     }
 

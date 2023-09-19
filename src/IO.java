@@ -100,6 +100,74 @@ public class IO {
         return ret;
     }
 
+
+    public static LinkedList<Point> loadEverything() {
+        LinkedList<Point> list = new LinkedList<>();
+
+        String blockStr = "";
+        try {
+            File file = new File("datafile.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("block0")) { //psanoume tin grammi pou grafei to block_number
+                    blockStr = reader.readLine(); //kai diabazoume tin epomeni, diladi olo to block
+                    break;
+                }
+            }
+
+            reader.close();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        String records_splitter = "`";
+
+        String[] block = blockStr.split(records_splitter);
+        int numberOfBlocks = Integer.parseInt(block[1]);
+
+        for (int i = 1; i <= numberOfBlocks; i++) {
+            String searchTerm = "block" + i; // block
+            blockStr = "";
+            try {
+                File file = new File("datafile.txt");
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(searchTerm)) { //psanoume tin grammi pou grafei to block_number
+                        blockStr = reader.readLine(); //kai diabazoume tin epomeni, diladi olo to block
+                        break;
+                    }
+                }
+
+                reader.close();
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+
+            String blocks_splitter = "§";
+
+            int counter = 0;
+            block = blockStr.split(blocks_splitter);
+            for (String s : block){
+                if (!s.isEmpty()) {
+                    counter++;
+                }
+            }
+
+            String[] record;
+            for (int j = 0; j < counter; j++) {
+                record = block[j].split(records_splitter);
+                int dimensions = record.length - 2; // oi syntetagmens meion id meion onoma
+                ArrayList<String> coordinates = new ArrayList<>(Arrays.asList(record).subList(0, dimensions));
+                list.add(new Point(Long.parseLong(record[dimensions]), record[dimensions + 1], coordinates));
+            }
+        }
+        return list;
+    }
+
     public static Point loadRecordFromFile(String recordId) {
         String[] recordIdArr = recordId.split("_"); // xorizoyme to string se block kai offset
         String searchTerm = "block" + recordIdArr[0]; // block
@@ -123,8 +191,8 @@ public class IO {
             throw new RuntimeException();
         }
 
-        String blocks_splitter = "\\|";
-        String records_splitter = ":";
+        String blocks_splitter = "§";
+        String records_splitter = "`";
 
         String[] block = blockStr.split(blocks_splitter);
 
@@ -134,6 +202,6 @@ public class IO {
 
         ArrayList<String> coordinates = new ArrayList<>(Arrays.asList(record).subList(0, dimensions));
 
-        return new Point(Long.parseLong(record[dimensions]), record[dimensions+1], coordinates);
+        return new Point(Long.parseLong(record[dimensions]), record[dimensions + 1], coordinates);
     }
 }

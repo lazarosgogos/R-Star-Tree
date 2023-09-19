@@ -89,7 +89,7 @@ public class Point implements java.io.Serializable {
     }
 
     public String toFile() {
-        String splitter = ":";
+        String splitter = "`";
         StringBuilder sb = new StringBuilder();
         for (String coordsString : this.coordsStrings) {
             sb.append(coordsString);

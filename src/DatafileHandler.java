@@ -12,7 +12,7 @@ public class DatafileHandler {
     private static int nextSlot = 0;
     private static int totalBytes = 0;
     private static int numberOfCoords;
-    private static final String PROPERTIES_DELIMITER =":";
+    private static final String PROPERTIES_DELIMITER = "`";
 
     /**
      * We need this property to insert it in block 0.
@@ -20,12 +20,13 @@ public class DatafileHandler {
     private static int recordsCounter = 0;
 
     public DatafileHandler(Point record) {
-        numberOfCoords =record.getCoords().size();
+        numberOfCoords = record.getCoords().size();
         saveToFile(record.toFile());
     }
 
     /**
      * This method calculates the size in bytes of the record.
+     *
      * @param input
      * @return
      */
@@ -100,6 +101,7 @@ public class DatafileHandler {
 
     /**
      * This method checks if a block has space to add a record.
+     *
      * @param input
      */
     public static void checkSize(String input) {
@@ -118,6 +120,7 @@ public class DatafileHandler {
 
     /**
      * This method inserts in datafile the new record
+     *
      * @param input
      */
     public static void saveToFile(String input) {
@@ -125,26 +128,27 @@ public class DatafileHandler {
         try {
             if (blocksCounter == 0) {
                 initializeFile();
-            } else {
-                //me true 2i parametro kanei append
-                OutputStreamWriter writer =
-                        new OutputStreamWriter(new FileOutputStream("datafile.txt", true),
-                                StandardCharsets.UTF_8);
-
-                writer.write(input);
-                writer.write("|");
-
-                writer.close();
-
-                recordsCounterInc();
             }
+            //me true 2i parametro kanei append
+            OutputStreamWriter writer =
+                    new OutputStreamWriter(new FileOutputStream("datafile.txt", true),
+                            StandardCharsets.UTF_8);
+
+            writer.write(input);
+            writer.write("§");
+
+            writer.close();
+
+            recordsCounterInc();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
-    public static String getRecordId(){
-        int temp = nextSlot-1;
+
+    public static String getRecordId() {
+        int temp = nextSlot;
         return blocksCounter + "_" + temp;
     }
 
