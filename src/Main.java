@@ -43,13 +43,10 @@ public class Main {
                 if (m < 2) m = 2; // defensive programming
 
                 long startTime = System.currentTimeMillis();
-
                 root = BulkLoading.bulkLoading(entries, M);
-
                 long endTime = System.currentTimeMillis();
-                System.out.println("Time to create tree with bulk loading in ms:");
+                System.out.println("Time to create with bulk in seconds:");
                 System.out.println(endTime-startTime);
-
                 break;
             } else if (answer == 3) {
                 //LinkedList<PointEntry> entries = IO.loadInput(inputFile);
@@ -75,14 +72,17 @@ public class Main {
                 rootEntry = new RectangleEntry((LeafNode) root);
                 root.setParent(rootEntry);
 
+                //int counter = m; //debug
+
                 while (it.hasNext()) {
                     AlgorithmInsert.insert(it.next());
+                    /*System.out.println(++counter); //debug
+                    deapthFirstPrint(root, 0);*/
                 }
 
                 long endTime = System.currentTimeMillis();
-                System.out.println("Time to create tree node-by-node in ms:");
+                System.out.println("Time to create with bulk in seconds:");
                 System.out.println(endTime-startTime);
-
                 break;
             }
         }
@@ -106,14 +106,7 @@ public class Main {
 
                 Rectangle myQuery = new Rectangle(new Point(startX, startY), new Point(endX, endY));
 
-                long startTime = System.currentTimeMillis();
-
                 RangeQuery.rangeQuery(root, myQuery);
-
-                long endTime = System.currentTimeMillis();
-                System.out.println("Time to run Range Query in ms:");
-                System.out.println(endTime-startTime);
-
                 break;
             } else if (answer == 2) {
                 System.out.println("X:");
@@ -126,7 +119,7 @@ public class Main {
 
                 long startTime = System.currentTimeMillis();
 
-                KNNQuery.knnQuery(root, new Point(x, y), k);
+                KNNQuery.knnQuery(root, new PointEntry(new Point(x, y), "dummy point entry"), k);
 
                 long endTime = System.currentTimeMillis();
                 System.out.println("Time to run Knn in ms:");
@@ -134,14 +127,7 @@ public class Main {
 
                 break;
             } else if (answer == 3) {
-                long startTime = System.currentTimeMillis();
-
                 BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));
-
-                long endTime = System.currentTimeMillis();
-                System.out.println("Time to run skyline in ms:");
-                System.out.println(endTime-startTime);
-
                 break;
             }
             else {
