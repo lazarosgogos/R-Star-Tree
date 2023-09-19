@@ -118,7 +118,7 @@ public class Main {
 
                 long startTime = System.currentTimeMillis();
 
-                KNNQuery.knnQuery(root, new Point(x, y), k);
+                KNNQuery.knnQuery(root, new PointEntry(new Point(x, y), "dummy point entry"), k);
 
                 long endTime = System.currentTimeMillis();
                 System.out.println("Time to run Knn in ms:");
