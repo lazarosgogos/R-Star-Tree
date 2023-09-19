@@ -167,6 +167,8 @@ public class KNNQuery {
                 NoLeafNode noleaf = (NoLeafNode) node;
                 if (maxHeap.isEmpty()) { // if we have no available value of maximum distance
 //                    RectangleEntry chosen = noleaf.getRectangleEntries().get(0); // get a base estimate
+                    // essentially, if the maxHeap is not yet full, but nor is it empty
+                    // we need to keep adding nodes for search, sorted by their distance from the center point
                     ArrayList<PointRectanglePair> pointRectanglePairs = new ArrayList<>();
                     for (RectangleEntry rectangleEntry : noleaf.getRectangleEntries()) {
                         // find the minimum possible distance
@@ -183,10 +185,6 @@ public class KNNQuery {
                         searchFront.add(p.getRectangleEntry().getChild());
                     }
 //                    searchFront.add(chosen.getChild());
-                } else if (maxHeap.size() < k){ // else if the maxHeap is not yet full, but nor is it empty
-                    // we need to keep adding nodes for search, sorted by their distance from the center point
-
-
                 } else if (maxHeap.size() == k){
 //                   // if the max heap is full
                      // add rectangles which are IN the radius
