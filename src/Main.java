@@ -8,15 +8,15 @@ public class Main {
     static RectangleEntry rootEntry;
 
     public static void main(String[] args) {
-        /* An theloume polla shmeia
-        String inputFile = "assets/map.osm";
+        // An theloume polla shmeia
+        String inputFile = "assets/mapWest.osm";
         LinkedList<PointEntry> entries = IO.loadInput(inputFile);
         entries.addAll(IO.loadInput("assets/mapCenter.osm"));
         entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-        entries.addAll(IO.loadInput("assets/mapWest.osm"));
-        */
+        entries.addAll(IO.loadInput("assets/mapEast.osm"));
+        System.out.println(entries.size());
 
-        String inputFile = "assets/map.osm";
+        //String inputFile = "assets/map.osm";
 
         root = new Node();
 
@@ -35,7 +35,7 @@ public class Main {
                 }
                 break;
             } else if (answer == 2) {
-                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+                //LinkedList<PointEntry> entries = IO.loadInput(inputFile);
 
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
                 m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
@@ -52,7 +52,7 @@ public class Main {
 
                 break;
             } else if (answer == 3) {
-                LinkedList<PointEntry> entries = IO.loadInput(inputFile);
+                //LinkedList<PointEntry> entries = IO.loadInput(inputFile);
 
                 M = (int) Math.pow(2, Math.ceil(Math.log10(entries.size())));
                 m = (int) Math.ceil(0.4 * M); // 2 <= m <= M/2
@@ -88,6 +88,7 @@ public class Main {
         }
 
         while (true) {
+            System.out.println("type 0 if to continue");
             System.out.println("type 1 if you want to run range query");
             System.out.println("type 2 if you want to run knn");
             System.out.println("type 3 if you want to run skyline");
@@ -143,6 +144,9 @@ public class Main {
 
                 break;
             }
+            else {
+                break;
+            }
         }
 
         System.out.println("Do you want the input for tree visualization? Y/N");
@@ -155,44 +159,5 @@ public class Main {
         if (input.nextLine().equalsIgnoreCase("Y")) {
             IndexfileDemo.saveToFile(root);
         }
-    }
-
-    public static void deapthFirstPrint(Node root, int level) {
-        if (!root.leaf) {
-            LinkedList<RectangleEntry> rectangles = ((NoLeafNode) root).getRectangleEntries();
-            for (RectangleEntry rectangleEntry : rectangles) {
-                System.out.println("You are in Level: " + level);
-                System.out.println(rectangleEntry.getRectangle());
-                System.out.println("Going in...");
-                deapthFirstPrint(rectangleEntry.getChild(), level + 1);
-            }
-        } else {
-            System.out.println("Start Leaf Node");
-            for (PointEntry pointEntry : ((LeafNode) root).getPointEntries()) {
-                System.out.println(pointEntry.getPoint());
-            }
-            System.out.println("End Leaf Node");
-        }
-    }
-
-
-    public static void remove(String record_ID) { //TODO remove record
-        (IO.loadRecordFromFile(record_ID)).getCoords(); // gia na broume se poio LeafNode einai
-        // me kapoio find paromoio me to pos briskei i insert na to balei isos
-        LeafNode foundNode = null;
-        PointEntry foundPE = null;
-
-        if (foundNode.getPointEntries().size() - 1 >= Math.round(0.4 * M)) {
-            foundNode.getPointEntries().remove(foundPE);
-        } else {
-            foundNode.getPointEntries().remove(foundPE); // remove the record
-            HashSet<PointEntry> temp = new HashSet<>(foundNode.getPointEntries()); // get the rest for reInsert
-            ((NoLeafNode) foundNode.getParent().getContainer()).getRectangleEntries().remove(foundNode.getParent()); // diagrafoume to Rectangle poy pleon den einai arketa megalo
-            if (((NoLeafNode) foundNode.getParent().getContainer()).getRectangleEntries().size() < Math.round(0.4 * M)) {
-                // an kai o gonios gamietai, krima
-            }
-
-        }
-
     }
 }
