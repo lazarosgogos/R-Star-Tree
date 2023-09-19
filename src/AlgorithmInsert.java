@@ -5,11 +5,6 @@ public class AlgorithmInsert {
     private static HashSet<Integer> levelOverflowStatus = new HashSet<>(/* number of levels of tree */);
 
     public static void insert(PointEntry entry) {
-        /*TODO How do we keep track of each node's level ?
-         *  Either we keep that piece of information inside the node in some short integer
-         *  or we keep a list/hashmap in a local field with each node's ID and its corresponding level.
-         *  I find the first solution to be the optimal one, as it's both easier to implement, and more
-         *  straight-forward */
         boolean action = false;
         LeafNode N = (LeafNode) ChooseSubtree.chooseSubtree(Main.root, entry);
         if (N.getPointEntries().size() < Main.M) {
@@ -22,12 +17,10 @@ public class AlgorithmInsert {
         if (action) { // if boolean var "action" is true, invoke reinsert
             reInsert(N, entry);
         } else { // else invoke split
-            System.out.println("Going to split...");
             NoLeafNode returnable = AlgorithmSplit.split(N, entry);
             if (returnable != null) {
                 Main.root = returnable;
                 Main.root.setLevel(((NoLeafNode) Main.root).getRectangleEntries().get(0).getChild().getLevel() + 1);
-                System.out.println("Split Done!");
             }
         }
     }
@@ -43,22 +36,13 @@ public class AlgorithmInsert {
         // if this level has not been examined yet
         // hence a reinsertion must occur
         if (!levelOverflowStatus.contains(level)) { // OT1
-//            reInsert();
             levelOverflowStatus.add(level);
             return true;
-        } /*else {*/
-//            AlgorithmSplit.split();
+        }
         return false;
-//        return true;
-        /**/
     }
 
     public static void reInsert(Node N, PointEntry pointEntry) {
-        // TODO How are we supposed to reinsert the M+1 nodes
-        //  when M is the maximum number of entries that can fit in the Node
-        //  and it's possible that a reInsertion won't leave enough room for the final +1 entry
-        //  that we want to insert? Or is it granted that it'll fit?
-
         int p = Math.round(0.3f * Main.M);
 
         if (N instanceof NoLeafNode currentNode) {
@@ -107,15 +91,6 @@ public class AlgorithmInsert {
             }
 
             currentNode.update(pointEntriesTemp);
-
-            /*// Φτιάχνουμε έναν εικονικό κόμβο για να υπολογίσουμε το νέο τετράγωνο
-            LeafNode tempLeafNode = new LeafNode(pointEntriesTemp);
-            RectangleEntry tempRE = new RectangleEntry(tempLeafNode);
-
-            // Ανανεώνουμε τα στοιχεία του υπάρχοντα κόμβου και προσαρμόζουμε το τετράγωνό του
-            currentNode.getParent().getRectangle().setStartPoint(tempRE.getRectangle().getStartPoint());
-            currentNode.getParent().getRectangle().setEndPoint(tempRE.getRectangle().getEndPoint());
-            currentNode.setPointEntries(pointEntriesTemp);*/
 
             RectangleEntry tempRE;
             // Αν δεν είναι ρίζα, τότε πρέπει να προσαρμόσουμε και τα τετράγωνα των παραπάνων επιπέδων
@@ -206,6 +181,4 @@ public class AlgorithmInsert {
             return value;
         }
     }
-
-
 }
