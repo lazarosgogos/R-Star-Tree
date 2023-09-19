@@ -33,4 +33,8 @@ public class PointEntry extends Entry {
     public String toString() {
         return point.toString();
     }
+
+    public String getRecord_ID(){
+        return record_ID;
+    }
 }
