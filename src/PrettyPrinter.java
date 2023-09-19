@@ -21,7 +21,7 @@ public class PrettyPrinter {
         lastIndexOfComma = rectanglesStringBuilder.lastIndexOf(",");
         String rectanglesString = rectanglesStringBuilder.substring(0, lastIndexOfComma);
 
-        return pointsString + '\n' + rectanglesString;
+        return pointsString + "`\\\n" + rectanglesString;
     }
 
     private static void traverseRStarTree(Node node, List<PointEntry> points, List<RectangleEntryLevelPair> rectangles, int depth) {
