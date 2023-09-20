@@ -9,13 +9,14 @@ public class Main {
 
     public static void main(String[] args) {
         // An theloume polla shmeia
-        String inputFile = "assets/mapWest.osm";
+        String inputFile = "assets/map.osm";
         LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
-        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-        entries.addAll(IO.loadInput("assets/mapEast.osm"));
+//        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+//        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+//        entries.addAll(IO.loadInput("assets/mapEast.osm"));
         //System.out.println(entries.size());
         //String inputFile = "assets/map.osm";
+        // 41.5036 26.5286 41.5536 26.5886
 
         root = new Node();
 
@@ -83,7 +84,7 @@ public class Main {
                 System.out.println("Time to create with bulk in seconds:");
                 System.out.println(endTime-startTime);
                 break;
-            }
+            } /*else break;*/
         }
 
         while (true) {
@@ -121,7 +122,7 @@ public class Main {
                 System.out.println("Time to run serial range query in ms:");
                 System.out.println(endTime-startTime);
 
-                break;
+//                break;
             } else if (answer == 2) {
                 System.out.println("X:");
                 double x = input.nextDouble();
@@ -147,10 +148,10 @@ public class Main {
                 System.out.println("Time to run serial range query in ms:");
                 System.out.println(endTime-startTime);
 
-                break;
+//                break;
             } else if (answer == 3) {
                 BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));
-                break;
+//                break;
             }
             else {
                 break;

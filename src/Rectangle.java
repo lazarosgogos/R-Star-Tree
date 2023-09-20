@@ -60,7 +60,7 @@ public class Rectangle implements java.io.Serializable {
     public boolean overlaps(Rectangle other) {
         for (int i = 0; i < this.start.getCoords().size(); i++) {
             if (!(this.getStartPoint().getCoords().get(i) < other.getEndPoint().getCoords().get(i) &&
-                    this.getStartPoint().getCoords().get(i) > other.getStartPoint().getCoords().get(i))) {
+                    this.getEndPoint().getCoords().get(i) > other.getStartPoint().getCoords().get(i))) {
                 return false;
             }
         }
