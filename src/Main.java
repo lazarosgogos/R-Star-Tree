@@ -9,12 +9,14 @@ public class Main {
 
     public static void main(String[] args) {
         // An theloume polla shmeia
+//        String inputFile = "assets/mapWest.osm";
         String inputFile = "assets/map.osm";
         LinkedList<PointEntry> entries = IO.loadInput(inputFile);
-//        entries.addAll(IO.loadInput("assets/mapCenter.osm"));
-//        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
-//        entries.addAll(IO.loadInput("assets/mapEast.osm"));
+        /*entries.addAll(IO.loadInput("assets/mapCenter.osm"));
+        entries.addAll(IO.loadInput("assets/mapUnis.osm"));
+        entries.addAll(IO.loadInput("assets/mapEast.osm"));*/
         //System.out.println(entries.size());
+
         //String inputFile = "assets/map.osm";
         // 41.5036 26.5286 41.5536 26.5886
 
@@ -84,7 +86,7 @@ public class Main {
                 System.out.println("Time to create with bulk in seconds:");
                 System.out.println(endTime-startTime);
                 break;
-            } /*else break;*/
+            }
         }
 
         while (true) {
@@ -150,7 +152,15 @@ public class Main {
 
 //                break;
             } else if (answer == 3) {
+
+                long startTime = System.currentTimeMillis();
+
                 BBS.runSkyline(root).forEach(pe -> System.out.println(IO.loadRecordFromFile(pe.getRecord_ID())));
+
+                long endTime = System.currentTimeMillis();
+                System.out.println("Time to run Skyline in ms:");
+                System.out.println(endTime-startTime);
+
 //                break;
             }
             else {
